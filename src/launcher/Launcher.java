@@ -30,12 +30,12 @@ public class Launcher {
 				}
 			}
 			
-			Mining.start(2, 1);
+			Mining.start(4, 2);
 			
 			Result.print();
 			
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

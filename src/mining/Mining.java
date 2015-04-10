@@ -13,6 +13,12 @@ import datastructure.DFSCodeStack;
 import datastructure.Graph;
 import datastructure.GraphSet;
 
+/**
+ * 暂不支持同一幅图中出现一样的边的情况，或者结果是不确定的
+ * 
+ * @author Three
+ *
+ */
 public class Mining {
 	
 	private static Set<Graph> graphItems = GraphSet.getGraphSet();
@@ -20,7 +26,7 @@ public class Mining {
 	public static void start(int maxVertexRank, int maxEdgeRank) {
 		for(int i = 0; i < maxVertexRank; i++) {
 			for(int a = 0; a < maxEdgeRank; a++) {
-				for(int j = i; j < maxVertexRank; j++) {
+				for(int j = 0; j < maxVertexRank; j++) {
 					DFSCode code = new DFSCode(0, 1, i, a, j);
 					DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
@@ -39,12 +45,12 @@ public class Mining {
 		Map<DFSCode, Set<Graph>> supportChecker = new HashMap<DFSCode, Set<Graph>>();
 		
 		// 1. 判断是否最小dfs
-		if(dfsCodeStack.isEmpty() || !dfsCodeStack.isMin()) {
+		if(!dfsCodeStack.isMin()) {
 			return;
 		}
 		
 		// 2. 匹配成功，加入Result
-		Result.add(dfsCodeStack);
+		Result.add(new DFSCodeStack(dfsCodeStack));
 		
 		// 3. 获得扩充候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {

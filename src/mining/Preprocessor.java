@@ -48,7 +48,7 @@ public class Preprocessor {
 			} else if("v".equals(content[0])) {
 				int vertex = Integer.valueOf(content[1]);
 				int label = Integer.valueOf(content[2]);
-				int value = vertexLabel2Freq.containsKey(label) ? vertexLabel2Freq.get(label) + 1 : 0;
+				int value = vertexLabel2Freq.containsKey(label) ? vertexLabel2Freq.get(label) + 1 : 1;
 				vertexLabel2Freq.put(label, value);
 				graph.putVertexRank(vertex, label);
 				tmp.put(vertex, label);
@@ -61,7 +61,7 @@ public class Preprocessor {
 //				vertex1 = tmp.get(vertex1);
 //				vertex2 = tmp.get(vertex2);
 				int label = Integer.valueOf(content[3]);
-				int value = edgeLabel2Freq.containsKey(label) ? edgeLabel2Freq.get(label) + 1 : 0;
+				int value = edgeLabel2Freq.containsKey(label) ? edgeLabel2Freq.get(label) + 1 : 1;
 				edgeLabel2Freq.put(label, value);
 				graph.addEdge(new Edge(vertex1, label, vertex2));
 			}
@@ -114,20 +114,20 @@ public class Preprocessor {
 				int vertex2Label = g.vertex2Rank.get(vertex2);
 				if(vertexLabel2Freq.get(vertex1Label) < StaticData.MIN_SUPPORT) {
 					g.vertex2Rank.remove(vertex1);
-					edges.remove(e);		
+					eit.remove();		
 				}
 				if(vertexLabel2Freq.get(vertex2Label) < StaticData.MIN_SUPPORT) {
 					g.vertex2Rank.remove(vertex2);
-					edges.remove(e);					
+					eit.remove();					
 				}
 				if(edgeLabel2Freq.get(e.getLabel()) < StaticData.MIN_SUPPORT) {
-					edges.remove(e);
+					eit.remove();
 					continue;
 				}
-				g.vertex2Rank.put(vertex1, vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(vertex1Label,
-						vertexLabel2Freq.get(vertex1Label))));
-				g.vertex2Rank.put(vertex2, vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(vertex2Label,
-						vertexLabel2Freq.get(vertex2Label))));
+//				g.vertex2Rank.put(vertex1, vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(vertex1Label,
+//						vertexLabel2Freq.get(vertex1Label))));
+//				g.vertex2Rank.put(vertex2, vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(vertex2Label,
+//						vertexLabel2Freq.get(vertex2Label))));
 				e.setLabel(eList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(e.getLabel(),
 						edgeLabel2Freq.get(e.getLabel()))));
 			}

@@ -55,6 +55,22 @@ public class Graph {
 			}
 			return false;
 		}
+		
+		@Override
+		public int hashCode() {
+			return 100 * vertex1 + 10 * label + vertex2;
+		}
+		
+		@Override
+		public String toString() {
+			StringBuffer sb = new StringBuffer();
+			sb.append(vertex1);
+			sb.append(" ");
+			sb.append(vertex2);
+			sb.append(" ");
+			sb.append(label);
+			return sb.toString();
+		}
 	}
 	
 	public Graph() {

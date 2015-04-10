@@ -72,25 +72,39 @@ public class DFSEdgeTree {
 		
 		List<Node> getNextNodes(int index, List<Node> matchedNodes) {
 			List<Node> nodes = new ArrayList<Node>();
-			for(Iterator<Node> it = candidates.iterator(); it.hasNext();) {
-				Node n = it.next();
-				Edge e = n.edge;
-				n.code = new DFSCode(index, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
-						graph.vertex2Rank.get(e.vertex2));
+			if(candidates != null) {
+				for(Iterator<Node> it = candidates.iterator(); it.hasNext();) {
+					Node n = it.next();
+					Edge e = n.edge;
+					if(e.vertex1 == edge.vertex1) {
+						n.code = new DFSCode(code.ix, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
+							graph.vertex2Rank.get(e.vertex2));
+					} else if(e.vertex1 == edge.vertex2) {
+						n.code = new DFSCode(code.iy, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
+								graph.vertex2Rank.get(e.vertex2));
+					}
+				}
+				nodes.addAll(this.candidates);
 			}
-			nodes.addAll(this.candidates);
-			if(this.parent != null) {
-				for(Iterator<Node> it = parent.candidates.iterator(); it.hasNext();) {
+			Node temp = this.parent;
+			while(temp != null) {
+				for(Iterator<Node> it = temp.candidates.iterator(); it.hasNext();) {
 					Node n = it.next();
 					if(matchedNodes.contains(n)) {
 						continue;
 					}
 					Edge e = n.edge;
-					n.code = new DFSCode(index-1, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
+					if(e.vertex1 == temp.edge.vertex1) {
+						n.code = new DFSCode(temp.code.ix, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
 							graph.vertex2Rank.get(e.vertex2));
+					} else if(e.vertex1 == temp.edge.vertex2) {
+						n.code = new DFSCode(temp.code.iy, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
+								graph.vertex2Rank.get(e.vertex2));
+					}
 				}
-				nodes.addAll(this.parent.candidates);
+				nodes.addAll(temp.candidates);
 				nodes.removeAll(matchedNodes);
+				temp = temp.parent;
 			}
 			
 			return nodes;
@@ -111,9 +125,11 @@ public class DFSEdgeTree {
 		Queue<Node> queue = new LinkedList<Node>();
 		for(Iterator<Edge> it = graph.getEdges().iterator(); it.hasNext();) {
 			Edge e = it.next();
-			if(graph.vertex2Rank.get(e.vertex1) == code.x && graph.vertex2Rank.get(e.vertex2) == code.y) {
+			if(code.a == e.label && graph.vertex2Rank.get(e.vertex1) == code.x && 
+					graph.vertex2Rank.get(e.vertex2) == code.y) {
 				Node n = new Node(e);
 				root = n;
+				root.code = new DFSCode(code);
 				queue.offer(root);
 				break;
 			}
@@ -151,21 +167,24 @@ public class DFSEdgeTree {
 		Node p = root;
 		List<Node> matchedNodes = new ArrayList<Node>();
 		
-		if(!p.code.equals(dfsCodeStack.head())) {
+		if(!dfsCodeStack.head().equals(p.code)) {
 			throw new MiningException();
 		}
+		
+		matchedNodes.add(root);
 		for(index = 1; index < dfsCodeStack.getStack().size(); index++) {
 			DFSCode code = dfsCodeStack.getStack().get(index);
-			matchedNodes.add(p);
 			List<Node> nodes = p.getNextNodes(index, matchedNodes);
 			int i = 0;
 			for(; i < nodes.size(); i++) {
 				if(code.equals(nodes.get(i).code)) {
 					p = nodes.get(i);
+					matchedNodes.add(p);
 					break;
 				}
 			}
 			if(i == nodes.size()) {
+				dfsCodeStack.print();
 				throw new MiningException();
 			}
 		}
