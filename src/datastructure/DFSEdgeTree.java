@@ -115,14 +115,10 @@ public class DFSEdgeTree {
 		this.graph = g;
 	}
 	
-	public void expand(DFSCode code) {
-//		Node p = root;
-//		List<Node> temp = new ArrayList<Node>();
-		
-//		List<Edge> candidateEdges = new ArrayList<Edge>();
-//		Set<Edge> repeatedEdges = new HashSet<Edge>();
-		
+	public boolean hasCandidates(DFSCode code) {
 		Queue<Node> queue = new LinkedList<Node>();
+
+		boolean flag = false;
 		for(Iterator<Edge> it = graph.getEdges().iterator(); it.hasNext();) {
 			Edge e = it.next();
 			if(code.a == e.label && graph.vertex2Rank.get(e.vertex1) == code.x && 
@@ -131,10 +127,19 @@ public class DFSEdgeTree {
 				root = n;
 				root.code = new DFSCode(code);
 				queue.offer(root);
+				flag = true;
 				break;
 			}
 		}
+		if(flag) {
+			expand(queue);
+			return true;
+		}
 		
+		return false;
+	}
+	
+	public void expand(Queue<Node> queue) {
 		while(!queue.isEmpty()) {
 			Node n = queue.poll();
 			
@@ -154,9 +159,7 @@ public class DFSEdgeTree {
 				queue.addAll(n.candidates);
 			}
 		}
-				
 	}
-	
 	
 	public Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) throws MiningException {
 		if(null == root) {

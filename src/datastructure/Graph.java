@@ -97,17 +97,13 @@ public class Graph {
 		return vertex2Rank.put(vertex, rank);
 	}
 	
-	public void clear() {
-		dfsEdgeTree = null;
+	public Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) {
+		return dfsEdgeTree.getCandidates(dfsCodeStack);
 	}
 	
-	public Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) {
-		if(null == dfsEdgeTree) {
-			dfsEdgeTree = new DFSEdgeTree(this);
-			dfsEdgeTree.expand(dfsCodeStack.head());
-		}
-		
-		return dfsEdgeTree.getCandidates(dfsCodeStack);
+	public boolean hasCandidates(DFSCode code) {
+		dfsEdgeTree = new DFSEdgeTree(this);
+		return dfsEdgeTree.hasCandidates(code);
 	}
 	
 }

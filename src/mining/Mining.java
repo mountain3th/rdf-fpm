@@ -32,10 +32,6 @@ public class Mining {
 					dfsCodeStack.push(code);
 					
 					subGraphMining(dfsCodeStack, graphItems);
-					for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
-						Graph g = it.next();
-						g.clear();
-					}
 				}
 			}
 		}
@@ -50,8 +46,21 @@ public class Mining {
 		}
 		
 		// 2. 匹配成功，加入Result
-		Result.add(new DFSCodeStack(dfsCodeStack));
-		
+		if(dfsCodeStack.getStack().size() == 1) {
+			int count = 0;
+			for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
+				Graph g = it.next();
+				if(g.hasCandidates(dfsCodeStack.head())) {
+					count++;
+				}
+			}
+			if(count >= StaticData.MIN_SUPPORT) {
+				Result.add(new DFSCodeStack(dfsCodeStack));
+			}
+		} else {
+			Result.add(new DFSCodeStack(dfsCodeStack));
+		}
+				
 		// 3. 获得扩充候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();

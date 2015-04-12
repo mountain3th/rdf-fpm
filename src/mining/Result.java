@@ -23,9 +23,6 @@ public class Result {
 		System.out.println(results.size());
 		for(Iterator<DFSCodeStack> it = results.iterator(); it.hasNext();) {
 			DFSCodeStack stack = it.next();
-			if(stack.getStack().size() == 1) {
-				continue;
-			}
 			for(Iterator<DFSCode> dit = stack.getStack().iterator(); dit.hasNext();) {
 				DFSCode code = dit.next();
 				System.out.print(code.toString(vertexRank2Label, edgeRank2Label) + " -> ");
