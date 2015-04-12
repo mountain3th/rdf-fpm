@@ -2,6 +2,7 @@ package datastructure;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
@@ -42,6 +43,11 @@ public class DFSCodeStack {
 	}
 	
 	public boolean isMin() {
+		for(int index = 0; index < dfsCodeStack.size() - 1; index++) {
+			if(!dfsCodeStack.get(index).isLessThan(dfsCodeStack.get(index+1))) {
+				return false;
+			}
+		}
 		return true;
 	}
 	
@@ -55,4 +61,5 @@ public class DFSCodeStack {
 			System.out.println(code);
 		}
 	}
+
 }

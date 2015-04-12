@@ -21,6 +21,59 @@ public class DFSCode {
 		this(code.ix, code.iy, code.x, code.a, code.y);
 	}
 	
+	/** 序列序
+	 * 
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public boolean isLessThan(DFSCode code) {
+//		// 出发顶点相同
+//		if(ix == code.ix) {
+//			// 两个前向扩展
+//			if(iy > ix && code.iy > code.ix) {
+//				return a < code.a || (a == code.a && y < code.y);
+//			} 
+//			// 一个前向，一个后向，或者两个后向扩展
+//			else {
+//				return iy < code.iy;
+//			}
+//		} else if(ix > code.ix) {
+//			
+//		} else {
+//			return ix < code.ix && iy == code.ix;
+//		}
+		
+		// 后向扩展
+		if(ix > iy) {
+			if(code.ix < code.iy) {
+				return true;
+			}
+			if(iy < code.iy || (iy == code.iy && a < code.a)) {
+				return true;
+			}
+		}
+		// 前向扩展
+		else if(code.ix < code.iy) {
+			if(iy == code.ix) {
+				return true;
+			}
+			if(ix > code.ix) {
+				return true;
+			}
+			if(ix == code.ix) {
+				if(x < code.x) {
+					return true;
+				}
+				if(x == code.x && (a < code.a || (a == code.a && y < code.y))) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		DFSCode code = (DFSCode) o;

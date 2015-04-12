@@ -107,6 +107,7 @@ public class Preprocessor {
 			Graph g = it.next();
 			Set<Edge> edges = g.getEdges();
 			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
+				boolean flag = false;
 				Edge e = eit.next();
 				int vertex1 = e.getVertex1();
 				int vertex2 = e.getVertex2();
@@ -114,13 +115,16 @@ public class Preprocessor {
 				int vertex2Label = g.vertex2Rank.get(vertex2);
 				if(vertexLabel2Freq.get(vertex1Label) < StaticData.MIN_SUPPORT) {
 					g.vertex2Rank.remove(vertex1);
-					eit.remove();		
+					flag = true;		
 				}
 				if(vertexLabel2Freq.get(vertex2Label) < StaticData.MIN_SUPPORT) {
 					g.vertex2Rank.remove(vertex2);
-					eit.remove();					
+					flag = true;
 				}
 				if(edgeLabel2Freq.get(e.getLabel()) < StaticData.MIN_SUPPORT) {
+					flag = true;
+				}
+				if(flag) {
 					eit.remove();
 					continue;
 				}

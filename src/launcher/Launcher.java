@@ -15,7 +15,7 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		try {
-			Preprocessor.loadFile(new File("test"));
+			Preprocessor.loadFile(new File("test1"));
 			Preprocessor.relabel();
 			Preprocessor.rebuildGraphSet();
 			

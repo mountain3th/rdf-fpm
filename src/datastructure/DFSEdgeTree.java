@@ -76,12 +76,24 @@ public class DFSEdgeTree {
 				for(Iterator<Node> it = candidates.iterator(); it.hasNext();) {
 					Node n = it.next();
 					Edge e = n.edge;
-					if(e.vertex1 == edge.vertex1) {
-						n.code = new DFSCode(code.ix, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
+					n.code = new DFSCode(-1, -1, graph.vertex2Rank.get(e.vertex1), e.label, 
 							graph.vertex2Rank.get(e.vertex2));
+					if(e.vertex1 == edge.vertex1) {
+						n.code.ix = code.ix;
 					} else if(e.vertex1 == edge.vertex2) {
-						n.code = new DFSCode(code.iy, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
-								graph.vertex2Rank.get(e.vertex2));
+						n.code.ix = code.iy;
+					}
+					n.code.iy = index+1;
+					for(int i = 0; i < matchedNodes.size(); i++) {
+						Node node = matchedNodes.get(i);
+						if(e.vertex2 == node.edge.vertex1) {
+							n.code.iy = node.code.ix;
+							break;
+						}
+						if(e.vertex2 == node.edge.vertex2) {
+							n.code.iy = node.code.iy;
+							break;
+						}
 					}
 				}
 				nodes.addAll(this.candidates);
@@ -94,12 +106,24 @@ public class DFSEdgeTree {
 						continue;
 					}
 					Edge e = n.edge;
-					if(e.vertex1 == temp.edge.vertex1) {
-						n.code = new DFSCode(temp.code.ix, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
+					n.code = new DFSCode(-1, -1, graph.vertex2Rank.get(e.vertex1), e.label, 
 							graph.vertex2Rank.get(e.vertex2));
+					if(e.vertex1 == temp.edge.vertex1) {
+						n.code.ix = temp.code.ix;
 					} else if(e.vertex1 == temp.edge.vertex2) {
-						n.code = new DFSCode(temp.code.iy, index+1, graph.vertex2Rank.get(e.vertex1), e.label, 
-								graph.vertex2Rank.get(e.vertex2));
+						n.code.ix = temp.code.iy;
+					}
+					n.code.iy = index+1;
+					for(int i = 0; i < matchedNodes.size(); i++) {
+						Node node = matchedNodes.get(i);
+						if(e.vertex2 == node.edge.vertex1) {
+							n.code.iy = node.code.ix;
+							break;
+						}
+						if(e.vertex2 == node.edge.vertex2) {
+							n.code.iy = node.code.iy;
+							break;
+						}
 					}
 				}
 				nodes.addAll(temp.candidates);
