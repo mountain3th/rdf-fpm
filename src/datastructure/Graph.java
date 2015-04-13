@@ -23,30 +23,6 @@ public class Graph {
 			this.label = label;
 		}
 		
-		public int getLabel() {
-			return label;
-		}
-		
-		public int getVertex1() {
-			return vertex1;
-		}
-		
-		public int getVertex2() {
-			return vertex2;
-		}
-		
-		public void setLabel(int l) {
-			label = l;
-		}
-		
-		public void setVertex1(int v) {
-			vertex1 = v;
-		}
-		
-		public void setVertex2(int v) {
-			vertex2 = v;
-		}
-		
 		@Override
 		public boolean equals(Object o) {
 			Edge other = (Edge) o;
@@ -66,9 +42,20 @@ public class Graph {
 			StringBuffer sb = new StringBuffer();
 			sb.append(vertex1);
 			sb.append(" ");
-			sb.append(vertex2);
-			sb.append(" ");
 			sb.append(label);
+			sb.append(" ");
+			sb.append(vertex2);
+			return sb.toString();
+		}
+		
+		public String toString(Map<Integer, Integer> vertex2Rank, Map<Integer, Integer> vertexRank2Label, 
+				Map<Integer, Integer> edgeRank2Label) {
+			StringBuffer sb = new StringBuffer();
+			sb.append(vertexRank2Label.get(vertex2Rank.get(vertex1)));
+			sb.append(" ");
+			sb.append(edgeRank2Label.get(label));
+			sb.append(" ");
+			sb.append(vertexRank2Label.get(vertex2Rank.get(vertex2)));
 			return sb.toString();
 		}
 	}

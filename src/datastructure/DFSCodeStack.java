@@ -1,11 +1,10 @@
 package datastructure;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
+
+import mining.Result;
 
 public class DFSCodeStack {
 	
@@ -43,11 +42,11 @@ public class DFSCodeStack {
 	}
 	
 	public boolean isMin() {
-		for(int index = 0; index < dfsCodeStack.size() - 1; index++) {
-			if(!dfsCodeStack.get(index).isLessThan(dfsCodeStack.get(index+1))) {
-				return false;
-			}
-		}
+//		for(int index = 0; index < dfsCodeStack.size() - 1; index++) {
+//			if(!dfsCodeStack.get(index).isLessThan(dfsCodeStack.get(index+1))) {
+//				return false;
+//			}
+//		}
 		return true;
 	}
 	
@@ -58,7 +57,7 @@ public class DFSCodeStack {
 	public void print() {
 		for(Iterator<DFSCode> it = dfsCodeStack.iterator(); it.hasNext();) {
 			DFSCode code = it.next();
-			System.out.println(code);
+			System.out.print(code.toString(Result.vertexRank2Label, Result.edgeRank2Label) + " -> ");
 		}
 	}
 

@@ -21,20 +21,14 @@ public class DFSCode {
 		this(code.ix, code.iy, code.x, code.a, code.y);
 	}
 	
-	/** ÐòÁÐÐò
-	 * 
-	 * 
-	 * @param code
-	 * @return
-	 */
 	public boolean isLessThan(DFSCode code) {
-//		// ³ö·¢¶¥µãÏàÍ¬
+//		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬
 //		if(ix == code.ix) {
-//			// Á½¸öÇ°ÏòÀ©Õ¹
+//			// ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Õ¹
 //			if(iy > ix && code.iy > code.ix) {
 //				return a < code.a || (a == code.a && y < code.y);
 //			} 
-//			// Ò»¸öÇ°Ïò£¬Ò»¸öºóÏò£¬»òÕßÁ½¸öºóÏòÀ©Õ¹
+//			// Ò»ï¿½ï¿½Ç°ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ò£¬»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹
 //			else {
 //				return iy < code.iy;
 //			}
@@ -44,7 +38,7 @@ public class DFSCode {
 //			return ix < code.ix && iy == code.ix;
 //		}
 		
-		// ºóÏòÀ©Õ¹
+		// åŽå‘æ‰©å±•
 		if(ix > iy) {
 			if(code.ix < code.iy) {
 				return true;
@@ -53,7 +47,7 @@ public class DFSCode {
 				return true;
 			}
 		}
-		// Ç°ÏòÀ©Õ¹
+		// å‰å‘æ‰©å±•
 		else if(code.ix < code.iy) {
 			if(iy == code.ix) {
 				return true;

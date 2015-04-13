@@ -28,11 +28,11 @@ public class Preprocessor {
 	
 	public static void loadFile(File file) throws Exception{
 		if(!file.exists() || !file.isFile()) {
-			throw new FileNotFoundException("ÕÒ²»µ½Ö¸¶¨µÄÎÄ¼ş");
+			throw new FileNotFoundException("æ–‡ä»¶ä¸å­˜åœ¨");
 		}
 		
 		if(status != 0) {
-			throw new IllegalStateException("µ÷ÓÃË³Ğò³ö´í");
+			throw new IllegalStateException("è°ƒç”¨é¡ºåºé”™è¯¯");
 		}
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line = null;
@@ -56,7 +56,7 @@ public class Preprocessor {
 				int vertex1 = Integer.valueOf(content[1]);
 				int vertex2 = Integer.valueOf(content[2]);
 				if(!tmp.containsKey(vertex1) || !tmp.containsKey(vertex2)) {
-					throw new Exception("ÎŞ·¨ÕÒµ½Æ¥ÅäµÄ¶¥µã");
+					throw new Exception("æ‰¾ä¸åˆ°å¯¹åº”çš„é¡¶ç‚¹");
 				}
 //				vertex1 = tmp.get(vertex1);
 //				vertex2 = tmp.get(vertex2);
@@ -73,7 +73,7 @@ public class Preprocessor {
 	
 	public static void relabel() {
 		if(status != 1) {
-			throw new IllegalStateException("µ÷ÓÃË³Ğò³ö´í");
+			throw new IllegalStateException("è°ƒç”¨é¡ºåºå‡ºé”™");
 		}
 		
 		vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
@@ -83,6 +83,7 @@ public class Preprocessor {
 				break;
 			}
 			Result.vertexRank2Label.put(index, vList.get(index).getKey());
+			Result.maxVertexRank++;
 		}
 		
 		eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
@@ -92,6 +93,7 @@ public class Preprocessor {
 				break;
 			}
 			Result.edgeRank2Label.put(index, eList.get(index).getKey());
+			Result.maxEdgeRank++;
 		}
 		
 		status++;
@@ -99,7 +101,7 @@ public class Preprocessor {
 	
 	public static void rebuildGraphSet() {
 		if(status != 2) {
-			throw new IllegalStateException("µ÷ÓÃË³Ğò³ö´í");
+			throw new IllegalStateException("è°ƒç”¨é¡ºåºå‡ºé”™");
 		}
 		
 		Set<Graph> graphSet = GraphSet.getGraphSet();
@@ -109,19 +111,17 @@ public class Preprocessor {
 			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 				boolean flag = false;
 				Edge e = eit.next();
-				int vertex1 = e.getVertex1();
-				int vertex2 = e.getVertex2();
-				int vertex1Label = g.vertex2Rank.get(vertex1);
-				int vertex2Label = g.vertex2Rank.get(vertex2);
+				int vertex1Label = g.vertex2Rank.get(e.vertex1);
+				int vertex2Label = g.vertex2Rank.get(e.vertex2);
 				if(vertexLabel2Freq.get(vertex1Label) < StaticData.MIN_SUPPORT) {
-					g.vertex2Rank.remove(vertex1);
+					g.vertex2Rank.remove(e.vertex1);
 					flag = true;		
 				}
 				if(vertexLabel2Freq.get(vertex2Label) < StaticData.MIN_SUPPORT) {
-					g.vertex2Rank.remove(vertex2);
+					g.vertex2Rank.remove(e.vertex2);
 					flag = true;
 				}
-				if(edgeLabel2Freq.get(e.getLabel()) < StaticData.MIN_SUPPORT) {
+				if(edgeLabel2Freq.get(e.label) < StaticData.MIN_SUPPORT) {
 					flag = true;
 				}
 				if(flag) {
@@ -132,8 +132,8 @@ public class Preprocessor {
 //						vertexLabel2Freq.get(vertex1Label))));
 //				g.vertex2Rank.put(vertex2, vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(vertex2Label,
 //						vertexLabel2Freq.get(vertex2Label))));
-				e.setLabel(eList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(e.getLabel(),
-						edgeLabel2Freq.get(e.getLabel()))));
+				e.label = eList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(e.label,
+						edgeLabel2Freq.get(e.label)));
 			}
 			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
 				Entry<Integer, Integer> entry = vit.next();

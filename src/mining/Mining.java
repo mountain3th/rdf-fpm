@@ -14,7 +14,7 @@ import datastructure.Graph;
 import datastructure.GraphSet;
 
 /**
- * Ôİ²»Ö§³ÖÍ¬Ò»·ùÍ¼ÖĞ³öÏÖÒ»ÑùµÄ±ßµÄÇé¿ö£¬»òÕß½á¹ûÊÇ²»È·¶¨µÄ
+ * å½“å‰åªæ”¯æŒä¸€å¹…å›¾å‡ºç°åŒä¸€ç±»åªè®°ä¸€æ¬¡ï¼Œå¹¶ä¸”å¯èƒ½ä¼šå‘ç”Ÿä¸å¯é¢„è®¡çš„åæœ
  * 
  * @author Three
  *
@@ -24,9 +24,9 @@ public class Mining {
 	private static Set<Graph> graphItems = GraphSet.getGraphSet();
 	
 	public static void start(int maxVertexRank, int maxEdgeRank) {
-		for(int i = 0; i < maxVertexRank; i++) {
-			for(int a = 0; a < maxEdgeRank; a++) {
-				for(int j = 0; j < maxVertexRank; j++) {
+		for(int i = 0; i <= maxVertexRank; i++) {
+			for(int a = 0; a <= maxEdgeRank; a++) {
+				for(int j = 0; j <= maxVertexRank; j++) {
 					DFSCode code = new DFSCode(0, 1, i, a, j);
 					DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
@@ -40,12 +40,12 @@ public class Mining {
 	public static void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
 		Map<DFSCode, Set<Graph>> supportChecker = new HashMap<DFSCode, Set<Graph>>();
 		
-		// 1. ÅĞ¶ÏÊÇ·ñ×îĞ¡dfs
+		// 1. åˆ¤æ–­æ˜¯å¦æœ€å°dfs
 		if(!dfsCodeStack.isMin()) {
 			return;
 		}
 		
-		// 2. Æ¥Åä³É¹¦£¬¼ÓÈëResult
+		// 2. æ£€æŸ¥å½“å‰codeæ˜¯å¦æœ‰æ‰©å±•çš„å¯èƒ½æ€§
 		if(dfsCodeStack.getStack().size() == 1) {
 			int count = 0;
 			for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
@@ -61,7 +61,7 @@ public class Mining {
 			Result.add(new DFSCodeStack(dfsCodeStack));
 		}
 				
-		// 3. »ñµÃÀ©³äºòÑ¡¼¯
+		// 3. æ‰©å±•å¹¶è·å¾—å€™é€‰é›†
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();
 			Set<DFSCode> codes = g.getCandidates(dfsCodeStack);
@@ -81,7 +81,7 @@ public class Mining {
 			}
 		}
 		
-		// 4. ¼ôÖ¦Ğ¡ÓÚMIN_SUPPORTµÄ±ß£¬µİ¹éµ÷ÓÃsubGraphMining
+		// 4. å‰ªæå°äºMIN_SUPPORTçš„codeï¼Œé€’å½’è°ƒç”¨subGraphMining
 		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
 			Entry<DFSCode, Set<Graph>> entry = it.next();
 			if(entry.getValue().size() >= StaticData.MIN_SUPPORT) {

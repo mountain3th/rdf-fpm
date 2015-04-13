@@ -1,15 +1,10 @@
 package launcher;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.Set;
-
 import mining.Mining;
 import mining.Preprocessor;
 import mining.Result;
-import datastructure.Graph;
-import datastructure.Graph.Edge;
-import datastructure.GraphSet;
+import exception.MiningException;
 
 public class Launcher {
 
@@ -19,21 +14,20 @@ public class Launcher {
 			Preprocessor.relabel();
 			Preprocessor.rebuildGraphSet();
 			
-			Set<Graph> graphs = GraphSet.getGraphSet();
-			for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
-				Graph g = it.next();
-				Set<Edge> edges = g.getEdges();
-				System.out.println("T");
-				for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
-					Edge e = eit.next();
-					System.out.println(e.getVertex1() + " " + e.getLabel() + " " + e.getVertex2());
-				}
-			}
+//			Set<Graph> graphs = GraphSet.getGraphSet();
+//			Debugger.print(graphs);
 			
-			Mining.start(4, 2);
+			Debugger.print();
+			
+			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
 			
 			Result.print();
 			
+		} catch(MiningException e) {
+			System.out.println("\ndebug: ");
+			
+			e.print();
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
