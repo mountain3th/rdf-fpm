@@ -24,9 +24,9 @@ public class Mining {
 	private static Set<Graph> graphItems = GraphSet.getGraphSet();
 	
 	public static void start(int maxVertexRank, int maxEdgeRank) {
-		for(int i = 0; i <= maxVertexRank; i++) {
-			for(int a = 0; a <= maxEdgeRank; a++) {
-				for(int j = 0; j <= maxVertexRank; j++) {
+		for(int i = 0; i < maxVertexRank; i++) {
+			for(int a = 0; a < maxEdgeRank; a++) {
+				for(int j = 0; j < maxVertexRank; j++) {
 					DFSCode code = new DFSCode(0, 1, i, a, j);
 					DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
@@ -87,9 +87,9 @@ public class Mining {
 			if(entry.getValue().size() >= StaticData.MIN_SUPPORT) {
 				dfsCodeStack.push(entry.getKey());
 				subGraphMining(dfsCodeStack, entry.getValue());
+				dfsCodeStack.pop();
 			}
 		}
 		
-		dfsCodeStack.pop();
 	}
 }

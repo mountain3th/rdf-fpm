@@ -42,11 +42,11 @@ public class DFSCodeStack {
 	}
 	
 	public boolean isMin() {
-//		for(int index = 0; index < dfsCodeStack.size() - 1; index++) {
-//			if(!dfsCodeStack.get(index).isLessThan(dfsCodeStack.get(index+1))) {
-//				return false;
-//			}
-//		}
+		for(int index = 0; index < dfsCodeStack.size() - 1; index++) {
+			if(!dfsCodeStack.get(index).isLessThan(dfsCodeStack.get(index+1))) {
+				return false;
+			}
+		}
 		return true;
 	}
 	

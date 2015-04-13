@@ -77,7 +77,18 @@ public class Preprocessor {
 		}
 		
 		vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
-		Collections.sort(vList, comparator);
+		for(int i = 0; i < vList.size(); i++) {
+			for(int j = i; j < vList.size(); j++) {
+				Entry<Integer, Integer> entry1 = vList.get(i);
+				Entry<Integer, Integer> entry2 = vList.get(j);
+				if(entry1.getValue() < entry2.getValue()) {
+					vList.set(j, entry1);
+					vList.set(i, entry2);
+				}
+			}
+		}
+		
+//		Collections.sort(vList, comparator);
 		for(int index = 0; index < vList.size(); index++) {
 			if(vList.get(index).getValue() < StaticData.MIN_SUPPORT) {
 				break;
@@ -87,7 +98,18 @@ public class Preprocessor {
 		}
 		
 		eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
-		Collections.sort(eList, comparator);
+//		Collections.sort(eList, comparator);
+		for(int i = 0; i < eList.size(); i++) {
+			for(int j = i; j < eList.size(); j++) {
+				Entry<Integer, Integer> entry1 = eList.get(i);
+				Entry<Integer, Integer> entry2 = eList.get(j);
+				if(entry1.getValue() < entry2.getValue()) {
+					eList.set(j, entry1);
+					eList.set(i, entry2);
+				}
+			}
+		}
+		
 		for(int index = 0; index < eList.size(); index++) {
 			if(eList.get(index).getValue() < StaticData.MIN_SUPPORT) {
 				break;
