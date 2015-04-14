@@ -37,23 +37,23 @@ public class DFSEdgeTree {
 			candidates.add(newNode);
 		}
 		
-		void addToCandidates(List<Edge> edges) {
-			for(Iterator<Edge> it = edges.iterator(); it.hasNext();) {
-				addToCandidates(it.next());
-			}
-		}
-		
-		List<Edge> getCandidateEdges() {
-			if(null == candidates) {
-				return null;
-			}
-			
-			List<Edge> temp = new ArrayList<Edge>();
-			for(Iterator<Node> it = candidates.iterator(); it.hasNext();) {
-				temp.add(it.next().edge);
-			}
-			return temp;
-		}
+//		void addToCandidates(List<Edge> edges) {
+//			for(Iterator<Edge> it = edges.iterator(); it.hasNext();) {
+//				addToCandidates(it.next());
+//			}
+//		}
+//		
+//		List<Edge> getCandidateEdges() {
+//			if(null == candidates) {
+//				return null;
+//			}
+//			
+//			List<Edge> temp = new ArrayList<Edge>();
+//			for(Iterator<Node> it = candidates.iterator(); it.hasNext();) {
+//				temp.add(it.next().edge);
+//			}
+//			return temp;
+//		}
 		
 		boolean checkRepeated(Edge e) {
 			Node parent = this.parent;

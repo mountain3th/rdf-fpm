@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class Graph {
-	public Map<Integer, Integer> vertex2Rank;
 	private Set<Edge> edges;
 	private DFSEdgeTree dfsEdgeTree;
 	
-	
+	public Map<Integer, Integer> vertex2Rank;
+
 	public static class Edge {
 
 		public int vertex1;
@@ -70,10 +70,7 @@ public class Graph {
 	}
 	
 	public boolean removeEdge(Edge e) {
-		if(edges.contains(e)) {
-			return edges.remove(e);
-		}
-		return false;
+		return edges.remove(e);
 	}
 	
 	public Set<Edge> getEdges() {

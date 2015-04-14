@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -90,7 +89,7 @@ public class Preprocessor {
 		
 //		Collections.sort(vList, comparator);
 		for(int index = 0; index < vList.size(); index++) {
-			if(vList.get(index).getValue() < StaticData.MIN_SUPPORT) {
+			if(vList.get(index).getValue() < Mining.MIN_SUPPORT) {
 				break;
 			}
 			Result.vertexRank2Label.put(index, vList.get(index).getKey());
@@ -111,7 +110,7 @@ public class Preprocessor {
 		}
 		
 		for(int index = 0; index < eList.size(); index++) {
-			if(eList.get(index).getValue() < StaticData.MIN_SUPPORT) {
+			if(eList.get(index).getValue() < Mining.MIN_SUPPORT) {
 				break;
 			}
 			Result.edgeRank2Label.put(index, eList.get(index).getKey());
@@ -135,15 +134,15 @@ public class Preprocessor {
 				Edge e = eit.next();
 				int vertex1Label = g.vertex2Rank.get(e.vertex1);
 				int vertex2Label = g.vertex2Rank.get(e.vertex2);
-				if(vertexLabel2Freq.get(vertex1Label) < StaticData.MIN_SUPPORT) {
+				if(vertexLabel2Freq.get(vertex1Label) < Mining.MIN_SUPPORT) {
 					g.vertex2Rank.remove(e.vertex1);
 					flag = true;		
 				}
-				if(vertexLabel2Freq.get(vertex2Label) < StaticData.MIN_SUPPORT) {
+				if(vertexLabel2Freq.get(vertex2Label) < Mining.MIN_SUPPORT) {
 					g.vertex2Rank.remove(e.vertex2);
 					flag = true;
 				}
-				if(edgeLabel2Freq.get(e.label) < StaticData.MIN_SUPPORT) {
+				if(edgeLabel2Freq.get(e.label) < Mining.MIN_SUPPORT) {
 					flag = true;
 				}
 				if(flag) {

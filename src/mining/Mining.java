@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import launcher.Debugger;
 import datastructure.DFSCode;
 import datastructure.DFSCodeStack;
 import datastructure.Graph;
@@ -22,11 +23,12 @@ import exception.ArgsException;
  *
  */
 public class Mining {
-	enum Pattern {
+	public enum Pattern {
 		PATTERN_STRONG,
 		PATTERN_WEEK
 	}
 	
+	public static int MIN_SUPPORT = 1;
 	private static Pattern pattern = Pattern.PATTERN_STRONG;
 	private static Set<Graph> graphItems = GraphSet.getGraphSet();
 	private static File file = null;
@@ -34,8 +36,18 @@ public class Mining {
 	public static void init(String[] args) throws ArgsException {
 		for(int i = 0; i < args.length; i++) {
 			String part = args[i];
+			// support设置
+			if("-support".equals(part)) {
+				i++;
+				part = args[i];
+				try{
+					MIN_SUPPORT = Integer.parseInt(part);
+				} catch(NumberFormatException e) {
+					throw new ArgsException();
+				}
+			}
 			// pattern设置
-			if("-p".equals(part)) {
+			if("-pattern".equals(part)) {
 				i++;
 				part = args[i];
 				if("strong".equals(part)) {
@@ -47,7 +59,7 @@ public class Mining {
 				}
 			}
 			// 文件检查
-			if("-f".equals(part)) {
+			if("-file".equals(part)) {
 				i++;
 				part = args[i];
 				file = new File(part);
@@ -60,8 +72,12 @@ public class Mining {
 				
 			}
 			// 多线程控制
-			if("-j".equals(part)) {
+			if("-thread".equals(part)) {
 				
+			}
+			// 是否输出debug信息
+			if("-debug".equals(part)) {
+				Debugger.isDebug = true;
 			}
 		}
 		if(file == null) {
@@ -81,13 +97,13 @@ public class Mining {
 					DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
 					
-					subGraphMining(dfsCodeStack, graphItems);
+					new Mining().subGraphMining(dfsCodeStack, graphItems);
 				}
 			}
 		}
 	}
 	
-	private static void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
+	private void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
 		Map<DFSCode, Set<Graph>> supportChecker = new HashMap<DFSCode, Set<Graph>>();
 		
 		// 1. 判断是否最小dfs
@@ -104,7 +120,7 @@ public class Mining {
 					count++;
 				}
 			}
-			if(count >= StaticData.MIN_SUPPORT) {
+			if(count >= Mining.MIN_SUPPORT) {
 				Result.add(new DFSCodeStack(dfsCodeStack));
 			}
 		} else {
@@ -120,13 +136,17 @@ public class Mining {
 			}
 			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
 				DFSCode dfsCode = dit.next();
-				if(supportChecker.containsKey(dfsCode)) {
-					Set<Graph> temp = supportChecker.get(dfsCode);
+				DFSCode tempCode = new DFSCode(dfsCode);
+				if(pattern == Pattern.PATTERN_WEEK) {
+					tempCode.y = -1;
+				}
+				if(supportChecker.containsKey(tempCode)) {
+					Set<Graph> temp = supportChecker.get(tempCode);
 					temp.add(g);
 				} else {
 					Set<Graph> temp = new HashSet<Graph>();
 					temp.add(g);
-					supportChecker.put(dfsCode, temp);
+					supportChecker.put(tempCode, temp);
 				}
 			}
 		}
@@ -134,7 +154,7 @@ public class Mining {
 		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
 		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
 			Entry<DFSCode, Set<Graph>> entry = it.next();
-			if(entry.getValue().size() >= StaticData.MIN_SUPPORT) {
+			if(entry.getValue().size() >= Mining.MIN_SUPPORT) {
 				dfsCodeStack.push(entry.getKey());
 				subGraphMining(dfsCodeStack, entry.getValue());
 				dfsCodeStack.pop();
