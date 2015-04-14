@@ -1,6 +1,7 @@
 package mining;
 
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,6 +13,7 @@ import datastructure.DFSCode;
 import datastructure.DFSCodeStack;
 import datastructure.Graph;
 import datastructure.GraphSet;
+import exception.ArgsException;
 
 /**
  * 当前只支持一幅图出现同一类只记一次，并且可能会发生不可预计的后果
@@ -20,8 +22,56 @@ import datastructure.GraphSet;
  *
  */
 public class Mining {
+	enum Pattern {
+		PATTERN_STRONG,
+		PATTERN_WEEK
+	}
 	
+	private static Pattern pattern = Pattern.PATTERN_STRONG;
 	private static Set<Graph> graphItems = GraphSet.getGraphSet();
+	private static File file = null;
+
+	public static void init(String[] args) throws ArgsException {
+		for(int i = 0; i < args.length; i++) {
+			String part = args[i];
+			// pattern设置
+			if("-p".equals(part)) {
+				i++;
+				part = args[i];
+				if("strong".equals(part)) {
+					pattern = Pattern.PATTERN_STRONG;
+				} else if("week".equals(part)) {
+					pattern = Pattern.PATTERN_WEEK;
+				} else {
+					throw new ArgsException();
+				}
+			}
+			// 文件检查
+			if("-f".equals(part)) {
+				i++;
+				part = args[i];
+				file = new File(part);
+				if(!file.exists() || !file.isFile()) {
+					throw new ArgsException();
+				}
+			}
+			// 分布式控制
+			if("-spark".equals(part)) {
+				
+			}
+			// 多线程控制
+			if("-j".equals(part)) {
+				
+			}
+		}
+		if(file == null) {
+			throw new ArgsException();
+		}
+	}
+	
+	public static File getFile() {
+		return file;
+	}
 	
 	public static void start(int maxVertexRank, int maxEdgeRank) {
 		for(int i = 0; i < maxVertexRank; i++) {
@@ -37,7 +87,7 @@ public class Mining {
 		}
 	}
 	
-	public static void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
+	private static void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
 		Map<DFSCode, Set<Graph>> supportChecker = new HashMap<DFSCode, Set<Graph>>();
 		
 		// 1. 判断是否最小dfs

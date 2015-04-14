@@ -1,16 +1,18 @@
 package launcher;
 
-import java.io.File;
 import mining.Mining;
 import mining.Preprocessor;
 import mining.Result;
+import exception.ArgsException;
 import exception.MiningException;
 
 public class Launcher {
 
 	public static void main(String[] args) {
 		try {
-			Preprocessor.loadFile(new File("test1"));
+			Mining.init(args);
+	
+			Preprocessor.loadFile(Mining.getFile());
 			Preprocessor.relabel();
 			Preprocessor.rebuildGraphSet();
 			
@@ -22,6 +24,8 @@ public class Launcher {
 			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
 			
 			Result.print();
+			
+		} catch(ArgsException e) {
 			
 		} catch(MiningException e) {
 			System.out.println("\ndebug: ");

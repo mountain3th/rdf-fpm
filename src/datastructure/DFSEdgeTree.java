@@ -169,11 +169,11 @@ public class DFSEdgeTree {
 			
 			for(Iterator<Edge> it = graph.getEdges().iterator(); it.hasNext();) {
 				Edge e = it.next();
-				// Ìî²¹²¿·Ö
+				// ä¹‹å‰é¡¶ç‚¹çš„å‰å‘æ‰©å±•
 				if(n.parent == null && e.vertex1 == n.edge.vertex1 && !n.checkRepeated(e)) {
 					n.addToCandidates(e);
 				}
-				// Ç°Ïò»òºóÏòÀ©Õ¹
+				// å‰å‘æ‰©å±•æˆ–è€…åå‘æ‰©å±•
 				if(e.vertex1 == n.edge.vertex2 && !n.checkRepeated(e)) {
 					n.addToCandidates(e);
 				}
