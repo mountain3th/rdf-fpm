@@ -1,5 +1,6 @@
 package launcher;
 
+import launcher.ClockerManager.Clocker;
 import mining.Mining;
 import mining.Preprocessor;
 import mining.Result;
@@ -10,6 +11,8 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		try {
+			Clocker projectClocker = ClockerManager.getClocker("project");
+			projectClocker.start();
 			Mining.init(args);
 	
 			Preprocessor.loadFile(Mining.getFile());
@@ -22,6 +25,8 @@ public class Launcher {
 			Debugger.print();
 			
 			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
+			projectClocker.stop();
+			projectClocker.show();
 			
 			Result.print();
 			
