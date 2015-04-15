@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import launcher.Debugger;
+import launcher.Debugger.OnTaskFinishedListener;
 import datastructure.Graph;
 import datastructure.Graph.Edge;
 import datastructure.GraphSet;
@@ -67,6 +70,7 @@ public class Preprocessor {
 			}
 		}
 		
+		br.close();
 		status++;
 	}
 	
@@ -76,19 +80,40 @@ public class Preprocessor {
 			throw new IllegalStateException("调用顺序出错");
 		}
 		
-		vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
-		for(int i = 0; i < vList.size(); i++) {
-			for(int j = i; j < vList.size(); j++) {
-				Entry<Integer, Integer> entry1 = vList.get(i);
-				Entry<Integer, Integer> entry2 = vList.get(j);
-				if(entry1.getValue() < entry2.getValue()) {
-					vList.set(j, entry1);
-					vList.set(i, entry2);
+		Debugger.startTask("relabel", new OnTaskFinishedListener() {
+			@Override
+			public void onTaskFinished() {
+				try {
+					Debugger.log("\n顶点Rank");
+					for(Iterator<Entry<Integer, Integer>> it = Result.vertexRank2Label.entrySet().iterator(); it.hasNext();) {
+						Entry<Integer, Integer> entry = it.next();
+						Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
+					}
+					Debugger.log("\n边Rank");
+					for(Iterator<Entry<Integer, Integer>> it = Result.edgeRank2Label.entrySet().iterator(); it.hasNext();) {
+						Entry<Integer, Integer> entry = it.next();
+						Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
+					}
+				
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
-		}
+		});
 		
-//		Collections.sort(vList, comparator);
+		vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
+//		for(int i = 0; i < vList.size(); i++) {
+//			for(int j = i; j < vList.size(); j++) {
+//				Entry<Integer, Integer> entry1 = vList.get(i);
+//				Entry<Integer, Integer> entry2 = vList.get(j);
+//				if(entry1.getValue() < entry2.getValue()) {
+//					vList.set(j, entry1);
+//					vList.set(i, entry2);
+//				}
+//			}
+//		}
+		
+		Collections.sort(vList, comparator);
 		for(int index = 0; index < vList.size(); index++) {
 			if(vList.get(index).getValue() < Mining.MIN_SUPPORT) {
 				break;
@@ -98,17 +123,17 @@ public class Preprocessor {
 		}
 		
 		eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
-//		Collections.sort(eList, comparator);
-		for(int i = 0; i < eList.size(); i++) {
-			for(int j = i; j < eList.size(); j++) {
-				Entry<Integer, Integer> entry1 = eList.get(i);
-				Entry<Integer, Integer> entry2 = eList.get(j);
-				if(entry1.getValue() < entry2.getValue()) {
-					eList.set(j, entry1);
-					eList.set(i, entry2);
-				}
-			}
-		}
+		Collections.sort(eList, comparator);
+//		for(int i = 0; i < eList.size(); i++) {
+//			for(int j = i; j < eList.size(); j++) {
+//				Entry<Integer, Integer> entry1 = eList.get(i);
+//				Entry<Integer, Integer> entry2 = eList.get(j);
+//				if(entry1.getValue() < entry2.getValue()) {
+//					eList.set(j, entry1);
+//					eList.set(i, entry2);
+//				}
+//			}
+//		}
 		
 		for(int index = 0; index < eList.size(); index++) {
 			if(eList.get(index).getValue() < Mining.MIN_SUPPORT) {
@@ -120,7 +145,7 @@ public class Preprocessor {
 		
 		status++;
 		
-		Debugger.setOk("relabel");
+		Debugger.finishTask("relabel");
 	}
 	
 	public static void rebuildGraphSet() {

@@ -1,9 +1,16 @@
 package launcher;
 
-import launcher.ClockerManager.Clocker;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
+
+import launcher.Debugger.OnTaskFinishedListener;
 import mining.Mining;
 import mining.Preprocessor;
 import mining.Result;
+import datastructure.Graph;
+import datastructure.Graph.Edge;
+import datastructure.GraphSet;
 import exception.ArgsException;
 import exception.MiningException;
 
@@ -13,20 +20,35 @@ public class Launcher {
 		try {
 			Mining.init(args);
 
-			Debugger.start();
+			Debugger.startTask("preprocess", new OnTaskFinishedListener() {
+				@Override
+				public void onTaskFinished() {
+					try {
+						Debugger.log("\n处理后的图:");
+						Set<Graph> graphs = GraphSet.getGraphSet();
+						for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
+							Graph g = it.next();
+							Set<Edge> edges = g.getEdges();
+							Debugger.log("T");
+							for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
+								Edge e = eit.next();
+								Debugger.log(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label));
+							}
+						}
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
 			
-			Thread.sleep(3000);
-			Clocker projectClocker = ClockerManager.getClocker("project");
-			projectClocker.start();
-	
+			Debugger.start();
+
 			Preprocessor.loadFile(Mining.getFile());
 			Preprocessor.relabel();
 			Preprocessor.rebuildGraphSet();
-			Debugger.setOk("preprocess");
+			Debugger.finishTask("preprocess");
 			
 			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
-			projectClocker.stop();
-			projectClocker.show();
 			
 			Result.print();
 			

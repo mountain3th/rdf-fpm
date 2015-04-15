@@ -1,48 +1,112 @@
 package launcher;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.Set;
-
-import mining.Result;
-import datastructure.Graph;
-import datastructure.Graph.Edge;
-import datastructure.GraphSet;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Stack;
 
 public class Debugger implements Runnable {
 	
 	public static boolean isDebug = false;
-	private static boolean isOk = false;
 	
-	interface onTaskFinishedListener {
+	public interface OnTaskFinishedListener {
 		void onTaskFinished();
 	}
 	
-	private static Queue<Task> queue = new LinkedList<Task>();
+	private static String logFile = "mining.log";
+	private static Stack<Task> taskStack = new Stack<Task>();
+	private static BufferedWriter bw;
 	
-	private static abstract class Task implements onTaskFinishedListener {
-		String theme;
+	private static class Clocker {
+		private long startTime;
+		private long stopTime;
 		
-		Task(String theme) {
-			this.theme = theme;
+		void start() {
+			startTime = System.currentTimeMillis();
 		}
 		
-		@Override
-		public String toString() {
-			return this.theme + "进行中...";
+		void stop() {
+			stopTime = System.currentTimeMillis();
+		}
+		
+		long cost() {
+			return stopTime - startTime;
+		}
+			
+	}
+	
+	private static class Task {
+		String theme;
+		int priority;
+		OnTaskFinishedListener listener;
+		Clocker clocker;
+		
+		Task(String theme, int priority, OnTaskFinishedListener listener) {
+			this.theme = theme;
+			this.priority = priority;
+			this.listener = listener;
+			clocker = new Clocker();
+		}
+		
+		void start() {
+			clocker.start();
+		}
+		
+		void finish() {
+			clocker.stop();
+			System.out.println(toString(true));
+			listener.onTaskFinished();
+		}
+		
+		public String toString(boolean isFinished) {
+			StringBuffer sb = new StringBuffer();
+			for(int i = 0; i < priority; i++) {
+				sb.append("\t");
+			}
+			sb.append(this.theme);
+			if(isFinished) {
+				sb.append("完成 ");
+				sb.append(clocker.cost());
+				sb.append(" ms");
+			} else {
+				sb.append("进行中...");
+			}
+			
+			return sb.toString();
 		}
 	}
 	
-	public static boolean setOk(String theme) {
-		synchronized(queue) {
-			if(queue.peek().theme.equals(theme)) {
-				queue.notify();
-				return true;
+	public static void startTask(String theme, OnTaskFinishedListener listener) {
+		if(isDebug) {
+			Task task = new Task(theme, 0, listener);
+			if(taskStack.isEmpty()) {
+				taskStack.push(task);
+			} else {
+				Task tempTask = taskStack.peek();
+				task.priority = tempTask.priority + 1;
+				taskStack.push(task);
 			}
-			
-			return false;
+			System.out.println(task.toString(false));
+			task.start();
+		}
+	}
+	
+	public static void finishTask(String theme) {
+		if(isDebug) {
+			synchronized(taskStack) {
+				if(taskStack.peek().theme.equals(theme)) {
+					taskStack.notify();
+					try {
+						taskStack.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					System.exit(1);
+				}
+			}
 		}
 	}
 	
@@ -51,62 +115,31 @@ public class Debugger implements Runnable {
 			return;
 		}
 		
-		queue.add(new Task("relabel") {
-
-			@Override
-			public void onTaskFinished() {
-				System.out.println("\n顶点Rank");
-				for(Iterator<Entry<Integer, Integer>> it = Result.vertexRank2Label.entrySet().iterator(); it.hasNext();) {
-					Entry<Integer, Integer> entry = it.next();
-					System.out.print(entry.getKey() + " = " + entry.getValue() + ", ");
-				}
-				System.out.println("\n边Rank");
-				for(Iterator<Entry<Integer, Integer>> it = Result.edgeRank2Label.entrySet().iterator(); it.hasNext();) {
-					Entry<Integer, Integer> entry = it.next();
-					System.out.print(entry.getKey() + " = " + entry.getValue() + ", ");
-				}
-				System.out.println();
-			}
-		});
-		
-		queue.add(new Task("preprocess") {
-
-			@Override
-			public void onTaskFinished() {
-				System.out.println("\n处理后的图:");
-				Set<Graph> graphs = GraphSet.getGraphSet();
-				for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
-					Graph g = it.next();
-					Set<Edge> edges = g.getEdges();
-					System.out.println("T");
-					for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
-						Edge e = eit.next();
-						System.out.println(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label));
-					}
-				}
-			}
-			
-		});
-		
+		try {
+			bw = new BufferedWriter(new FileWriter(new File(logFile)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		new Thread(new Debugger()).start();
 	}
 	
 	@Override
 	public void run() {
-		synchronized(queue) {
-			while(!queue.isEmpty()) {
-				System.out.println();
-				Task task = queue.peek();
-				System.out.print(task);
-				
+		synchronized(taskStack) {
+			while(!taskStack.isEmpty()) {
 				try {
-					queue.wait();
+					taskStack.wait();
+					Task task = taskStack.pop();
+					task.finish();
+					taskStack.notify();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				System.out.println("OK");
-				queue.poll();
 			}
 		}
+	}
+	
+	public static void log(String str) throws IOException {
+		bw.write(str);
 	}
 }
