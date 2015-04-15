@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import launcher.Debugger;
 import datastructure.Graph;
 import datastructure.Graph.Edge;
 import datastructure.GraphSet;
@@ -118,6 +119,8 @@ public class Preprocessor {
 		}
 		
 		status++;
+		
+		Debugger.setOk("relabel");
 	}
 	
 	public static void rebuildGraphSet() {

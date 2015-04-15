@@ -11,18 +11,18 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		try {
+			Mining.init(args);
+
+			Debugger.start();
+			
+			Thread.sleep(3000);
 			Clocker projectClocker = ClockerManager.getClocker("project");
 			projectClocker.start();
-			Mining.init(args);
 	
 			Preprocessor.loadFile(Mining.getFile());
 			Preprocessor.relabel();
 			Preprocessor.rebuildGraphSet();
-			
-//			Set<Graph> graphs = GraphSet.getGraphSet();
-//			Debugger.print(graphs);
-			
-			Debugger.print();
+			Debugger.setOk("preprocess");
 			
 			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
 			projectClocker.stop();
