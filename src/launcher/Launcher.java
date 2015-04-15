@@ -50,8 +50,9 @@ public class Launcher {
 			
 			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
 			
-			Result.print();
+			Debugger.stop();
 			
+			Result.print();
 		} catch(ArgsException e) {
 			
 		} catch(MiningException e) {

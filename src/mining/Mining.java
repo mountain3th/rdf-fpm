@@ -8,6 +8,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import launcher.Debugger;
 import datastructure.DFSCode;
@@ -32,6 +36,7 @@ public class Mining {
 	private static Pattern pattern = Pattern.PATTERN_STRONG;
 	private static Set<Graph> graphItems = GraphSet.getGraphSet();
 	private static File file = null;
+	private static int fixedThread = 1;
 
 	public static void init(String[] args) throws ArgsException {
 		for(int i = 0; i < args.length; i++) {
@@ -73,7 +78,13 @@ public class Mining {
 			}
 			// 多线程控制
 			if("-thread".equals(part)) {
-				
+				i++;
+				part = args[i];
+				try{
+					fixedThread = Integer.parseInt(part);
+				} catch(NumberFormatException e) {
+					throw new ArgsException();
+				}
 			}
 			// 是否输出debug信息
 			if("-debug".equals(part)) {
@@ -90,16 +101,32 @@ public class Mining {
 	}
 	
 	public static void start(int maxVertexRank, int maxEdgeRank) {
+		ExecutorService executorService = Executors.newFixedThreadPool(fixedThread);
+		
 		for(int i = 0; i < maxVertexRank; i++) {
 			for(int a = 0; a < maxEdgeRank; a++) {
 				for(int j = 0; j < maxVertexRank; j++) {
 					DFSCode code = new DFSCode(0, 1, i, a, j);
-					DFSCodeStack dfsCodeStack = new DFSCodeStack();
+					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
 					
-					new Mining().subGraphMining(dfsCodeStack, graphItems);
+					executorService.execute(new Runnable() {
+
+						@Override
+						public void run() {
+							new Mining().subGraphMining(dfsCodeStack, graphItems);
+						}
+						
+					});
 				}
 			}
+		}
+		
+		try {
+			executorService.awaitTermination(10000, TimeUnit.MICROSECONDS);
+			executorService.shutdown();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -122,6 +149,8 @@ public class Mining {
 			}
 			if(count >= Mining.MIN_SUPPORT) {
 				Result.add(new DFSCodeStack(dfsCodeStack));
+			} else {
+				return;
 			}
 		} else {
 			Result.add(new DFSCodeStack(dfsCodeStack));

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Graph {
+	
 	private Set<Edge> edges;
 	private DFSEdgeTree dfsEdgeTree;
 	
@@ -65,29 +66,30 @@ public class Graph {
 		edges = new HashSet<Edge>();
 	}
 	
+	public Set<Edge> getEdges() {
+		return edges;
+	}
+
 	public boolean addEdge(Edge e) {
 		return edges.add(e);
 	}
 	
-	public boolean removeEdge(Edge e) {
-		return edges.remove(e);
-	}
+//	public boolean removeEdge(Edge e) {
+//		return edges.remove(e);
+//	}
 	
-	public Set<Edge> getEdges() {
-		return edges;
-	}
 	
 	public Integer putVertexRank(int vertex, int rank) {
 		return vertex2Rank.put(vertex, rank);
 	}
 	
-	public Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) {
-		return dfsEdgeTree.getCandidates(dfsCodeStack);
-	}
 	
 	public boolean hasCandidates(DFSCode code) {
 		dfsEdgeTree = new DFSEdgeTree(this);
 		return dfsEdgeTree.hasCandidates(code);
 	}
 	
+	public Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) {
+		return dfsEdgeTree.getCandidates(dfsCodeStack);
+	}
 }

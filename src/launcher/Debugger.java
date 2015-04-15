@@ -142,4 +142,13 @@ public class Debugger implements Runnable {
 	public static void log(String str) throws IOException {
 		bw.write(str);
 	}
+	
+	public static void stop() {
+		try {
+			bw.flush();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -160,6 +160,9 @@ public class Preprocessor {
 			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 				boolean flag = false;
 				Edge e = eit.next();
+				if(!g.vertex2Rank.containsKey(e.vertex1) || !g.vertex2Rank.containsKey(e.vertex2)) {
+					continue;
+				}
 				int vertex1Label = g.vertex2Rank.get(e.vertex1);
 				int vertex2Label = g.vertex2Rank.get(e.vertex2);
 				if(vertexLabel2Freq.get(vertex1Label) < Mining.MIN_SUPPORT) {
