@@ -14,7 +14,7 @@ public class Debugger implements Runnable {
 		void onTaskFinished();
 	}
 	
-	private static String logFile = "mining.log";
+	private static String logFile = "log/mining.log";
 	private static Stack<Task> taskStack = new Stack<Task>();
 	private static BufferedWriter bw;
 	
@@ -56,7 +56,9 @@ public class Debugger implements Runnable {
 		void finish() {
 			clocker.stop();
 			System.out.println(toString(true));
-			listener.onTaskFinished();
+			if(listener != null) {
+				listener.onTaskFinished();
+			}
 		}
 		
 		public String toString(boolean isFinished) {
@@ -90,6 +92,10 @@ public class Debugger implements Runnable {
 			System.out.println(task.toString(false));
 			task.start();
 		}
+	}
+	
+	public static void startTask(String theme) {
+		startTask(theme, null);
 	}
 	
 	public static void finishTask(String theme) {

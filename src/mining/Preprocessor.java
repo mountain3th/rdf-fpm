@@ -35,15 +35,7 @@ public class Preprocessor {
 		Map<Integer, Integer> tmp = null;
 		Graph graph = null;
 		
-		Debugger.startTask("loadFile", new OnTaskFinishedListener() {
-
-			@Override
-			public void onTaskFinished() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		});
+		Debugger.startTask("loadFile");
 		
 		while((line = br.readLine()) != null) {
 			String[] content = line.split("\\s+");

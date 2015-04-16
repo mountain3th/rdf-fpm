@@ -20,6 +20,10 @@ public class Launcher {
 		try {
 			Mining.init(args);
 
+			Debugger.startTask("main");
+			
+			Debugger.start();
+	
 			Debugger.startTask("preprocess", new OnTaskFinishedListener() {
 				@Override
 				public void onTaskFinished() {
@@ -41,7 +45,6 @@ public class Launcher {
 				}
 			});
 			
-			Debugger.start();
 
 			Preprocessor.loadFile(Mining.getFile());
 			Preprocessor.relabel();
@@ -53,6 +56,8 @@ public class Launcher {
 			
 			
 			Result.print();
+			
+			Debugger.finishTask("main");
 		} catch(ArgsException e) {
 			
 		} catch(MiningException e) {
