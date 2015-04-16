@@ -106,6 +106,8 @@ public class Mining {
 		for(int i = 0; i < maxVertexRank; i++) {
 			for(int a = 0; a < maxEdgeRank; a++) {
 				for(int j = 0; j < maxVertexRank; j++) {
+					Debugger.wath(i, a, j);
+					
 					DFSCode code = new DFSCode(-1, -1, i, a, j);
 					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
@@ -159,6 +161,8 @@ public class Mining {
 			Result.add(new DFSCodeStack(dfsCodeStack));
 		}
 				
+		Debugger.watch();
+
 		// 3. 扩展并获得候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();

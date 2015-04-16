@@ -145,6 +145,14 @@ public class Debugger implements Runnable {
 		}
 	}
 	
+	public static void wath(int i, int a, int j) {
+		System.out.print("\n" + i + " " + a + " " + j);
+	}
+	
+	public static void watch() {
+		System.out.print(" *");
+	}
+	
 	public static void log(String str) throws IOException {
 		bw.write(str);
 	}
