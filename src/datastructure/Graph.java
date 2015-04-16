@@ -1,14 +1,22 @@
 package datastructure;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import exception.MiningException;
 
 public class Graph {
 	
 	private Set<Edge> edges;
 	private DFSEdgeTree dfsEdgeTree;
+	private DFSCandidates dfsCandidates;
 	
 	public Map<Integer, Integer> vertex2Rank;
 
@@ -61,9 +69,57 @@ public class Graph {
 		}
 	}
 	
+	private class DFSCandidates {
+
+		List<DFSCode> dfsCodes;
+		
+		DFSCandidates() {
+			dfsCodes = new ArrayList<DFSCode>();
+		}
+		
+		void init() {
+			for(Iterator<Edge> it = edges.iterator(); it.hasNext();) {
+				Edge e = it.next();
+				dfsCodes.add(new DFSCode(-1, -1, vertex2Rank.get(e.vertex1), e.label, vertex2Rank.get(e.vertex2)));
+			}
+			
+			Collections.sort(dfsCodes, new Comparator<DFSCode>() {
+
+				@Override
+				public int compare(DFSCode e1, DFSCode e2) {
+					return e1.a < e2.a ? -1 : (e1.a == e2.a ? (e1.y < e2.y ? -1 : 1) : 1);
+				}
+				
+			});
+		}
+		
+		int indexOf(DFSCode code) {
+			return dfsCodes.indexOf(code);
+		}
+		
+		boolean hasCandidates(DFSCode code) {
+			return indexOf(code) != -1;
+		}
+		
+		Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) throws MiningException {
+			DFSCode code = dfsCodeStack.peek();
+			if(!hasCandidates(code)) {
+				throw new MiningException(dfsCodeStack);
+			}
+			int index = indexOf(code);
+			Set<DFSCode> codes = new HashSet<DFSCode>();
+			for(int i = index + 1; i < dfsCodes.size(); i++) {
+				codes.add(dfsCodes.get(i));
+			}
+			
+			return codes;
+		}
+	}
+	
 	public Graph() {
 		vertex2Rank = new HashMap<Integer, Integer>();
 		edges = new HashSet<Edge>();
+		dfsCandidates = new DFSCandidates();
 	}
 	
 	public Set<Edge> getEdges() {
@@ -74,22 +130,29 @@ public class Graph {
 		return edges.add(e);
 	}
 	
-//	public boolean removeEdge(Edge e) {
-//		return edges.remove(e);
-//	}
-	
 	
 	public Integer putVertexRank(int vertex, int rank) {
 		return vertex2Rank.put(vertex, rank);
 	}
 	
+	public void init() {
+		dfsCandidates.init();
+	}
 	
 	public boolean hasCandidates(DFSCode code) {
-		dfsEdgeTree = new DFSEdgeTree(this);
-		return dfsEdgeTree.hasCandidates(code);
+		// way 1
+//		dfsEdgeTree = new DFSEdgeTree(this);
+//		return dfsEdgeTree.hasCandidates(code);
+	
+		// way 2
+		return dfsCandidates.hasCandidates(code);
 	}
 	
 	public Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) {
-		return dfsEdgeTree.getCandidates(dfsCodeStack);
+		// way 1
+//		return dfsEdgeTree.getCandidates(dfsCodeStack);
+	
+		// way 2
+		return dfsCandidates.getCandidates(dfsCodeStack);
 	}
 }

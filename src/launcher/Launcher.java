@@ -24,15 +24,15 @@ public class Launcher {
 				@Override
 				public void onTaskFinished() {
 					try {
-						Debugger.log("\n处理后的图:");
+						Debugger.log("\n处理后的图:\n");
 						Set<Graph> graphs = GraphSet.getGraphSet();
 						for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
 							Graph g = it.next();
 							Set<Edge> edges = g.getEdges();
-							Debugger.log("T");
+							Debugger.log("T\n");
 							for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 								Edge e = eit.next();
-								Debugger.log(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label));
+								Debugger.log(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label) + "\n");
 							}
 						}
 					} catch (IOException e1) {
@@ -48,9 +48,9 @@ public class Launcher {
 			Preprocessor.rebuildGraphSet();
 			Debugger.finishTask("preprocess");
 			
+			Debugger.flush();
 			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
 			
-			Debugger.stop();
 			
 			Result.print();
 		} catch(ArgsException e) {

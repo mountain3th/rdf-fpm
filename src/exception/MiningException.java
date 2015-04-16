@@ -9,6 +9,10 @@ public class MiningException extends RuntimeException {
 		dfsCodeStack = dfsCS;
 	}
 	
+	public MiningException() {
+		
+	}
+	
 	public void print() {
 		dfsCodeStack.print();
 	}

@@ -34,7 +34,6 @@ public class Mining {
 	
 	public static int MIN_SUPPORT = 1;
 	private static Pattern pattern = Pattern.PATTERN_STRONG;
-	private static Set<Graph> graphItems = GraphSet.getGraphSet();
 	private static File file = null;
 	private static int fixedThread = 1;
 
@@ -101,42 +100,44 @@ public class Mining {
 	}
 	
 	public static void start(int maxVertexRank, int maxEdgeRank) {
-		ExecutorService executorService = Executors.newFixedThreadPool(fixedThread);
+//		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		
 		
 		for(int i = 0; i < maxVertexRank; i++) {
 			for(int a = 0; a < maxEdgeRank; a++) {
 				for(int j = 0; j < maxVertexRank; j++) {
-					DFSCode code = new DFSCode(0, 1, i, a, j);
+					DFSCode code = new DFSCode(-1, -1, i, a, j);
 					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
+					Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
 					
-					executorService.execute(new Runnable() {
+//					executorService.execute(new Runnable() {
 
-						@Override
-						public void run() {
+//						@Override
+//						public void run() {
 							new Mining().subGraphMining(dfsCodeStack, graphItems);
-						}
+//						}
 						
-					});
+//					});
 				}
 			}
 		}
 		
-		try {
-			executorService.awaitTermination(10000, TimeUnit.MICROSECONDS);
-			executorService.shutdown();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			executorService.awaitTermination(1, TimeUnit.DAYS);
+//			executorService.shutdown();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	private void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
 		Map<DFSCode, Set<Graph>> supportChecker = new HashMap<DFSCode, Set<Graph>>();
 		
 		// 1. 判断是否最小dfs
-		if(!dfsCodeStack.isMin()) {
-			return;
-		}
+//		if(!dfsCodeStack.isMin()) {
+//			return;
+//		}
 		
 		// 2. 检查当前code是否有扩展的可能性
 		if(dfsCodeStack.getStack().size() == 1) {
@@ -145,6 +146,8 @@ public class Mining {
 				Graph g = it.next();
 				if(g.hasCandidates(dfsCodeStack.head())) {
 					count++;
+				} else {
+					it.remove();
 				}
 			}
 			if(count >= Mining.MIN_SUPPORT) {

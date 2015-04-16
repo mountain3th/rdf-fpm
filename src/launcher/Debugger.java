@@ -143,7 +143,7 @@ public class Debugger implements Runnable {
 		bw.write(str);
 	}
 	
-	public static void stop() {
+	public static void flush() {
 		try {
 			bw.flush();
 			bw.close();

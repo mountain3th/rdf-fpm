@@ -2,7 +2,6 @@ package mining;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.AbstractMap;
@@ -21,6 +20,7 @@ import launcher.Debugger.OnTaskFinishedListener;
 import datastructure.Graph;
 import datastructure.Graph.Edge;
 import datastructure.GraphSet;
+import exception.MiningException;
 
 public class Preprocessor {
 	private static Map<Integer, Integer> vertexLabel2Freq = new HashMap<Integer, Integer>();
@@ -30,13 +30,6 @@ public class Preprocessor {
 	private static int status;
 	
 	public static void loadFile(File file) throws Exception{
-		if(!file.exists() || !file.isFile()) {
-			throw new FileNotFoundException("文件不存在");
-		}
-		
-		if(status != 0) {
-			throw new IllegalStateException("调用顺序错误");
-		}
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line = null;
 		Map<Integer, Integer> tmp = null;
@@ -59,7 +52,7 @@ public class Preprocessor {
 				int vertex1 = Integer.valueOf(content[1]);
 				int vertex2 = Integer.valueOf(content[2]);
 				if(!tmp.containsKey(vertex1) || !tmp.containsKey(vertex2)) {
-					throw new Exception("找不到对应的顶点");
+					throw new MiningException();
 				}
 //				vertex1 = tmp.get(vertex1);
 //				vertex2 = tmp.get(vertex2);
@@ -71,15 +64,10 @@ public class Preprocessor {
 		}
 		
 		br.close();
-		status++;
 	}
 	
 	
 	public static void relabel() {
-		if(status != 1) {
-			throw new IllegalStateException("调用顺序出错");
-		}
-		
 		Debugger.startTask("relabel", new OnTaskFinishedListener() {
 			@Override
 			public void onTaskFinished() {
@@ -102,16 +90,6 @@ public class Preprocessor {
 		});
 		
 		vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
-//		for(int i = 0; i < vList.size(); i++) {
-//			for(int j = i; j < vList.size(); j++) {
-//				Entry<Integer, Integer> entry1 = vList.get(i);
-//				Entry<Integer, Integer> entry2 = vList.get(j);
-//				if(entry1.getValue() < entry2.getValue()) {
-//					vList.set(j, entry1);
-//					vList.set(i, entry2);
-//				}
-//			}
-//		}
 		
 		Collections.sort(vList, comparator);
 		for(int index = 0; index < vList.size(); index++) {
@@ -124,16 +102,6 @@ public class Preprocessor {
 		
 		eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
 		Collections.sort(eList, comparator);
-//		for(int i = 0; i < eList.size(); i++) {
-//			for(int j = i; j < eList.size(); j++) {
-//				Entry<Integer, Integer> entry1 = eList.get(i);
-//				Entry<Integer, Integer> entry2 = eList.get(j);
-//				if(entry1.getValue() < entry2.getValue()) {
-//					eList.set(j, entry1);
-//					eList.set(i, entry2);
-//				}
-//			}
-//		}
 		
 		for(int index = 0; index < eList.size(); index++) {
 			if(eList.get(index).getValue() < Mining.MIN_SUPPORT) {
@@ -143,16 +111,10 @@ public class Preprocessor {
 			Result.maxEdgeRank++;
 		}
 		
-		status++;
-		
 		Debugger.finishTask("relabel");
 	}
 	
 	public static void rebuildGraphSet() {
-		if(status != 2) {
-			throw new IllegalStateException("调用顺序出错");
-		}
-		
 		Set<Graph> graphSet = GraphSet.getGraphSet();
 		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
 			Graph g = it.next();
@@ -161,6 +123,7 @@ public class Preprocessor {
 				boolean flag = false;
 				Edge e = eit.next();
 				if(!g.vertex2Rank.containsKey(e.vertex1) || !g.vertex2Rank.containsKey(e.vertex2)) {
+					eit.remove();
 					continue;
 				}
 				int vertex1Label = g.vertex2Rank.get(e.vertex1);
@@ -180,10 +143,6 @@ public class Preprocessor {
 					eit.remove();
 					continue;
 				}
-//				g.vertex2Rank.put(vertex1, vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(vertex1Label,
-//						vertexLabel2Freq.get(vertex1Label))));
-//				g.vertex2Rank.put(vertex2, vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(vertex2Label,
-//						vertexLabel2Freq.get(vertex2Label))));
 				e.label = eList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(e.label,
 						edgeLabel2Freq.get(e.label)));
 			}
@@ -193,6 +152,8 @@ public class Preprocessor {
 				entry.setValue(vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(value,
 						vertexLabel2Freq.get(value))));
 			}
+			
+			g.init();
 		}
 		
 		vList = null;

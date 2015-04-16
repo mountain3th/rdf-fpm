@@ -55,14 +55,18 @@ public class DFSEdgeTree {
 //			return temp;
 //		}
 		
+		// 防止后向扩展造成扩展死循环
 		boolean checkRepeated(Edge e) {
 			Node parent = this.parent;
+			// 普通情况
 			while(parent != null) {
-				if(parent.edge.equals(e)) {
+				if(parent.edge.vertex1 == e.vertex1) {
 					return true;
 				}
 				parent = parent.parent;
 			}
+			
+			// 特殊处理
 			if(this.edge.equals(e)) {
 				return true;
 			}
@@ -142,7 +146,6 @@ public class DFSEdgeTree {
 	public boolean hasCandidates(DFSCode code) {
 		Queue<Node> queue = new LinkedList<Node>();
 
-		boolean flag = false;
 		for(Iterator<Edge> it = graph.getEdges().iterator(); it.hasNext();) {
 			Edge e = it.next();
 			if(code.a == e.label && graph.vertex2Rank.get(e.vertex1) == code.x && 
@@ -151,13 +154,9 @@ public class DFSEdgeTree {
 				root = n;
 				root.code = new DFSCode(code);
 				queue.offer(root);
-				flag = true;
-				break;
+				expand(queue);
+				return true;
 			}
-		}
-		if(flag) {
-			expand(queue);
-			return true;
 		}
 		
 		return false;
@@ -169,12 +168,12 @@ public class DFSEdgeTree {
 			
 			for(Iterator<Edge> it = graph.getEdges().iterator(); it.hasNext();) {
 				Edge e = it.next();
-				// 之前顶点的前向扩展
-				if(n.parent == null && e.vertex1 == n.edge.vertex1 && !n.checkRepeated(e)) {
+				// 特殊处理
+				if(n.parent == null && n.edge.vertex1 == e.vertex1 && !n.checkRepeated(e)) {
 					n.addToCandidates(e);
 				}
 				// 前向扩展或者后向扩展
-				if(e.vertex1 == n.edge.vertex2 && !n.checkRepeated(e)) {
+				if(n.edge.vertex2 == e.vertex1 && !n.checkRepeated(e)) {
 					n.addToCandidates(e);
 				}
 			}
@@ -186,7 +185,7 @@ public class DFSEdgeTree {
 	}
 	
 	public Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) throws MiningException {
-		if(null == root) {
+		if(root == null) {
 			return null;
 		}
 		
