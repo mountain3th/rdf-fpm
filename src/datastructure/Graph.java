@@ -87,7 +87,7 @@ public class Graph {
 
 				@Override
 				public int compare(DFSCode e1, DFSCode e2) {
-					return e1.a < e2.a ? -1 : (e1.a == e2.a ? (e1.y < e2.y ? -1 : 1) : 1);
+					return e1.a < e2.a ? -1 : (e1.a == e2.a ? (e1.y < e2.y ? -1 : (e1.y == e2.y ? 0 : 1)) : 1);
 				}
 				
 			});
