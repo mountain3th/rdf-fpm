@@ -4,7 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Stack;
+
+import mining.Result;
+import datastructure.DFSCode;
+import datastructure.DFSCodeStack;
 
 public class Debugger implements Runnable {
 	
@@ -15,8 +20,10 @@ public class Debugger implements Runnable {
 	}
 	
 	private static String logFile = "log/mining.log";
+	private static String resultFile = "log/result.log";
 	private static Stack<Task> taskStack = new Stack<Task>();
 	private static BufferedWriter bw;
+	private static BufferedWriter bs;
 	
 	private static class Clocker {
 		private long startTime;
@@ -123,6 +130,7 @@ public class Debugger implements Runnable {
 		
 		try {
 			bw = new BufferedWriter(new FileWriter(new File(logFile)));
+			bs = new BufferedWriter(new FileWriter(new File(resultFile)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -151,10 +159,25 @@ public class Debugger implements Runnable {
 	
 	public static void watch() {
 		System.out.print(" *");
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void log(String str) throws IOException {
 		bw.write(str);
+	}
+	
+	public static void saveResult(DFSCodeStack dfsCodeStack) throws IOException {
+		for(Iterator<DFSCode> it = dfsCodeStack.getStack().iterator(); it.hasNext();) {
+			DFSCode code = it.next();
+			bs.write(code.toString(Result.vertexRank2Label, Result.edgeRank2Label) + " -> ");
+		}
+		bs.newLine();
+		bs.flush();
 	}
 	
 	public static void flush() {

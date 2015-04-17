@@ -2,6 +2,7 @@ package mining;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -159,6 +160,12 @@ public class Mining {
 			}
 		} else {
 			Result.add(new DFSCodeStack(dfsCodeStack));
+		}
+		
+		try {
+			Debugger.saveResult(dfsCodeStack);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 				
 		Debugger.watch();
