@@ -104,12 +104,12 @@ public class Mining {
 //		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
 		
-		for(int i = 0; i < maxVertexRank; i++) {
+//		for(int i = 0; i < maxVertexRank; i++) {
 			for(int a = 0; a < maxEdgeRank; a++) {
 				for(int j = 0; j < maxVertexRank; j++) {
-					Debugger.wath(i, a, j);
+					Debugger.wath(0, a, j);
 					
-					DFSCode code = new DFSCode(-1, -1, i, a, j);
+					DFSCode code = new DFSCode(-1, -1, 0, a, j);
 					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
 					Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
@@ -123,7 +123,7 @@ public class Mining {
 						
 //					});
 				}
-			}
+//			}
 		}
 		
 //		try {
