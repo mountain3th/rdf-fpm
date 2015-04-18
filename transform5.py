@@ -26,6 +26,7 @@ def preprocess():
 			string = line.split(' ')[2][1:-1]
 			objs.add(string)
 	objs_list = list(objs)
+	objs_list.sort()
 	with open('objs_mapping.txt', 'w') as objs_mapping:
 		for i in objs_list:
 			objs_mapping.write(i + '\n')
@@ -55,7 +56,7 @@ def main(count_lines):
 					graph_count += 1
 					combine(vertices, edges, graph_count)
 					index = 0	 
-
+					print graph_count, str(round(float(count) / float(count_lines) * 100, 2)) + '%'
 				add_node(vertices, 0, 0)
 				subject = subject_now
 				subs_maps.write(subject)
@@ -64,8 +65,6 @@ def main(count_lines):
 			add_node(vertices, index, obj)
 			add_edge(edges, 0, index, pre)
 			
-			print graph_count, str(round(float(count) / float(count_lines) * 100, 2)) + '%'
-
 
 if __name__ == '__main__':
 	main(15229844)
