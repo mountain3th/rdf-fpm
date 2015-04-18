@@ -32,12 +32,26 @@ def preprocess():
 			objs_mapping.write(i + '\n')
 	return objs_list
 
+def find(file, string):
+	i, j = 1, 2260436
+	while i <= j:
+		ln = (i + j) / 2
+		line = linecache.getline(file, ln)[:-1]
+		ret = cmp(string, line)
+		if ret == 0:
+			return ln
+		elif ret < 0:
+			j = ln - 1
+		else:
+			i = ln + 1
+	return -1
+
 def main(count_lines):
 	predicates = open('predicate.txt').readlines()
 	predicates = [p[:-1] for p in predicates]
 	
 	subs_maps = open('subs_mapping.txt', 'w')
-	objs_maps = preprocess()
+	# objs_maps = preprocess()
 	
 	vertices = []
 	edges = []
@@ -48,8 +62,12 @@ def main(count_lines):
 		for count, line in enumerate(mapping):
 			strings = line.split(' ')
 			subject_now = strings[0][1:-1]
-			obj = objs_maps.index(strings[2][1:-1]) + 1
 			pre = predicates.index(strings[1][1:-1]) + 1
+			# obj = objs_maps.index(strings[2][1:-1]) + 1
+			obj = find('objs_mapping.txt', strings[2][1:-1])
+			if obj < 0:
+				open('error.log', 'a').write(strings[2][1:-1] + '\n')
+				return
 
 			if cmp(subject, subject_now) != 0:
 				if vertices :
@@ -62,7 +80,7 @@ def main(count_lines):
 				subs_maps.write(subject)
 			
 			index += 1
-			add_node(vertices, index, obj)
+			add_node(vertices, index, 1)
 			add_edge(edges, 0, index, pre)
 			
 
