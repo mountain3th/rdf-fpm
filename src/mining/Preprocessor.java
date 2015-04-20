@@ -76,20 +76,15 @@ public class Preprocessor {
 		Debugger.startTask("relabel", new OnTaskFinishedListener() {
 			@Override
 			public void onTaskFinished() {
-				try {
-					Debugger.log("\n顶点Rank");
-					for(Iterator<Entry<Integer, Integer>> it = Result.vertexRank2Label.entrySet().iterator(); it.hasNext();) {
-						Entry<Integer, Integer> entry = it.next();
-						Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
-					}
-					Debugger.log("\n边Rank");
-					for(Iterator<Entry<Integer, Integer>> it = Result.edgeRank2Label.entrySet().iterator(); it.hasNext();) {
-						Entry<Integer, Integer> entry = it.next();
-						Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
-					}
-				
-				} catch (IOException e) {
-					e.printStackTrace();
+				Debugger.log("\n顶点Rank");
+				for(Iterator<Entry<Integer, Integer>> it = Result.vertexRank2Label.entrySet().iterator(); it.hasNext();) {
+					Entry<Integer, Integer> entry = it.next();
+					Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
+				}
+				Debugger.log("\n边Rank");
+				for(Iterator<Entry<Integer, Integer>> it = Result.edgeRank2Label.entrySet().iterator(); it.hasNext();) {
+					Entry<Integer, Integer> entry = it.next();
+					Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
 				}
 			}
 		});

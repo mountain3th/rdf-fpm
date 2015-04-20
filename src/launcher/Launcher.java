@@ -27,23 +27,19 @@ public class Launcher {
 			Debugger.startTask("preprocess", new OnTaskFinishedListener() {
 				@Override
 				public void onTaskFinished() {
-					try {
-						Debugger.log("\n处理后的图:\n");
-						Set<Graph> graphs = GraphSet.getGraphSet();
-						int index = 0;
-						for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
-							Graph g = it.next();
-							Set<Edge> edges = g.getEdges();
-							Debugger.log("T" + index + "\n");
-							index++;
-							for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
-								Edge e = eit.next();
-								Debugger.log(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label) + "\n");
-							}
+					Debugger.log("\n处理后的图:\n");
+					Set<Graph> graphs = GraphSet.getGraphSet();
+					int index = 0;
+					for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
+						Graph g = it.next();
+						Set<Edge> edges = g.getEdges();
+						Debugger.log("T" + index + "\n");
+						index++;
+						for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
+							Edge e = eit.next();
+							Debugger.log(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label) + "\n");
 						}
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
+						}
 				}
 			});
 			
@@ -53,13 +49,10 @@ public class Launcher {
 			Preprocessor.rebuildGraphSet();
 			Debugger.finishTask("preprocess");
 			
-			Debugger.flush();
 			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
 			
-			
-			Result.print();
-			
 			Debugger.finishTask("main");
+			Debugger.stop();
 		} catch(ArgsException e) {
 			
 		} catch(MiningException e) {

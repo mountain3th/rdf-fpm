@@ -153,37 +153,49 @@ public class Debugger implements Runnable {
 		}
 	}
 	
-	public static void wath(int i, int a, int j) {
-		System.out.print("\n" + i + " " + a + " " + j);
+	public static void log(int i, int a, int j) {
+		try{
+			bw.newLine();
+			bw.write(i + " " + a + " " + j);
+			bw.flush();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void watch() {
-		System.out.print(" *");
-//		try {
-//			Thread.sleep(500);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
-	
-	public static void log(String str) throws IOException {
-		bw.write(str);
-	}
-	
-	public static void saveResult(DFSCodeStack dfsCodeStack) throws IOException {
-		for(Iterator<DFSCode> it = dfsCodeStack.getStack().iterator(); it.hasNext();) {
-			DFSCode code = it.next();
-			bs.write(code.toString(Result.vertexRank2Label, Result.edgeRank2Label) + " -> ");
+		try{
+			bw.write(" *");
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
-		bs.newLine();
-		bs.flush();
 	}
 	
-	public static void flush() {
+	public static void log(String str) {
 		try {
-			bw.flush();
+			bw.write(str);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveResult(DFSCodeStack dfsCodeStack) {
+		try{
+			for(Iterator<DFSCode> it = dfsCodeStack.getStack().iterator(); it.hasNext();) {
+				DFSCode code = it.next();
+				bs.write(code.toString(Result.vertexRank2Label, Result.edgeRank2Label) + " -> ");
+			}
+			bs.newLine();
+			bs.flush();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void stop() {
+		try {
 			bw.close();
+			bs.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
