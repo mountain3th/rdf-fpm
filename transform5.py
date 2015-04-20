@@ -80,7 +80,7 @@ def main(count_lines):
 				subs_maps.write(subject)
 			
 			index += 1
-			add_node(vertices, index, 1)
+			add_node(vertices, index, obj)
 			add_edge(edges, 0, index, pre)
 			
 
