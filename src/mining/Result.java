@@ -22,7 +22,7 @@ public class Result {
 	}
 	
 	public static void print() {
-		System.out.println(results.size() + "个");
+		System.out.println("\n" + results.size() + "个");
 		for(Iterator<DFSCodeStack> it = results.iterator(); it.hasNext();) {
 			DFSCodeStack stack = it.next();
 			for(Iterator<DFSCode> dit = stack.getStack().iterator(); dit.hasNext();) {

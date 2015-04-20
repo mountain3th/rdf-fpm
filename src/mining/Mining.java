@@ -34,6 +34,7 @@ public class Mining {
 	}
 	
 	public static int MIN_SUPPORT = 1;
+	public static int startPoint = -1;
 	private static Pattern pattern = Pattern.PATTERN_STRONG;
 	private static File file = null;
 	private static int fixedThread = 1;
@@ -107,9 +108,9 @@ public class Mining {
 //		for(int i = 0; i < maxVertexRank; i++) {
 			for(int a = 0; a < maxEdgeRank; a++) {
 				for(int j = 0; j < maxVertexRank; j++) {
-					Debugger.wath(0, a, j);
+					Debugger.wath(startPoint, a, j);
 					
-					DFSCode code = new DFSCode(-1, -1, 0, a, j);
+					DFSCode code = new DFSCode(-1, -1, startPoint, a, j);
 					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
 					Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
@@ -142,6 +143,7 @@ public class Mining {
 //			return;
 //		}
 		
+//		Debugger.startTask("checkHasCandidates");
 		// 2. 检查当前code是否有扩展的可能性
 		if(dfsCodeStack.getStack().size() == 1) {
 			int count = 0;
@@ -161,15 +163,17 @@ public class Mining {
 		} else {
 			Result.add(new DFSCodeStack(dfsCodeStack));
 		}
+//		Debugger.finishTask("checkHasCandidates");
 		
-		try {
-			Debugger.saveResult(dfsCodeStack);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Debugger.saveResult(dfsCodeStack);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 				
 		Debugger.watch();
 
+//		Debugger.startTask("getCandidates");
 		// 3. 扩展并获得候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();
@@ -193,6 +197,7 @@ public class Mining {
 				}
 			}
 		}
+//		Debugger.finishTask("getCandidates");
 		
 		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
 		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {

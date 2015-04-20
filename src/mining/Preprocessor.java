@@ -116,6 +116,8 @@ public class Preprocessor {
 			Result.maxEdgeRank++;
 		}
 		
+		Mining.startPoint = vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(0,
+						vertexLabel2Freq.get(0)));
 		Debugger.finishTask("relabel");
 	}
 	

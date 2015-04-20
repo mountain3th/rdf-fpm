@@ -62,7 +62,8 @@ public class Graph {
 			StringBuffer sb = new StringBuffer();
 			sb.append(vertexRank2Label.get(vertex2Rank.get(vertex1)));
 			sb.append(" ");
-			sb.append(edgeRank2Label.get(label));
+//			sb.append(edgeRank2Label.get(label));
+			sb.append(label);
 			sb.append(" ");
 			sb.append(vertexRank2Label.get(vertex2Rank.get(vertex2)));
 			return sb.toString();
@@ -72,6 +73,7 @@ public class Graph {
 	private class DFSCandidates {
 
 		List<DFSCode> dfsCodes;
+		int keepIndex = -1;
 		
 		DFSCandidates() {
 			dfsCodes = new ArrayList<DFSCode>();
@@ -98,7 +100,8 @@ public class Graph {
 		}
 		
 		boolean hasCandidates(DFSCode code) {
-			return indexOf(code) != -1;
+			keepIndex = indexOf(code);
+			return keepIndex != -1;
 		}
 		
 		Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) throws MiningException {
@@ -106,9 +109,13 @@ public class Graph {
 			if(!hasCandidates(code)) {
 				throw new MiningException(dfsCodeStack);
 			}
-			int index = indexOf(code);
 			Set<DFSCode> codes = new HashSet<DFSCode>();
-			for(int i = index + 1; i < dfsCodes.size(); i++) {
+			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
+				if(code.equals(dfsCodes.get(i))) {
+					keepIndex = i;
+				}
+			}
+			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
 				codes.add(dfsCodes.get(i));
 			}
 			

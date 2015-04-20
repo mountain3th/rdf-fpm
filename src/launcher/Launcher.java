@@ -30,10 +30,12 @@ public class Launcher {
 					try {
 						Debugger.log("\n处理后的图:\n");
 						Set<Graph> graphs = GraphSet.getGraphSet();
+						int index = 0;
 						for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
 							Graph g = it.next();
 							Set<Edge> edges = g.getEdges();
-							Debugger.log("T\n");
+							Debugger.log("T" + index + "\n");
+							index++;
 							for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 								Edge e = eit.next();
 								Debugger.log(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label) + "\n");
