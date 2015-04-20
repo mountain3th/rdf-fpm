@@ -119,9 +119,10 @@ public class Mining {
 
 //						@Override
 //						public void run() {
+					Debugger.startTask("subGraphMining");
 							new Mining().subGraphMining(dfsCodeStack, graphItems);
 //						}
-						
+					Debugger.finishTask("subGraphMining");	
 //					});
 				}
 //			}
@@ -143,6 +144,7 @@ public class Mining {
 //			return;
 //		}
 		
+		Debugger.startTask("checkHasCandidates " + dfsCodeStack.peek());
 		// 2. 检查当前code是否有扩展的可能性
 		if(dfsCodeStack.getStack().size() == 1) {
 			int count = 0;
@@ -157,16 +159,19 @@ public class Mining {
 			if(count >= Mining.MIN_SUPPORT) {
 				Result.add(new DFSCodeStack(dfsCodeStack));
 			} else {
+				Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 				return;
 			}
 		} else {
 			Result.add(new DFSCodeStack(dfsCodeStack));
 		}
+		Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 		
 		Debugger.saveResult(dfsCodeStack);
 				
 		Debugger.watch();
 
+		Debugger.startTask("getCandidates " + dfsCodeStack.peek());
 		// 3. 扩展并获得候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();
@@ -190,6 +195,7 @@ public class Mining {
 				}
 			}
 		}
+		Debugger.finishTask("getCandidates " + dfsCodeStack.peek());
 		
 		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
 		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
