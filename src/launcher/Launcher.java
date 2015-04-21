@@ -1,7 +1,7 @@
 package launcher;
 
-import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import launcher.Debugger.OnTaskFinishedListener;
@@ -28,7 +28,7 @@ public class Launcher {
 				@Override
 				public void onTaskFinished() {
 					Debugger.log("\n处理后的图:\n");
-					Set<Graph> graphs = GraphSet.getGraphSet();
+					List<Graph> graphs = GraphSet.getGraphSet();
 					int index = 0;
 					for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
 						Graph g = it.next();
@@ -39,7 +39,7 @@ public class Launcher {
 							Edge e = eit.next();
 							Debugger.log(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label) + "\n");
 						}
-						}
+					}
 				}
 			});
 			

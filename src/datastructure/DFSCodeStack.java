@@ -1,12 +1,13 @@
 package datastructure;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
 import mining.Result;
 
-public class DFSCodeStack {
+public class DFSCodeStack implements Serializable{
 	
 	Stack<DFSCode> dfsCodeStack;
 	

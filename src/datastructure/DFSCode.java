@@ -1,8 +1,9 @@
 package datastructure;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class DFSCode {
+public class DFSCode implements Serializable {
 	public int ix;
 	public int iy;
 	public int x;

@@ -2,19 +2,23 @@ package mining;
 
 
 import java.io.File;
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import launcher.Debugger;
+
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
+
 import datastructure.DFSCode;
 import datastructure.DFSCodeStack;
 import datastructure.Graph;
@@ -27,17 +31,17 @@ import exception.ArgsException;
  * @author Three
  *
  */
-public class Mining {
+public class Mining implements Serializable {
 	public enum Pattern {
 		PATTERN_STRONG,
 		PATTERN_WEEK
 	}
 	
-	public static int MIN_SUPPORT = 1;
-	public static int startPoint = -1;
-	private static Pattern pattern = Pattern.PATTERN_STRONG;
-	private static File file = null;
-	private static int fixedThread = 1;
+	public transient static int MIN_SUPPORT = 1;
+	public transient static int startPoint = -1;
+	private transient static Pattern pattern = Pattern.PATTERN_STRONG;
+	private transient static File file = null;
+	private transient static int fixedThread = 1;
 
 	public static void init(String[] args) throws ArgsException {
 		for(int i = 0; i < args.length; i++) {
@@ -104,6 +108,9 @@ public class Mining {
 	public static void start(int maxVertexRank, int maxEdgeRank) {
 //		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
+		JavaSparkContext sc = new JavaSparkContext("local", "mining", 
+				"C:\\Users\\Three\\Desktop\\spark-1.3.1-bin-hadoop2.4\\bin", new String[]{});
+		JavaRDD<Graph> graphs = sc.parallelize(GraphSet.getGraphSet());
 		
 //		for(int i = 0; i < maxVertexRank; i++) {
 			for(int a = 0; a < maxEdgeRank; a++) {
@@ -113,14 +120,13 @@ public class Mining {
 					DFSCode code = new DFSCode(-1, -1, startPoint, a, j);
 					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
-					Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
 					
 //					executorService.execute(new Runnable() {
 
 //						@Override
 //						public void run() {
 					Debugger.startTask("subGraphMining");
-							new Mining().subGraphMining(dfsCodeStack, graphItems);
+							new Mining().subGraphMining(dfsCodeStack, graphs);
 //						}
 					Debugger.finishTask("subGraphMining");	
 //					});
@@ -136,45 +142,62 @@ public class Mining {
 //		}
 	}
 	
-	private void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
-		Map<DFSCode, Set<Graph>> supportChecker = new HashMap<DFSCode, Set<Graph>>();
+	private void subGraphMining(final DFSCodeStack dfsCodeStack, JavaRDD<Graph> graphRdd) {
+		Map<DFSCode, List<Graph>> supportChecker = new HashMap<DFSCode, List<Graph>>();
 		
 		// 1. 判断是否最小dfs
 //		if(!dfsCodeStack.isMin()) {
 //			return;
 //		}
 		
-		Debugger.startTask("checkHasCandidates " + dfsCodeStack.peek());
+		Queue<DFSCodeStack> queue = new LinkedList<DFSCodeStack>();
+		
+		JavaRDD<Graph> tempRdd = graphRdd;
 		// 2. 检查当前code是否有扩展的可能性
 		if(dfsCodeStack.getStack().size() == 1) {
-			int count = 0;
-			for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
-				Graph g = it.next();
-				if(g.hasCandidates(dfsCodeStack.head())) {
-					count++;
-				} else {
-					it.remove();
+//			int count = 0;
+//			for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
+//				Graph g = it.next();
+//				if(g.hasCandidates(dfsCodeStack.head())) {
+//					count++;
+//				} else {
+//					it.remove();
+//				}
+//			}
+//			if(count >= Mining.MIN_SUPPORT) {
+//				Result.add(new DFSCodeStack(dfsCodeStack));
+//			} else {
+//				return;
+//			}
+			
+			
+			tempRdd = graphRdd.filter(new Function<Graph, Boolean>() {
+
+				@Override
+				public Boolean call(Graph g) throws Exception {
+					return g.hasCandidates(dfsCodeStack.head());
 				}
-			}
-			if(count >= Mining.MIN_SUPPORT) {
+				
+			});
+			
+			if(tempRdd.count() >= Mining.MIN_SUPPORT) {
 				Result.add(new DFSCodeStack(dfsCodeStack));
 			} else {
-				Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 				return;
 			}
 		} else {
 			Result.add(new DFSCodeStack(dfsCodeStack));
 		}
-		Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 		
 		Debugger.saveResult(dfsCodeStack);
 				
 		Debugger.watch();
 
-		Debugger.startTask("getCandidates " + dfsCodeStack.peek());
 		// 3. 扩展并获得候选集
-		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
-			Graph g = it.next();
+		
+		List<Graph> graphs = tempRdd.collect();
+		for(int index = 0; index < graphs.size(); index++) {
+			Graph g = graphs.get(index);
 			Set<DFSCode> codes = g.getCandidates(dfsCodeStack);
 			if(null == codes || codes.isEmpty()) {
 				continue;
@@ -186,26 +209,66 @@ public class Mining {
 					tempCode.y = -1;
 				}
 				if(supportChecker.containsKey(tempCode)) {
-					Set<Graph> temp = supportChecker.get(tempCode);
+					List<Graph> temp = supportChecker.get(tempCode);
 					temp.add(g);
 				} else {
-					Set<Graph> temp = new HashSet<Graph>();
+					List<Graph> temp = new ArrayList<Graph>();
 					temp.add(g);
 					supportChecker.put(tempCode, temp);
 				}
 			}
 		}
-		Debugger.finishTask("getCandidates " + dfsCodeStack.peek());
 		
 		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
-		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
-			Entry<DFSCode, Set<Graph>> entry = it.next();
+		for(Iterator<Entry<DFSCode, List<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
+			Entry<DFSCode, List<Graph>> entry = it.next();
 			if(entry.getValue().size() >= Mining.MIN_SUPPORT) {
 				dfsCodeStack.push(entry.getKey());
-				subGraphMining(dfsCodeStack, entry.getValue());
+				JavaRDD<Graph> rdd = tempRdd.filter(new Function<Graph, Boolean>() {
+
+					@Override
+					public Boolean call(Graph g) throws Exception {
+						return g.hasCandidates(dfsCodeStack.head());
+					}
+					
+				});
+				subGraphMining(dfsCodeStack, rdd);
 				dfsCodeStack.pop();
 			}
 		}
+		
+//		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
+//			Graph g = it.next();
+//			Set<DFSCode> codes = g.getCandidates(dfsCodeStack);
+//			if(null == codes || codes.isEmpty()) {
+//				continue;
+//			}
+//			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
+//				DFSCode dfsCode = dit.next();
+//				DFSCode tempCode = new DFSCode(dfsCode);
+//				if(pattern == Pattern.PATTERN_WEEK) {
+//					tempCode.y = -1;
+//				}
+//				if(supportChecker.containsKey(tempCode)) {
+//					Set<Graph> temp = supportChecker.get(tempCode);
+//					temp.add(g);
+//				} else {
+//					Set<Graph> temp = new HashSet<Graph>();
+//					temp.add(g);
+//					supportChecker.put(tempCode, temp);
+//				}
+//			}
+//		}
+//		
+//		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
+//		for(Iterator<Entry<DFSCode, List<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
+//			Entry<DFSCode, Set<Graph>> entry = it.next();
+//			if(entry.getValue().size() >= Mining.MIN_SUPPORT) {
+//				dfsCodeStack.push(entry.getKey());
+//				subGraphMining(dfsCodeStack, entry.getValue());
+//				dfsCodeStack.pop();
+//			}
+//		}
 		
 	}
 }

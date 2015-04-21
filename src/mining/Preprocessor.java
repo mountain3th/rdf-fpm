@@ -117,7 +117,7 @@ public class Preprocessor {
 	}
 	
 	public static void rebuildGraphSet() {
-		Set<Graph> graphSet = GraphSet.getGraphSet();
+		List<Graph> graphSet = GraphSet.getGraphSet();
 		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
 			Graph g = it.next();
 			Set<Edge> edges = g.getEdges();

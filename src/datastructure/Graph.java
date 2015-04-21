@@ -1,5 +1,6 @@
 package datastructure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,13 +13,13 @@ import java.util.Set;
 
 import exception.MiningException;
 
-public class Graph {
+public class Graph implements Serializable{
 	
-	private Set<Edge> edges;
-	private DFSEdgeTree dfsEdgeTree;
+	private transient Set<Edge> edges;
+	private transient DFSEdgeTree dfsEdgeTree;
 	private DFSCandidates dfsCandidates;
 	
-	public Map<Integer, Integer> vertex2Rank;
+	public transient Map<Integer, Integer> vertex2Rank;
 
 	public static class Edge {
 
@@ -70,7 +71,7 @@ public class Graph {
 		}
 	}
 	
-	private class DFSCandidates {
+	private class DFSCandidates implements Serializable{
 
 		List<DFSCode> dfsCodes;
 		int keepIndex = -1;
@@ -104,10 +105,10 @@ public class Graph {
 			return keepIndex != -1;
 		}
 		
-		Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) throws MiningException {
+		Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack)  {
 			DFSCode code = dfsCodeStack.peek();
 			if(!hasCandidates(code)) {
-				throw new MiningException(dfsCodeStack);
+//				throw new MiningException(dfsCodeStack);
 			}
 			Set<DFSCode> codes = new HashSet<DFSCode>();
 			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
