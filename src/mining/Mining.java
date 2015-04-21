@@ -109,7 +109,7 @@ public class Mining implements Serializable {
 //		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
 		JavaSparkContext sc = new JavaSparkContext("local", "mining", 
-				"C:\\Users\\Three\\Desktop\\spark-1.3.1-bin-hadoop2.4\\bin", new String[]{});
+				"/home/spark/spark-1.2.0-bin-hadoop2.4/bin", new String[]{});
 		JavaRDD<Graph> graphs = sc.parallelize(GraphSet.getGraphSet());
 		
 //		for(int i = 0; i < maxVertexRank; i++) {
