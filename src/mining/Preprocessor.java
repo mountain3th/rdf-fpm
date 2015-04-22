@@ -27,7 +27,6 @@ public class Preprocessor {
 	private static Map<Integer, Integer> edgeLabel2Freq = new HashMap<Integer, Integer>();
 	private static List<Entry<Integer, Integer>> vList;
 	private static List<Entry<Integer, Integer>> eList;
-	private static int status;
 	
 	public static void loadFile(File file) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -74,7 +73,6 @@ public class Preprocessor {
 	
 	public static void relabel() {
 		Debugger.startTask("relabel", new OnTaskFinishedListener() {
-			@Override
 			public void onTaskFinished() {
 				Debugger.log("\n顶点Rank");
 				for(Iterator<Entry<Integer, Integer>> it = Result.vertexRank2Label.entrySet().iterator(); it.hasNext();) {

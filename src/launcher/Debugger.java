@@ -137,7 +137,6 @@ public class Debugger implements Runnable {
 		new Thread(new Debugger()).start();
 	}
 	
-	@Override
 	public void run() {
 		synchronized(taskStack) {
 			while(!taskStack.isEmpty()) {

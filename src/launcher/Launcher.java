@@ -25,7 +25,6 @@ public class Launcher {
 			Debugger.start();
 	
 			Debugger.startTask("preprocess", new OnTaskFinishedListener() {
-				@Override
 				public void onTaskFinished() {
 					Debugger.log("\n处理后的图:\n");
 					List<Graph> graphs = GraphSet.getGraphSet();

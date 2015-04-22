@@ -27,7 +27,7 @@ import datastructure.GraphSet;
 import exception.ArgsException;
 
 /**
- * 当前只支持一幅图出现同一类只记一次，并且可能会发生不可预计的后果
+ * 褰撳墠鍙敮鎸佷竴骞呭浘鍑虹幇鍚屼竴绫诲彧璁颁竴娆★紝骞朵笖鍙兘浼氬彂鐢熶笉鍙璁＄殑鍚庢灉
  * 
  * @author Three
  *
@@ -47,7 +47,7 @@ public class Mining implements Serializable {
 	public static void init(String[] args) throws ArgsException {
 		for(int i = 0; i < args.length; i++) {
 			String part = args[i];
-			// support设置
+			// support璁剧疆
 			if("-support".equals(part)) {
 				i++;
 				part = args[i];
@@ -57,7 +57,7 @@ public class Mining implements Serializable {
 					throw new ArgsException();
 				}
 			}
-			// pattern设置
+			// pattern璁剧疆
 			if("-pattern".equals(part)) {
 				i++;
 				part = args[i];
@@ -69,7 +69,7 @@ public class Mining implements Serializable {
 					throw new ArgsException();
 				}
 			}
-			// 文件检查
+			// 鏂囦欢妫�煡
 			if("-file".equals(part)) {
 				i++;
 				part = args[i];
@@ -78,11 +78,11 @@ public class Mining implements Serializable {
 					throw new ArgsException();
 				}
 			}
-			// 分布式控制
+			// 鍒嗗竷寮忔帶鍒�
 			if("-spark".equals(part)) {
 				
 			}
-			// 多线程控制
+			// 澶氱嚎绋嬫帶鍒�
 			if("-thread".equals(part)) {
 				i++;
 				part = args[i];
@@ -92,7 +92,7 @@ public class Mining implements Serializable {
 					throw new ArgsException();
 				}
 			}
-			// 是否输出debug信息
+			// 鏄惁杈撳嚭debug淇℃伅
 			if("-debug".equals(part)) {
 				Debugger.isDebug = true;
 			}
@@ -146,7 +146,7 @@ public class Mining implements Serializable {
 	private void subGraphMining(final DFSCodeStack dfsCodeStack, JavaRDD<Graph> graphRdd) {
 		Map<DFSCode, List<Graph>> supportChecker = new HashMap<DFSCode, List<Graph>>();
 		
-		// 1. 判断是否最小dfs
+		// 1. 鍒ゆ柇鏄惁鏈�皬dfs
 //		if(!dfsCodeStack.isMin()) {
 //			return;
 //		}
@@ -154,7 +154,7 @@ public class Mining implements Serializable {
 		Queue<DFSCodeStack> queue = new LinkedList<DFSCodeStack>();
 		
 		JavaRDD<Graph> tempRdd = graphRdd;
-		// 2. 检查当前code是否有扩展的可能性
+		// 2. 妫�煡褰撳墠code鏄惁鏈夋墿灞曠殑鍙兘鎬�
 		if(dfsCodeStack.getStack().size() == 1) {
 //			int count = 0;
 //			for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
@@ -174,7 +174,6 @@ public class Mining implements Serializable {
 			
 			tempRdd = graphRdd.filter(new Function<Graph, Boolean>() {
 
-				@Override
 				public Boolean call(Graph g) throws Exception {
 					return g.hasCandidates(dfsCodeStack.head());
 				}
@@ -194,7 +193,7 @@ public class Mining implements Serializable {
 				
 		Debugger.watch();
 
-		// 3. 扩展并获得候选集
+		// 3. 鎵╁睍骞惰幏寰楀�閫夐泦
 		
 		List<Graph> graphs = tempRdd.collect();
 		for(int index = 0; index < graphs.size(); index++) {
@@ -220,14 +219,13 @@ public class Mining implements Serializable {
 			}
 		}
 		
-		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
+		// 4. 鍓灊灏忎簬MIN_SUPPORT鐨刢ode锛岄�褰掕皟鐢╯ubGraphMining
 		for(Iterator<Entry<DFSCode, List<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
 			Entry<DFSCode, List<Graph>> entry = it.next();
 			if(entry.getValue().size() >= Mining.MIN_SUPPORT) {
 				dfsCodeStack.push(entry.getKey());
 				JavaRDD<Graph> rdd = tempRdd.filter(new Function<Graph, Boolean>() {
 
-					@Override
 					public Boolean call(Graph g) throws Exception {
 						return g.hasCandidates(dfsCodeStack.head());
 					}
@@ -261,7 +259,7 @@ public class Mining implements Serializable {
 //			}
 //		}
 //		
-//		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
+//		// 4. 鍓灊灏忎簬MIN_SUPPORT鐨刢ode锛岄�褰掕皟鐢╯ubGraphMining
 //		for(Iterator<Entry<DFSCode, List<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
 //			Entry<DFSCode, Set<Graph>> entry = it.next();
 //			if(entry.getValue().size() >= Mining.MIN_SUPPORT) {
