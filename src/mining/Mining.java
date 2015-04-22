@@ -15,6 +15,7 @@ import java.util.Set;
 
 import launcher.Debugger;
 
+import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
@@ -108,8 +109,8 @@ public class Mining implements Serializable {
 	public static void start(int maxVertexRank, int maxEdgeRank) {
 //		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
-		JavaSparkContext sc = new JavaSparkContext("local", "mining", 
-				"/home/spark/spark-1.2.0-bin-hadoop2.4/bin", new String[]{});
+		SparkConf conf = new SparkConf().setAppName("MiningInSpark");
+		JavaSparkContext sc = new JavaSparkContext(conf);
 		JavaRDD<Graph> graphs = sc.parallelize(GraphSet.getGraphSet());
 		
 //		for(int i = 0; i < maxVertexRank; i++) {
