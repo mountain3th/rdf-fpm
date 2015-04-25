@@ -109,7 +109,7 @@ public class Mining implements Serializable {
 	public static void start(int maxVertexRank, int maxEdgeRank) {
 //		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
-		SparkConf conf = new SparkConf().setAppName("MiningInSpark");
+		SparkConf conf = new SparkConf().setAppName("MiningInSpark").set("spark.akka.frameSize", "200");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		JavaRDD<Graph> graphs = sc.parallelize(GraphSet.getGraphSet());
 		

@@ -19,8 +19,8 @@ public class Debugger implements Runnable {
 		void onTaskFinished();
 	}
 	
-	private static String logFile = "log/mining.log";
-	private static String resultFile = "log/result.log";
+	private static String logFile = "/home/wujs/rdf-fpm/log/mining.log";
+	private static String resultFile = "/home/wujs/rdf-fpm/log/result.log";
 	private static Stack<Task> taskStack = new Stack<Task>();
 	private static BufferedWriter bw;
 	private static BufferedWriter bs;
@@ -153,6 +153,10 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void log(int i, int a, int j) {
+		if(!isDebug) {
+			return;
+		}
+		
 		try{
 			bw.newLine();
 			bw.write(i + " " + a + " " + j);
@@ -163,6 +167,10 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void watch() {
+		if(!isDebug) {
+			return;
+		}
+		
 		try{
 			bw.write(" *");
 		} catch(IOException e) {
@@ -171,6 +179,10 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void log(String str) {
+		if(!isDebug) {
+			return;
+		}
+		
 		try {
 			bw.write(str);
 		} catch (IOException e) {
@@ -179,6 +191,10 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void saveResult(DFSCodeStack dfsCodeStack) {
+		if(!isDebug) {
+			return;
+		}
+		
 		try{
 			for(Iterator<DFSCode> it = dfsCodeStack.getStack().iterator(); it.hasNext();) {
 				DFSCode code = it.next();
@@ -192,6 +208,10 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void stop() {
+		if(!isDebug) {
+			return;
+		}
+		
 		try {
 			bw.close();
 			bs.close();
