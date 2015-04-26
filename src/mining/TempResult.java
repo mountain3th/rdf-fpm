@@ -24,7 +24,7 @@ public class TempResult {
 //		results.add(dfsCodeStack);
 //	}
 	
-	private static List<Node> roots;
+	private static List<Node> roots = new ArrayList<Node>();
 	private static Node currentNode;
 	private static int depth = 0;
 	
@@ -64,13 +64,13 @@ public class TempResult {
 			n.subjects.add(it.next().subject);
 		}
 		if(currentNode != null) {
-			n.confidency = n.count / currentNode.count;
+			n.confidency = (double)n.count / (double)currentNode.count;
 			currentNode.addChild(n);
 		} else {
 			roots.add(n);
-			currentNode = n;
-			depth++;
 		}
+		currentNode = n;
+		depth++;
 	}
 	
 	public static void print() {
@@ -80,6 +80,7 @@ public class TempResult {
 	}
 	
 	private static void print(Node n) {
+		System.out.println(n.code.toString(vertexRank2Label, edgeRank2Label) + "  " + n.count  + "  "+ n.confidency);
 		List<Node> childs = n.childs;
 		if(childs == null) {
 			return;
