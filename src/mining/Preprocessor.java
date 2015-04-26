@@ -3,7 +3,6 @@ package mining;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,11 +36,13 @@ public class Preprocessor {
 		
 		Debugger.startTask("loadFile");
 		
+		int graphCount = -1;
 		while((line = br.readLine()) != null) {
 			String[] content = line.split("\\s+");
 			
 			if("t".equals(content[0])) {
-				graph = new Graph();
+				graphCount++;
+				graph = new Graph(graphCount);
 				GraphSet.add(graph);
 				tmp = new HashMap<Integer, Integer>();
 			} else if("v".equals(content[0])) {
@@ -77,12 +78,12 @@ public class Preprocessor {
 			@Override
 			public void onTaskFinished() {
 				Debugger.log("\n顶点Rank");
-				for(Iterator<Entry<Integer, Integer>> it = Result.vertexRank2Label.entrySet().iterator(); it.hasNext();) {
+				for(Iterator<Entry<Integer, Integer>> it = TempResult.vertexRank2Label.entrySet().iterator(); it.hasNext();) {
 					Entry<Integer, Integer> entry = it.next();
 					Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
 				}
 				Debugger.log("\n边Rank");
-				for(Iterator<Entry<Integer, Integer>> it = Result.edgeRank2Label.entrySet().iterator(); it.hasNext();) {
+				for(Iterator<Entry<Integer, Integer>> it = TempResult.edgeRank2Label.entrySet().iterator(); it.hasNext();) {
 					Entry<Integer, Integer> entry = it.next();
 					Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
 				}
@@ -96,8 +97,8 @@ public class Preprocessor {
 			if(vList.get(index).getValue() < Mining.MIN_SUPPORT) {
 				break;
 			}
-			Result.vertexRank2Label.put(index, vList.get(index).getKey());
-			Result.maxVertexRank++;
+			TempResult.vertexRank2Label.put(index, vList.get(index).getKey());
+			TempResult.maxVertexRank++;
 		}
 		
 		eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
@@ -107,8 +108,8 @@ public class Preprocessor {
 			if(eList.get(index).getValue() < Mining.MIN_SUPPORT) {
 				break;
 			}
-			Result.edgeRank2Label.put(index, eList.get(index).getKey());
-			Result.maxEdgeRank++;
+			TempResult.edgeRank2Label.put(index, eList.get(index).getKey());
+			TempResult.maxEdgeRank++;
 		}
 		
 		Mining.startPoint = vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(0,

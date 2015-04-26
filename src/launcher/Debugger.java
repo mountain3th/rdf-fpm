@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Stack;
 
-import mining.Result;
+import mining.TempResult;
 import datastructure.DFSCode;
 import datastructure.DFSCodeStack;
 
@@ -183,7 +183,7 @@ public class Debugger implements Runnable {
 		try{
 			for(Iterator<DFSCode> it = dfsCodeStack.getStack().iterator(); it.hasNext();) {
 				DFSCode code = it.next();
-				bs.write(code.toString(Result.vertexRank2Label, Result.edgeRank2Label) + " -> ");
+				bs.write(code.toString(TempResult.vertexRank2Label, TempResult.edgeRank2Label) + " -> ");
 			}
 			bs.newLine();
 			bs.flush();

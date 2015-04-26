@@ -157,13 +157,13 @@ public class Mining {
 				}
 			}
 			if(count >= Mining.MIN_SUPPORT) {
-				Result.add(new DFSCodeStack(dfsCodeStack));
+				TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems);
 			} else {
 				Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 				return;
 			}
 		} else {
-			Result.add(new DFSCodeStack(dfsCodeStack));
+			TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems);
 		}
 		Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 		

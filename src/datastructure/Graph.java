@@ -14,6 +14,8 @@ import exception.MiningException;
 
 public class Graph {
 	
+	public int subject;
+	
 	private Set<Edge> edges;
 	private DFSEdgeTree dfsEdgeTree;
 	private DFSCandidates dfsCandidates;
@@ -123,7 +125,8 @@ public class Graph {
 		}
 	}
 	
-	public Graph() {
+	public Graph(int subject) {
+		this.subject = subject;
 		vertex2Rank = new HashMap<Integer, Integer>();
 		edges = new HashSet<Edge>();
 		dfsCandidates = new DFSCandidates();

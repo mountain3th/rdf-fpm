@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import mining.Result;
+import mining.TempResult;
 
 public class DFSCodeStack {
 	
@@ -41,6 +41,10 @@ public class DFSCodeStack {
 		dfsCodeStack.push(code);
 	}
 	
+	public int size() {
+		return dfsCodeStack.size();
+	}
+	
 	public boolean isMin() {
 		for(int index = 0; index < dfsCodeStack.size() - 1; index++) {
 			if(!dfsCodeStack.get(index).isLessThan(dfsCodeStack.get(index+1))) {
@@ -57,7 +61,7 @@ public class DFSCodeStack {
 	public void print() {
 		for(Iterator<DFSCode> it = dfsCodeStack.iterator(); it.hasNext();) {
 			DFSCode code = it.next();
-			System.out.print(code.toString(Result.vertexRank2Label, Result.edgeRank2Label) + " -> ");
+			System.out.print(code.toString(TempResult.vertexRank2Label, TempResult.edgeRank2Label) + " -> ");
 		}
 	}
 

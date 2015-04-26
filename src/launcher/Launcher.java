@@ -1,13 +1,13 @@
 package launcher;
 
-import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import launcher.Debugger.OnTaskFinishedListener;
 import mining.Mining;
 import mining.Preprocessor;
-import mining.Result;
+import mining.TempResult;
 import datastructure.Graph;
 import datastructure.Graph.Edge;
 import datastructure.GraphSet;
@@ -37,7 +37,7 @@ public class Launcher {
 						index++;
 						for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 							Edge e = eit.next();
-							Debugger.log(e.toString(g.vertex2Rank, Result.vertexRank2Label, Result.edgeRank2Label) + "\n");
+							Debugger.log(e.toString(g.vertex2Rank, TempResult.vertexRank2Label, TempResult.edgeRank2Label) + "\n");
 						}
 						}
 				}
@@ -49,10 +49,12 @@ public class Launcher {
 			Preprocessor.rebuildGraphSet();
 			Debugger.finishTask("preprocess");
 			
-			Mining.start(Result.maxVertexRank, Result.maxEdgeRank);
+			Mining.start(TempResult.maxVertexRank, TempResult.maxEdgeRank);
 			
 			Debugger.finishTask("main");
 			Debugger.stop();
+			
+			TempResult.print();
 		} catch(ArgsException e) {
 			
 		} catch(MiningException e) {
