@@ -1,0 +1,1 @@
+java -cp bin launcher.Launcher -debug -file dataset/small.lg -support 1000
