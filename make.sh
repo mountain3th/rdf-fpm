@@ -1,1 +1,1 @@
-javac -d bin src/@sourcefiles
+javac -d bin @src/sourcefiles
