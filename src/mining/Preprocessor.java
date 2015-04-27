@@ -24,9 +24,8 @@ import exception.MiningException;
 public class Preprocessor {
 	private static Map<Integer, Integer> vertexLabel2Freq = new HashMap<Integer, Integer>();
 	private static Map<Integer, Integer> edgeLabel2Freq = new HashMap<Integer, Integer>();
-	private static List<Entry<Integer, Integer>> vList;
-	private static List<Entry<Integer, Integer>> eList;
-	private static int status;
+	private static int[] vertexLabel2Rank = new int[5000000];
+	private static int[] edgeLabel2Rank = new int[1000];
 	
 	public static void loadFile(File file) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -90,83 +89,63 @@ public class Preprocessor {
 			}
 		});
 		
-		vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
+		List<Entry<Integer, Integer>> vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
 		
 		Collections.sort(vList, comparator);
 		for(int index = 0; index < vList.size(); index++) {
-			if(vList.get(index).getValue() < Mining.MIN_SUPPORT) {
-				break;
+			int label = vList.get(index).getKey();
+			int freq = vList.get(index).getValue();
+			
+			if(freq >= Mining.MIN_SUPPORT) {
+				TempResult.maxVertexRank++;
 			}
-			TempResult.vertexRank2Label.put(index, vList.get(index).getKey());
-			TempResult.maxVertexRank++;
+			TempResult.vertexRank2Label.put(index, label);
+			vertexLabel2Rank[label] = index;
 		}
 		
-		eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
+		List<Entry<Integer, Integer>> eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
 		Collections.sort(eList, comparator);
 		
 		for(int index = 0; index < eList.size(); index++) {
-			if(eList.get(index).getValue() < Mining.MIN_SUPPORT) {
-				break;
+			int label = eList.get(index).getKey();
+			int freq = eList.get(index).getValue();
+			
+			if(freq >= Mining.MIN_SUPPORT) {
+				TempResult.maxEdgeRank++;
 			}
-			TempResult.edgeRank2Label.put(index, eList.get(index).getKey());
-			TempResult.maxEdgeRank++;
+			TempResult.edgeRank2Label.put(index, label);
+			edgeLabel2Rank[label] = index;
 		}
 		
 		Mining.startPoint = vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(0,
 						vertexLabel2Freq.get(0)));
+		vertexLabel2Freq = null;
+		edgeLabel2Freq = null;
+		
 		Debugger.finishTask("relabel");
 	}
 	
 	public static void rebuildGraphSet() {
+		Debugger.startTask("rebuildGraphSet");
+		
 		Set<Graph> graphSet = GraphSet.getGraphSet();
 		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
 			Graph g = it.next();
 			Set<Edge> edges = g.getEdges();
 			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
-				boolean flag = false;
 				Edge e = eit.next();
-//				if(!g.vertex2Rank.containsKey(e.vertex1) || !g.vertex2Rank.containsKey(e.vertex2)) {
-//					eit.remove();
-//					continue;
-//				}
-//				int vertex1Label = g.vertex2Rank.get(e.vertex1);
-//				int vertex2Label = g.vertex2Rank.get(e.vertex2);
-//				if(vertexLabel2Freq.get(vertex1Label) < Mining.MIN_SUPPORT) {
-//					g.vertex2Rank.remove(e.vertex1);
-//					flag = true;		
-//				}
-//				if(vertexLabel2Freq.get(vertex2Label) < Mining.MIN_SUPPORT) {
-//					g.vertex2Rank.remove(e.vertex2);
-//					flag = true;
-//				}
-//				if(edgeLabel2Freq.get(e.label) < Mining.MIN_SUPPORT) {
-//					flag = true;
-//				}
-//				if(flag) {
-//					eit.remove();
-//					continue;
-//				}
-				e.label = eList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(e.label,
-						edgeLabel2Freq.get(e.label)));
+				e.label = edgeLabel2Rank[e.label];
 			}
 			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
 				Entry<Integer, Integer> entry = vit.next();
-				int value = entry.getValue();
-				entry.setValue(vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(value,
-						vertexLabel2Freq.get(value))));
+				int label = entry.getValue();
+				entry.setValue(vertexLabel2Rank[label]);
 			}
 			
-			if(g.getEdges().isEmpty()) {
-				it.remove();
-			} else {
-				g.init();
-			}
+			g.init();
 		}
 		
-		vList = null;
-		eList = null;
-		vertexLabel2Freq = null;
-		edgeLabel2Freq = null;
+		Debugger.finishTask("rebuildGraphSet");
 	}
 
 
