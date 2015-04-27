@@ -128,21 +128,26 @@ public class Preprocessor {
 			boolean hasNoCandidates = true;
 			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 				Edge e = eit.next();
+				int ver2Label = g.vertex2Rank.get(e.vertex2);
+				int ver2Rank = vertexLabel2Rank[ver2Label];
 				int rank = edgeLabel2Rank[e.label];
+				
+				g.vertex2Rank.put(e.vertex2, ver2Rank);
 				e.label = rank;
-				if(rank < TempResult.maxEdgeRank) {
+	
+				if(rank < TempResult.maxEdgeRank && ver2Rank < TempResult.maxVertexRank) {
 					hasNoCandidates = false;
 				}
 			}
-			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
-				Entry<Integer, Integer> entry = vit.next();
-				int label = entry.getValue();
-				int rank = vertexLabel2Rank[label];
-				entry.setValue(rank);
-				if(rank < TempResult.maxVertexRank) {
-					hasNoCandidates = false;
-				}
-			}
+//			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
+//				Entry<Integer, Integer> entry = vit.next();
+//				int label = entry.getValue();
+//				int rank = vertexLabel2Rank[label];
+//				entry.setValue(rank);
+//				if(rank < TempResult.maxVertexRank) {
+//					hasNoCandidates = false;
+//				}
+//			}
 			
 			if(hasNoCandidates) {
 				it.remove();
