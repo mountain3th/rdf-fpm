@@ -125,27 +125,27 @@ public class Preprocessor {
 			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 				boolean flag = false;
 				Edge e = eit.next();
-				if(!g.vertex2Rank.containsKey(e.vertex1) || !g.vertex2Rank.containsKey(e.vertex2)) {
-					eit.remove();
-					continue;
-				}
-				int vertex1Label = g.vertex2Rank.get(e.vertex1);
-				int vertex2Label = g.vertex2Rank.get(e.vertex2);
-				if(vertexLabel2Freq.get(vertex1Label) < Mining.MIN_SUPPORT) {
-					g.vertex2Rank.remove(e.vertex1);
-					flag = true;		
-				}
-				if(vertexLabel2Freq.get(vertex2Label) < Mining.MIN_SUPPORT) {
-					g.vertex2Rank.remove(e.vertex2);
-					flag = true;
-				}
-				if(edgeLabel2Freq.get(e.label) < Mining.MIN_SUPPORT) {
-					flag = true;
-				}
-				if(flag) {
-					eit.remove();
-					continue;
-				}
+//				if(!g.vertex2Rank.containsKey(e.vertex1) || !g.vertex2Rank.containsKey(e.vertex2)) {
+//					eit.remove();
+//					continue;
+//				}
+//				int vertex1Label = g.vertex2Rank.get(e.vertex1);
+//				int vertex2Label = g.vertex2Rank.get(e.vertex2);
+//				if(vertexLabel2Freq.get(vertex1Label) < Mining.MIN_SUPPORT) {
+//					g.vertex2Rank.remove(e.vertex1);
+//					flag = true;		
+//				}
+//				if(vertexLabel2Freq.get(vertex2Label) < Mining.MIN_SUPPORT) {
+//					g.vertex2Rank.remove(e.vertex2);
+//					flag = true;
+//				}
+//				if(edgeLabel2Freq.get(e.label) < Mining.MIN_SUPPORT) {
+//					flag = true;
+//				}
+//				if(flag) {
+//					eit.remove();
+//					continue;
+//				}
 				e.label = eList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(e.label,
 						edgeLabel2Freq.get(e.label)));
 			}

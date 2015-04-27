@@ -215,7 +215,7 @@ public class Mining {
 			double confidency = (double) size / (double) graphItems.size();
 			if(size >= Mining.MIN_SUPPORT) {
 				continue;
-			} else if(confidency >= CONFIDENCY) {
+			} else if(confidency >= Mining.CONFIDENCY) {
 				dfsCodeStack.push(entry.getKey());
 				subGraphMining(dfsCodeStack, entry.getValue());
 				dfsCodeStack.pop();
