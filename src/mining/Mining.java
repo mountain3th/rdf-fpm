@@ -2,17 +2,14 @@ package mining;
 
 
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import launcher.Debugger;
 import datastructure.DFSCode;
@@ -36,9 +33,21 @@ public class Mining {
 	public static int MIN_SUPPORT = 1;
 	public static double CONFIDENCY = 0.75;
 	public static int startPoint = -1;
+	public static List<MiningData> dataList = new ArrayList<MiningData>();
+	
 	private static Pattern pattern = Pattern.PATTERN_STRONG;
 	private static File file = null;
 	private static int fixedThread = 1;
+	
+	public static class MiningData {
+		int edgeRank;
+		int vertexRank;
+		
+		MiningData(int er, int vr) {
+			this.edgeRank = er;
+			this.vertexRank = vr;
+		}
+	}
 
 	public static void init(String[] args) throws ArgsException {
 		for(int i = 0; i < args.length; i++) {
@@ -117,11 +126,14 @@ public class Mining {
 		
 		
 //		for(int i = 0; i < maxVertexRank; i++) {
-			for(int a = 0; a < maxEdgeRank; a++) {
-				for(int j = 0; j < maxVertexRank; j++) {
-					Debugger.log(startPoint, a, j);
+//			for(int a = 0; a < maxEdgeRank; a++) {
+//				for(int j = 0; j < maxVertexRank; j++) {
+			for(int index = 0; index < dataList.size(); index++) {	
+					MiningData md = dataList.get(index);
+				
+					Debugger.log(startPoint, md.edgeRank, md.vertexRank);
 					
-					DFSCode code = new DFSCode(-1, -1, startPoint, a, j);
+					DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeRank, md.vertexRank);
 					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
 					Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
@@ -137,7 +149,7 @@ public class Mining {
 //					});
 				}
 //			}
-		}
+//		}
 		
 //		try {
 //			executorService.awaitTermination(1, TimeUnit.DAYS);

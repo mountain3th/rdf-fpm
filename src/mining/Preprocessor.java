@@ -16,6 +16,7 @@ import java.util.Set;
 
 import launcher.Debugger;
 import launcher.Debugger.OnTaskFinishedListener;
+import mining.Mining.MiningData;
 import datastructure.Graph;
 import datastructure.Graph.Edge;
 import datastructure.GraphSet;
@@ -136,6 +137,7 @@ public class Preprocessor {
 				e.label = rank;
 	
 				if(rank < TempResult.maxEdgeRank && ver2Rank < TempResult.maxVertexRank) {
+					Mining.dataList.add(new MiningData(rank, ver2Rank));
 					hasNoCandidates = false;
 				}
 			}
