@@ -14,23 +14,25 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import launcher.Debugger;
+import launcher.Debugger.OnTaskFinishedListener;
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 
-import launcher.Debugger;
-import launcher.Debugger.OnTaskFinishedListener;
 import datastructure.Graph;
 import datastructure.Graph.Edge;
+import datastructure.GraphInRDD;
 import datastructure.GraphSet;
 import exception.MiningException;
 
 public class Preprocessor {
 	private static Map<Integer, Integer> vertexLabel2Freq = new HashMap<Integer, Integer>();
 	private static Map<Integer, Integer> edgeLabel2Freq = new HashMap<Integer, Integer>();
-	private static List<Entry<Integer, Integer>> vList;
-	private static List<Entry<Integer, Integer>> eList;
+	private static int[] vertexLabel2Rank = new int[5000000];
+	private static int[] edgeLabel2Rank = new int[1000];
 	
 	public static void loadFile(File file) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -94,26 +96,32 @@ public class Preprocessor {
 			}
 		});
 		
-		vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
+		List<Entry<Integer, Integer>> vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
 		
 		Collections.sort(vList, comparator);
 		for(int index = 0; index < vList.size(); index++) {
-			if(vList.get(index).getValue() < Mining.MIN_SUPPORT) {
-				break;
+			int label = vList.get(index).getKey();
+			int freq = vList.get(index).getValue();
+			
+			if(freq >= Mining.MIN_SUPPORT) {
+				TempResult.maxVertexRank++;
 			}
-			TempResult.vertexRank2Label.put(index, vList.get(index).getKey());
-			TempResult.maxVertexRank++;
+			TempResult.vertexRank2Label.put(index, label);
+			vertexLabel2Rank[label] = index;
 		}
 		
-		eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
+		List<Entry<Integer, Integer>> eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
 		Collections.sort(eList, comparator);
 		
 		for(int index = 0; index < eList.size(); index++) {
-			if(eList.get(index).getValue() < Mining.MIN_SUPPORT) {
-				break;
+			int label = eList.get(index).getKey();
+			int freq = eList.get(index).getValue();
+			
+			if(freq >= Mining.MIN_SUPPORT) {
+				TempResult.maxEdgeRank++;
 			}
-			TempResult.edgeRank2Label.put(index, eList.get(index).getKey());
-			TempResult.maxEdgeRank++;
+			TempResult.edgeRank2Label.put(index, label);
+			edgeLabel2Rank[label] = index;
 		}
 		
 		Mining.startPoint = vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(0,
@@ -122,59 +130,30 @@ public class Preprocessor {
 	}
 	
 	public static void rebuildGraphSet() {
+		
 		List<Graph> graphSet = GraphSet.getGraphSet();
-//		int index = 0;
-//		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
-//			Debugger.log("rebuild graph: " + String.valueOf(index));
-//			index++;
-//			Graph g = it.next();
-//			Set<Edge> edges = g.getEdges();
-//			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
-//				Edge e = eit.next();
-//				e.label = eList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(e.label,
-//						edgeLabel2Freq.get(e.label)));
-//			}
-//			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
-//				Entry<Integer, Integer> entry = vit.next();
-//				int value = entry.getValue();
-//				entry.setValue(vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(value,
-//						vertexLabel2Freq.get(value))));
-//			}
-//			
-//			g.init();
-//		}
+		List<GraphInRDD> gInRddList = new ArrayList<GraphInRDD>();
+		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
+			Graph g = it.next();
+			gInRddList.add(new GraphInRDD(g, vertexLabel2Rank, edgeLabel2Rank));
+		}
 		
 		SparkConf conf = new SparkConf().setAppName("MiningInSpark").set("spark.akka.frameSize", "500");
 		JavaSparkContext sc = new JavaSparkContext(conf);
-		JavaRDD<Graph> graphRDD = sc.parallelize(graphSet);
-		long a = graphRDD.map(new Function<Graph, Graph>() {
+		JavaRDD<GraphInRDD> graphRDD = sc.parallelize(gInRddList);
+		long a = graphRDD.map(new Function<GraphInRDD, Graph>() {
 
 			@Override
-			public Graph call(Graph g) throws Exception {
-				Set<Edge> edges = g.getEdges();
-				for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
-					Edge e = eit.next();
-					e.label = eList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(e.label,
-							edgeLabel2Freq.get(e.label)));
-				}
-				for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
-					Entry<Integer, Integer> entry = vit.next();
-					int value = entry.getValue();
-					entry.setValue(vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(value,
-							vertexLabel2Freq.get(value))));
-				}
+			public Graph call(GraphInRDD gInRdd) throws Exception {
+				gInRdd.rebuild();
 				
-				g.init();
-				
-				return g;
+				return gInRdd.getGraph();
 			}
 			
 		}).count();
 		
 		System.out.println("最终*\n*\n*" + a);
 		
-		vList = null;
-		eList = null;
 		vertexLabel2Freq = null;
 		edgeLabel2Freq = null;
 	}
