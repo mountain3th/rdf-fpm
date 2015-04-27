@@ -34,6 +34,7 @@ public class Mining {
 	}
 	
 	public static int MIN_SUPPORT = 1;
+	public static double CONFIDENCY = 0.75;
 	public static int startPoint = -1;
 	private static Pattern pattern = Pattern.PATTERN_STRONG;
 	private static File file = null;
@@ -48,6 +49,16 @@ public class Mining {
 				part = args[i];
 				try{
 					MIN_SUPPORT = Integer.parseInt(part);
+				} catch(NumberFormatException e) {
+					throw new ArgsException();
+				}
+			}
+			// confidency
+			if("-confidency".equals(part)) {
+				i++;
+				part = args[i];
+				try{
+					CONFIDENCY = Double.parseDouble(part);
 				} catch(NumberFormatException e) {
 					throw new ArgsException();
 				}
@@ -200,7 +211,11 @@ public class Mining {
 		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
 		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
 			Entry<DFSCode, Set<Graph>> entry = it.next();
-			if(entry.getValue().size() >= Mining.MIN_SUPPORT) {
+			int size = entry.getValue().size();
+			double confidency = (double) size / (double) graphItems.size();
+			if(size >= Mining.MIN_SUPPORT) {
+				continue;
+			} else if(confidency >= CONFIDENCY) {
 				dfsCodeStack.push(entry.getKey());
 				subGraphMining(dfsCodeStack, entry.getValue());
 				dfsCodeStack.pop();
