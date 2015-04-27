@@ -76,16 +76,9 @@ public class Preprocessor {
 		Debugger.startTask("relabel", new OnTaskFinishedListener() {
 			@Override
 			public void onTaskFinished() {
-				Debugger.log("\n顶点Rank");
-				for(Iterator<Entry<Integer, Integer>> it = TempResult.vertexRank2Label.entrySet().iterator(); it.hasNext();) {
-					Entry<Integer, Integer> entry = it.next();
-					Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
-				}
-				Debugger.log("\n边Rank");
-				for(Iterator<Entry<Integer, Integer>> it = TempResult.edgeRank2Label.entrySet().iterator(); it.hasNext();) {
-					Entry<Integer, Integer> entry = it.next();
-					Debugger.log(entry.getKey() + " = " + entry.getValue() + ", ");
-				}
+				Debugger.log("\nmaxVertexRank: " + TempResult.maxVertexRank);
+				Debugger.log("\nmaxEdgeRank: " + TempResult.maxEdgeRank);
+				
 			}
 		});
 		
@@ -132,17 +125,30 @@ public class Preprocessor {
 		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
 			Graph g = it.next();
 			Set<Edge> edges = g.getEdges();
+			boolean hasNoCandidates = true;
 			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 				Edge e = eit.next();
-				e.label = edgeLabel2Rank[e.label];
+				int rank = edgeLabel2Rank[e.label];
+				e.label = rank;
+				if(rank < TempResult.maxEdgeRank) {
+					hasNoCandidates = false;
+				}
 			}
 			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
 				Entry<Integer, Integer> entry = vit.next();
 				int label = entry.getValue();
-				entry.setValue(vertexLabel2Rank[label]);
+				int rank = vertexLabel2Rank[label];
+				entry.setValue(rank);
+				if(rank < TempResult.maxVertexRank) {
+					hasNoCandidates = false;
+				}
 			}
 			
-			g.init();
+			if(hasNoCandidates) {
+				it.remove();
+			} else {
+				g.init();
+			}
 		}
 		
 		Debugger.finishTask("rebuildGraphSet");

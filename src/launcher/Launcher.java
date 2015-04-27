@@ -39,7 +39,7 @@ public class Launcher {
 							Edge e = eit.next();
 							Debugger.log(e.toString(g.vertex2Rank, TempResult.vertexRank2Label, TempResult.edgeRank2Label) + "\n");
 						}
-						}
+					}
 				}
 			});
 			
