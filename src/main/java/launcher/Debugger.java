@@ -19,8 +19,8 @@ public class Debugger implements Runnable {
 		void onTaskFinished();
 	}
 	
-	private static String logFile = "log/mining.log";
-	private static String resultFile = "log/result.log";
+	private static String logFile = "/home/wujs/rdf-fpm/log/mining.log";
+	private static String resultFile = "/home/wujs/rdf-fpm/log/result.log";
 	private static Stack<Task> taskStack = new Stack<Task>();
 	private static BufferedWriter bw;
 	private static BufferedWriter bs;

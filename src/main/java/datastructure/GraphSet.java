@@ -1,13 +1,14 @@
 package datastructure;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class GraphSet {
 
-	private static Set<Graph> graphSet = new HashSet<Graph>();
+	private static List<Graph> graphSet = new ArrayList<Graph>();
 	
-	public static Set<Graph> getGraphSet() {
+	public static List<Graph> getGraphSet() {
 		return graphSet;
 	}
 	

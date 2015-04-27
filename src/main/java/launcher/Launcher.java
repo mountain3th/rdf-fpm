@@ -28,7 +28,7 @@ public class Launcher {
 				@Override
 				public void onTaskFinished() {
 					Debugger.log("\n处理后的图:\n");
-					Set<Graph> graphs = GraphSet.getGraphSet();
+					List<Graph> graphs = GraphSet.getGraphSet();
 					int index = 0;
 					for(Iterator<Graph> it = graphs.iterator(); it.hasNext();){
 						Graph g = it.next();
