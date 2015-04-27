@@ -156,7 +156,11 @@ public class Preprocessor {
 						vertexLabel2Freq.get(value))));
 			}
 			
-			g.init();
+			if(g.getEdges().isEmpty()) {
+				it.remove();
+			} else {
+				g.init();
+			}
 		}
 		
 		vList = null;
