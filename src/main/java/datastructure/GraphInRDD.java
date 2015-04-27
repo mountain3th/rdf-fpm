@@ -1,13 +1,14 @@
 package datastructure;
 
+import java.io.Serializable;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import datastructure.Graph.Edge;
 
 
-public class GraphInRDD {
+public class GraphInRDD implements Serializable {
 	private Graph g;
 	private int[] vertexLabel2Rank;
 	private int[] edgeLabel2Rank;

@@ -126,10 +126,15 @@ public class Preprocessor {
 		
 		Mining.startPoint = vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(0,
 						vertexLabel2Freq.get(0)));
+		vertexLabel2Freq = null;
+		edgeLabel2Freq = null;
+		
 		Debugger.finishTask("relabel");
 	}
 	
 	public static void rebuildGraphSet() {
+		Debugger.startTask("rebuildGraphSet");
+		
 		
 		List<Graph> graphSet = GraphSet.getGraphSet();
 		List<GraphInRDD> gInRddList = new ArrayList<GraphInRDD>();
@@ -152,10 +157,7 @@ public class Preprocessor {
 			
 		}).count();
 		
-		System.out.println("最终*\n*\n*" + a);
-		
-		vertexLabel2Freq = null;
-		edgeLabel2Freq = null;
+		Debugger.finishTask("rebuildGraphSet");
 	}
 
 
