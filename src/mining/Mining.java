@@ -33,7 +33,7 @@ public class Mining {
 	public static int MIN_SUPPORT = 1;
 	public static double CONFIDENCY = 0.75;
 	public static int startPoint = -1;
-	public static List<MiningData> dataList = new ArrayList<MiningData>();
+	public static Set<MiningData> dataSet = new HashSet<MiningData>();
 	
 	private static Pattern pattern = Pattern.PATTERN_STRONG;
 	private static File file = null;
@@ -143,8 +143,8 @@ public class Mining {
 //		for(int i = 0; i < maxVertexRank; i++) {
 //			for(int a = 0; a < maxEdgeRank; a++) {
 //				for(int j = 0; j < maxVertexRank; j++) {
-			for(int index = 0; index < dataList.size(); index++) {	
-					MiningData md = dataList.get(index);
+			for(Iterator<MiningData> it = dataSet.iterator(); it.hasNext();) {	
+					MiningData md = it.next();
 				
 					Debugger.log(startPoint, md.edgeLabel, md.vertexLabel);
 					

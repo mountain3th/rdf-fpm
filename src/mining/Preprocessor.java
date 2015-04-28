@@ -144,7 +144,7 @@ public class Preprocessor {
 				
 				if(md2Freq.get(md) >= Mining.MIN_SUPPORT) {
 					hasNoCandidates = false;
-					Mining.dataList.add(new MiningData(edgeRank, ver2Rank));
+					Mining.dataSet.add(new MiningData(edgeRank, ver2Rank));
 				}
 			}
 //			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
