@@ -31,7 +31,7 @@ public class Mining {
 	}
 	
 	public static int MIN_SUPPORT = 1;
-	public static double CONFIDENCY = 0.75;
+	public static double CONFIDENCE = 0.75;
 	public static int startPoint = -1;
 	public static Set<MiningData> dataSet = new HashSet<MiningData>();
 	
@@ -77,12 +77,12 @@ public class Mining {
 					throw new ArgsException();
 				}
 			}
-			// confidency
-			if("-confidency".equals(part)) {
+			// Confidence
+			if("-confidence".equals(part)) {
 				i++;
 				part = args[i];
 				try{
-					CONFIDENCY = Double.parseDouble(part);
+					CONFIDENCE = Double.parseDouble(part);
 				} catch(NumberFormatException e) {
 					throw new ArgsException();
 				}
@@ -209,8 +209,6 @@ public class Mining {
 		
 		Debugger.saveResult(dfsCodeStack);
 				
-		Debugger.watch();
-
 		Debugger.startTask("getCandidates " + dfsCodeStack.peek());
 		// 3. 扩展并获得候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
@@ -241,10 +239,10 @@ public class Mining {
 		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
 			Entry<DFSCode, Set<Graph>> entry = it.next();
 			int size = entry.getValue().size();
-			double confidency = (double) size / (double) graphItems.size();
+			double confidence = (double) size / (double) graphItems.size();
 			if(size >= Mining.MIN_SUPPORT) {
 				continue;
-			} else if(confidency >= Mining.CONFIDENCY) {
+			} else if(confidence >= Mining.CONFIDENCE) {
 				dfsCodeStack.push(entry.getKey());
 				subGraphMining(dfsCodeStack, entry.getValue());
 				dfsCodeStack.pop();

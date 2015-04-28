@@ -153,24 +153,6 @@ public class Debugger implements Runnable {
 		}
 	}
 	
-	public static void log(int i, int a, int j) {
-		try{
-			bw.newLine();
-			bw.write(i + " " + a + " " + j);
-			bw.flush();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void watch() {
-		try{
-			bw.write(" *");
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public static void log(String str) {
 		try {
 			bw.write(str);

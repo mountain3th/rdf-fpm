@@ -4,12 +4,12 @@ public class Predicate {
 	
 	public static class Concept {
 		int object;
-		int confidency;
+		int confidence;
 		int depth;
 		
 		Concept(int o, int c, int d) {
 			this.object = o;
-			this.confidency = c;
+			this.confidence = c;
 			this.depth = d;
 		}
 	}
