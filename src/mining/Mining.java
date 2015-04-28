@@ -143,10 +143,12 @@ public class Mining {
 //		for(int i = 0; i < maxVertexRank; i++) {
 //			for(int a = 0; a < maxEdgeRank; a++) {
 //				for(int j = 0; j < maxVertexRank; j++) {
+			int index = 0;
 			for(Iterator<MiningData> it = dataSet.iterator(); it.hasNext();) {	
 					MiningData md = it.next();
 				
-					Debugger.log(startPoint, md.edgeLabel, md.vertexLabel);
+					Debugger.log(String.valueOf(index) + "\n");
+					index++;
 					
 					DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeLabel, md.vertexLabel);
 					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
@@ -240,6 +242,7 @@ public class Mining {
 			Entry<DFSCode, Set<Graph>> entry = it.next();
 			int size = entry.getValue().size();
 			double confidency = (double) size / (double) graphItems.size();
+			Debugger.log(entry.getKey() + " : " + String.valueOf(confidency) + "\n");
 			if(size >= Mining.MIN_SUPPORT) {
 				continue;
 			} else if(confidency >= Mining.CONFIDENCY) {

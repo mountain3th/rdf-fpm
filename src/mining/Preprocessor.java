@@ -80,9 +80,7 @@ public class Preprocessor {
 		Debugger.startTask("relabel", new OnTaskFinishedListener() {
 			@Override
 			public void onTaskFinished() {
-				Debugger.log("\nmaxVertexRank: " + TempResult.maxVertexRank);
-				Debugger.log("\nmaxEdgeRank: " + TempResult.maxEdgeRank);
-				
+				Debugger.log("共有: " + String.valueOf(md2Freq.size()) + "\n");
 			}
 		});
 		
