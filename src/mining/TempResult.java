@@ -73,6 +73,35 @@ public class TempResult {
 		depth++;
 	}
 	
+	public static void cutIfHasNoConcept() {
+		for(Iterator<Node> it = roots.iterator(); it.hasNext();) {
+			Node n = it.next();
+			if(cut(n)) {
+				it.remove();
+			}
+		}
+	}
+	
+	private static boolean cut(Node n) {
+		List<Node> childs = n.childs;
+		if(childs == null) {
+			return hasConcept(n);
+		}
+		boolean hasConcept = false;
+		for(int index = 0; index < childs.size(); index++) {
+			boolean temp = cut(childs.get(index));
+			if(!temp) {
+				childs.remove(index);
+			}
+			hasConcept |= temp;
+		}
+		return hasConcept;
+	}
+	
+	private static boolean hasConcept(Node n) {
+		return n.code.a == 0;
+	}
+	
 	public static void print() {
 		for(Iterator<Node> it = roots.iterator(); it.hasNext();) {
 			print(it.next());
