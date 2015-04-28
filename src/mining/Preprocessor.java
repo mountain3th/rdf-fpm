@@ -32,7 +32,6 @@ public class Preprocessor {
 	public static void loadFile(File file) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line = null;
-		Map<Integer, Integer> tmp = null;
 		Graph graph = null;
 		
 		Debugger.startTask("loadFile");
@@ -45,27 +44,25 @@ public class Preprocessor {
 				graphCount++;
 				graph = new Graph(graphCount);
 				GraphSet.add(graph);
-				tmp = new HashMap<Integer, Integer>();
 			} else if("v".equals(content[0])) {
 				int vertex = Integer.valueOf(content[1]);
 				int label = Integer.valueOf(content[2]);
 				int value = vertexLabel2Freq.containsKey(label) ? vertexLabel2Freq.get(label) + 1 : 1;
 				vertexLabel2Freq.put(label, value);
 				graph.putVertexRank(vertex, label);
-				tmp.put(vertex, label);
 			} else if("e".equals(content[0])) {
 				int vertex1 = Integer.valueOf(content[1]);
 				int vertex2 = Integer.valueOf(content[2]);
-				if(!tmp.containsKey(vertex1) || !tmp.containsKey(vertex2)) {
+				if(!graph.vertex2Rank.containsKey(vertex1) || !graph.vertex2Rank.containsKey(vertex2)) {
 					throw new MiningException();
 				}
-				vertex1 = tmp.get(vertex1);
-				vertex2 = tmp.get(vertex2);
+				
+				int vertex2Label = graph.vertex2Rank.get(vertex2);
 				int label = Integer.valueOf(content[3]);
 				int value = edgeLabel2Freq.containsKey(label) ? edgeLabel2Freq.get(label) + 1 : 1;
 				edgeLabel2Freq.put(label, value);
 				
-				MiningData md = new MiningData(label, vertex2);
+				MiningData md = new MiningData(label, vertex2Label);
 				int value2 = md2Freq.containsKey(md) ? md2Freq.get(md) + 1 : 1;
 				md2Freq.put(md, value2);
 				
