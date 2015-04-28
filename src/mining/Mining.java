@@ -57,6 +57,11 @@ public class Mining {
 			
 			return false;
 		}
+		
+		@Override
+		public int hashCode() {
+			return edgeLabel + vertexLabel;
+		}
 	}
 
 	public static void init(String[] args) throws ArgsException {
