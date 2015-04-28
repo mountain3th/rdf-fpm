@@ -77,12 +77,7 @@ public class Preprocessor {
 	
 	
 	public static void relabel() {
-		Debugger.startTask("relabel", new OnTaskFinishedListener() {
-			@Override
-			public void onTaskFinished() {
-				Debugger.log("共有: " + String.valueOf(Mining.dataSet.size()) + "\n");
-			}
-		});
+		Debugger.startTask("relabel");
 		
 		List<Entry<Integer, Integer>> vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
 		
@@ -121,7 +116,12 @@ public class Preprocessor {
 	}
 	
 	public static void rebuildGraphSet() {
-		Debugger.startTask("rebuildGraphSet");
+		Debugger.startTask("rebuildGraphSet", new OnTaskFinishedListener() {
+			@Override
+			public void onTaskFinished() {
+				Debugger.log("共有: " + String.valueOf(Mining.dataSet.size()) + "\n");
+			}
+		});
 		
 		Set<Graph> graphSet = GraphSet.getGraphSet();
 		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
