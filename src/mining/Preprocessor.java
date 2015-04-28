@@ -25,6 +25,7 @@ import exception.MiningException;
 public class Preprocessor {
 	private static Map<Integer, Integer> vertexLabel2Freq = new HashMap<Integer, Integer>();
 	private static Map<Integer, Integer> edgeLabel2Freq = new HashMap<Integer, Integer>();
+	private static Map<MiningData, Integer> md2Freq = new HashMap<MiningData, Integer>();
 	private static int[] vertexLabel2Rank = new int[5000000];
 	private static int[] edgeLabel2Rank = new int[1000];
 	
@@ -58,11 +59,16 @@ public class Preprocessor {
 				if(!tmp.containsKey(vertex1) || !tmp.containsKey(vertex2)) {
 					throw new MiningException();
 				}
-//				vertex1 = tmp.get(vertex1);
-//				vertex2 = tmp.get(vertex2);
+				vertex1 = tmp.get(vertex1);
+				vertex2 = tmp.get(vertex2);
 				int label = Integer.valueOf(content[3]);
 				int value = edgeLabel2Freq.containsKey(label) ? edgeLabel2Freq.get(label) + 1 : 1;
 				edgeLabel2Freq.put(label, value);
+				
+				MiningData md = new MiningData(label, vertex2);
+				int value2 = md2Freq.containsKey(md) ? md2Freq.get(md) + 1 : 1;
+				md2Freq.put(md, value2);
+				
 				graph.addEdge(new Edge(vertex1, label, vertex2));
 			}
 		}
@@ -129,16 +135,19 @@ public class Preprocessor {
 			boolean hasNoCandidates = true;
 			for(Iterator<Edge> eit = edges.iterator(); eit.hasNext();) {
 				Edge e = eit.next();
+				
 				int ver2Label = g.vertex2Rank.get(e.vertex2);
+				MiningData md = new MiningData(e.label, ver2Label);
+				
 				int ver2Rank = vertexLabel2Rank[ver2Label];
-				int rank = edgeLabel2Rank[e.label];
+				int edgeRank = edgeLabel2Rank[e.label];
 				
 				g.vertex2Rank.put(e.vertex2, ver2Rank);
-				e.label = rank;
-	
-				if(rank < TempResult.maxEdgeRank && ver2Rank < TempResult.maxVertexRank) {
-					Mining.dataList.add(new MiningData(rank, ver2Rank));
+				e.label = edgeRank;
+				
+				if(md2Freq.get(md) >= Mining.MIN_SUPPORT) {
 					hasNoCandidates = false;
+					Mining.dataList.add(new MiningData(edgeRank, ver2Rank));
 				}
 			}
 //			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {

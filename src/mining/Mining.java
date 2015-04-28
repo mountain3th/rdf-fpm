@@ -40,12 +40,22 @@ public class Mining {
 	private static int fixedThread = 1;
 	
 	public static class MiningData {
-		int edgeRank;
-		int vertexRank;
+		int edgeLabel;
+		int vertexLabel;
 		
 		MiningData(int er, int vr) {
-			this.edgeRank = er;
-			this.vertexRank = vr;
+			this.edgeLabel = er;
+			this.vertexLabel = vr;
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if(o instanceof MiningData) {
+				return this.edgeLabel == ((MiningData) o).edgeLabel && 
+						this.vertexLabel == ((MiningData) o).vertexLabel;
+			}
+			
+			return false;
 		}
 	}
 
@@ -131,9 +141,9 @@ public class Mining {
 			for(int index = 0; index < dataList.size(); index++) {	
 					MiningData md = dataList.get(index);
 				
-					Debugger.log(startPoint, md.edgeRank, md.vertexRank);
+					Debugger.log(startPoint, md.edgeLabel, md.vertexLabel);
 					
-					DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeRank, md.vertexRank);
+					DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeLabel, md.vertexLabel);
 					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
 					dfsCodeStack.push(code);
 					Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
