@@ -156,6 +156,7 @@ public class Debugger implements Runnable {
 	public static void log(String str) {
 		try {
 			bw.write(str);
+			bw.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
