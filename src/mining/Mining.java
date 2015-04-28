@@ -242,7 +242,6 @@ public class Mining {
 			Entry<DFSCode, Set<Graph>> entry = it.next();
 			int size = entry.getValue().size();
 			double confidency = (double) size / (double) graphItems.size();
-			Debugger.log(entry.getKey() + " : " + String.valueOf(confidency) + "\n");
 			if(size >= Mining.MIN_SUPPORT) {
 				continue;
 			} else if(confidency >= Mining.CONFIDENCY) {

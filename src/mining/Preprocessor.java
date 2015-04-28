@@ -80,7 +80,7 @@ public class Preprocessor {
 		Debugger.startTask("relabel", new OnTaskFinishedListener() {
 			@Override
 			public void onTaskFinished() {
-				Debugger.log("共有: " + String.valueOf(md2Freq.size()) + "\n");
+				Debugger.log("共有: " + String.valueOf(Mining.dataSet.size()) + "\n");
 			}
 		});
 		
