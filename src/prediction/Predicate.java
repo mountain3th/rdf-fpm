@@ -25,15 +25,17 @@ public class Predicate {
 	}
 	
 	public static void generate() {
-		TempResult.print();
+//		TempResult.print();
 		
-//		for(int i = 0; i < 5000000; i++) {
-//			List<Concept> concepts = TempResult.genConcept(i);
-//			if(!concepts.isEmpty()) {
-//				for(int j = 0; j < concepts.size(); j++) {
-//					Debugger.log(concepts.get(j).toString());
-//				}
-//			}
-//		}
+		for(int i = 0; i < 5000000; i++) {
+			List<Concept> concepts = TempResult.genConcept(i);
+			if(!concepts.isEmpty()) {
+				System.out.println(i);
+				Debugger.log(String.valueOf(i) + ": \n");
+				for(int j = 0; j < concepts.size(); j++) {
+					Debugger.log(concepts.get(j).toString());
+				}
+			}
+		}
 	}
 }
