@@ -78,7 +78,7 @@ public class TempResult {
 	public static void cutIfHasNoConcept() {
 		for(Iterator<Node> it = roots.iterator(); it.hasNext();) {
 			Node n = it.next();
-			if(cut(n)) {
+			if(!cut(n)) {
 				it.remove();
 			}
 		}
