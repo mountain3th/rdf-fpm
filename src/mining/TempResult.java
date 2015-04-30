@@ -112,18 +112,19 @@ public class TempResult {
 	}
 	
 	private static void genConcept(Node n, int subject, List<Concept> concepts, int depth) {
+		if(hasConcept(n)) {
+			if(n.subjects.contains(subject)) {
+				concepts.add(new Concept(n.code.y, 1.0, depth));
+			} else {
+				concepts.add(new Concept(n.code.y, n.confidency, depth));
+			}
+		}
+		
 		List<Node> childs = n.childs;
 		if(childs == null) {
 			return;
 		}
 		for(int index = 0; index < childs.size(); index++) {
-			if(hasConcept(n)) {
-				if(n.subjects.contains(subject)) {
-					concepts.add(new Concept(n.code.y, 1.0, depth));
-				} else {
-					concepts.add(new Concept(n.code.y, n.confidency, depth));
-				}
-			}
 			genConcept(n, subject, concepts, depth + 1);
 		}
 	}
