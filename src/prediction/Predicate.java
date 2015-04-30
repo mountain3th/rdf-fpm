@@ -1,26 +1,34 @@
 package prediction;
 
+import java.util.List;
+
+import mining.TempResult;
+
 public class Predicate {
 	
 	public static class Concept {
 		int object;
-		int confidence;
+		double confidence;
 		int depth;
 		
-		Concept(int o, int c, int d) {
+		public Concept(int o, double c, int d) {
 			this.object = o;
 			this.confidence = c;
 			this.depth = d;
 		}
-	}
-	
-	public static void generate() {
-		for(int index = 0; index < 10000; index++) {
-			generate(index);
+		
+		@Override
+		public String toString() {
+			return "" + object + " : " + confidence;
 		}
 	}
 	
-	private static void generate(int subject) {
-		
+	public static void generate() {
+		for(int i = 0; i < 10000; i++) {
+			List<Concept> concepts = TempResult.genConcept(i);
+			for(int j = 0; j < concepts.size(); j++) {
+				System.out.print(concepts.get(j));
+			}
+		}
 	}
 }

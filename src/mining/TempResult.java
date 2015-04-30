@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import prediction.Predicate.Concept;
 import datastructure.DFSCode;
 import datastructure.DFSCodeStack;
 import datastructure.Graph;
@@ -100,6 +101,31 @@ public class TempResult {
 	
 	private static boolean hasConcept(Node n) {
 		return n.code.a == 0;
+	}
+	
+	public static List<Concept> genConcept(int subject) {
+		List<Concept> concepts = new ArrayList<Concept>();
+		for(Iterator<Node> it = roots.iterator(); it.hasNext();) {
+			genConcept(it.next(), subject, concepts, 1);
+		}
+		return concepts;
+	}
+	
+	private static void genConcept(Node n, int subject, List<Concept> concepts, int depth) {
+		List<Node> childs = n.childs;
+		if(childs == null) {
+			return;
+		}
+		for(int index = 0; index < childs.size(); index++) {
+			if(hasConcept(n)) {
+				if(n.subjects.contains(subject)) {
+					concepts.add(new Concept(n.code.y, 1.0, depth));
+				} else {
+					concepts.add(new Concept(n.code.y, n.confidency, depth));
+				}
+			}
+			genConcept(n, subject, concepts, depth + 1);
+		}
 	}
 	
 	public static void print() {

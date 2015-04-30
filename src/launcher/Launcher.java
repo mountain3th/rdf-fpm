@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import prediction.Predicate;
+
 import launcher.Debugger.OnTaskFinishedListener;
 import mining.Mining;
 import mining.Preprocessor;
@@ -54,7 +56,7 @@ public class Launcher {
 			Debugger.finishTask("main");
 			Debugger.stop();
 			
-			TempResult.print();
+			Predicate.generate();
 		} catch(ArgsException e) {
 			
 		} catch(MiningException e) {
