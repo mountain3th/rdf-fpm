@@ -27,6 +27,8 @@ public class Predicate {
 	public static void generate() {
 //		TempResult.print();
 		
+		TempResult.cutIfHasNoConcept();
+		
 		for(int i = 0; i < 5000000; i++) {
 			List<Concept> concepts = TempResult.genConcept(i);
 			if(!concepts.isEmpty()) {
