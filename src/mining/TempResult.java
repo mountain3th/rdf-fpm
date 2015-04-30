@@ -100,7 +100,7 @@ public class TempResult {
 	}
 	
 	private static boolean hasConcept(Node n) {
-		return n.code.a == 0;
+		return edgeRank2Label.get(n.code.a) == 633;
 	}
 	
 	public static List<Concept> genConcept(int subject) {
