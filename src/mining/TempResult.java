@@ -106,7 +106,10 @@ public class TempResult {
 	public static List<Concept> genConcept(int subject) {
 		List<Concept> concepts = new ArrayList<Concept>();
 		for(Iterator<Node> it = roots.iterator(); it.hasNext();) {
-			genConcept(it.next(), subject, concepts, 1);
+			Node n = it.next();
+			if(n.subjects.contains(subject)) {
+				genConcept(n, subject, concepts, 1);
+			}
 		}
 		return concepts;
 	}
