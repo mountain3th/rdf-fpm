@@ -24,6 +24,8 @@ public class Predicate {
 	}
 	
 	public static void generate() {
+		TempResult.print();
+		
 		for(int i = 0; i < 5000000; i++) {
 			List<Concept> concepts = TempResult.genConcept(i);
 			for(int j = 0; j < concepts.size(); j++) {
