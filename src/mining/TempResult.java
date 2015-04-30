@@ -140,7 +140,7 @@ public class TempResult {
 	}
 	
 	private static void print(Node n) {
-		Debugger.log(n.code.toString(vertexRank2Label, edgeRank2Label) + "  " + n.subjects);
+		Debugger.log(n.code.toString(vertexRank2Label, edgeRank2Label) + "\n");
 		List<Node> childs = n.childs;
 		if(childs == null) {
 			return;
