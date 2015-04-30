@@ -2,6 +2,7 @@ package prediction;
 
 import java.util.List;
 
+import launcher.Debugger;
 import mining.TempResult;
 
 public class Predicate {
@@ -19,7 +20,7 @@ public class Predicate {
 		
 		@Override
 		public String toString() {
-			return "" + object + " : " + confidence;
+			return "" + object + " : " + confidence + "\n";
 		}
 	}
 	
@@ -28,8 +29,11 @@ public class Predicate {
 		
 		for(int i = 0; i < 5000000; i++) {
 			List<Concept> concepts = TempResult.genConcept(i);
-			for(int j = 0; j < concepts.size(); j++) {
-				System.out.print(concepts.get(j));
+			if(!concepts.isEmpty()) {
+				System.out.println(i);
+				for(int j = 0; j < concepts.size(); j++) {
+					Debugger.log(concepts.get(j).toString());
+				}
 			}
 		}
 	}
