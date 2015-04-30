@@ -53,10 +53,11 @@ public class Launcher {
 			
 			Mining.start(TempResult.maxVertexRank, TempResult.maxEdgeRank);
 			
+			Predicate.generate();
+
 			Debugger.finishTask("main");
 			Debugger.stop();
 			
-			Predicate.generate();
 		} catch(ArgsException e) {
 			
 		} catch(MiningException e) {
