@@ -29,6 +29,8 @@ public class Predicate {
 		
 		TempResult.cutIfHasNoConcept();
 		
+		Debugger.log("\nAfter cut\n");
+		
 		TempResult.print();
 		
 //		for(int i = 0; i < 5000000; i++) {
