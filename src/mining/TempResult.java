@@ -32,7 +32,7 @@ public class TempResult {
 	
 	static class Node {
 		int count;
-		double confidency;
+		double confidence;
 		DFSCode code;
 		Set<Integer> subjects;
 		List<Node> childs;
@@ -40,7 +40,7 @@ public class TempResult {
 		
 		Node(DFSCode c) {
 			code = c;
-			confidency = 1.0;
+			confidence = 1.0;
 			subjects = new HashSet<Integer>();
 		}
 		
@@ -66,7 +66,8 @@ public class TempResult {
 			n.subjects.add(it.next().subject);
 		}
 		if(currentNode != null) {
-			n.confidency = (double)n.count / (double)currentNode.count;
+			double confidence = (double)n.count / (double)currentNode.count;
+			n.confidence = confidence < currentNode.confidence ? confidence : currentNode.confidence;
 			currentNode.addChild(n);
 		} else {
 			roots.add(n);
@@ -120,7 +121,7 @@ public class TempResult {
 			if(n.subjects.contains(subject)) {
 				concepts.add(new Concept(n.code.y, 1.0, depth));
 			} else {
-				concepts.add(new Concept(n.code.y, n.confidency, depth));
+				concepts.add(new Concept(n.code.y, n.confidence, depth));
 			}
 		}
 		

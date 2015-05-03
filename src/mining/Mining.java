@@ -145,26 +145,26 @@ public class Mining {
 //				for(int j = 0; j < maxVertexRank; j++) {
 			int index = 0;
 			for(Iterator<MiningData> it = dataSet.iterator(); it.hasNext();) {	
-					MiningData md = it.next();
+				MiningData md = it.next();
+			
+				Debugger.log(String.valueOf(index) + "\n");
+				index++;
 				
-					Debugger.log(String.valueOf(index) + "\n");
-					index++;
-					
-					DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeLabel, md.vertexLabel);
-					final DFSCodeStack dfsCodeStack = new DFSCodeStack();
-					dfsCodeStack.push(code);
-					Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
-					
+				DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeLabel, md.vertexLabel);
+				final DFSCodeStack dfsCodeStack = new DFSCodeStack();
+				dfsCodeStack.push(code);
+				Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
+				
 //					executorService.execute(new Runnable() {
 
 //						@Override
 //						public void run() {
-					Debugger.startTask("subGraphMining");
-							new Mining().subGraphMining(dfsCodeStack, graphItems);
+				Debugger.startTask("subGraphMining");
+						new Mining().subGraphMining(dfsCodeStack, graphItems);
 //						}
-					Debugger.finishTask("subGraphMining");	
+				Debugger.finishTask("subGraphMining");	
 //					});
-				}
+			}
 //			}
 //		}
 		

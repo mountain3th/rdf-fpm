@@ -20,28 +20,28 @@ public class Predicate {
 		
 		@Override
 		public String toString() {
-			return "" + object + " : " + confidence + "\n";
+			return "" + object + "," + confidence + "\n";
 		}
 	}
 	
 	public static void generate() {
-		TempResult.print();
+//		TempResult.print();
 		
 		TempResult.cutIfHasNoConcept();
 		
-		Debugger.log("\nAfter cut\n");
+//		Debugger.log("\nAfter cut\n");
+//		
+//		TempResult.print();
 		
-		TempResult.print();
-		
-//		for(int i = 0; i < 5000000; i++) {
-//			List<Concept> concepts = TempResult.genConcept(i);
-//			if(!concepts.isEmpty()) {
-//				System.out.println(i);
-//				Debugger.log(String.valueOf(i) + ": \n");
-//				for(int j = 0; j < concepts.size(); j++) {
-//					Debugger.log(concepts.get(j).toString());
-//				}
-//			}
-//		}
+		for(int i = 0; i < 5000000; i++) {
+			List<Concept> concepts = TempResult.genConcept(i);
+			if(!concepts.isEmpty()) {
+				System.out.println(i);
+				Debugger.log("s " + String.valueOf(i) + "\n");
+				for(int j = 0; j < concepts.size(); j++) {
+					Debugger.log(concepts.get(j).toString());
+				}
+			}
+		}
 	}
 }
