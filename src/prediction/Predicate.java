@@ -36,7 +36,6 @@ public class Predicate {
 		for(int i = 0; i < 5000000; i++) {
 			List<Concept> concepts = TempResult.genConcept(i);
 			if(!concepts.isEmpty()) {
-				System.out.println(i);
 				Debugger.log("s " + String.valueOf(i) + "\n");
 				for(int j = 0; j < concepts.size(); j++) {
 					Debugger.log(concepts.get(j).toString());
