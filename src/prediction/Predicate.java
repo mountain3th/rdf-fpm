@@ -1,9 +1,13 @@
 package prediction;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
-import launcher.Debugger;
 import mining.TempResult;
+
 
 public class Predicate {
 	
@@ -25,22 +29,23 @@ public class Predicate {
 	}
 	
 	public static void generate() {
-//		TempResult.print();
-		
 		TempResult.cutIfHasNoConcept();
 		
-//		Debugger.log("\nAfter cut\n");
-//		
-//		TempResult.print();
-		
-		for(int i = 0; i < 5000000; i++) {
-			List<Concept> concepts = TempResult.genConcept(i);
-			if(!concepts.isEmpty()) {
-				Debugger.log("s " + String.valueOf(i) + "\n");
-				for(int j = 0; j < concepts.size(); j++) {
-					Debugger.log(concepts.get(j).toString());
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("log/predicates.log")));
+			for(int i = 0; i < 5000000; i++) {
+				List<Concept> concepts = TempResult.genConcept(i);
+				if(!concepts.isEmpty()) {
+					bw.write("s " + String.valueOf(i) + "\n");
+					for(int j = 0; j < concepts.size(); j++) {
+						bw.write(concepts.get(j).toString());
+					}
 				}
 			}
+			
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
