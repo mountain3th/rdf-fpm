@@ -1,6 +1,7 @@
 package exception;
 
 
+@SuppressWarnings("serial")
 public class MiningException extends RuntimeException {
 
 	private int type;

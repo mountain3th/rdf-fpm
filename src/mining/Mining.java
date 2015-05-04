@@ -2,11 +2,9 @@ package mining;
 
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -34,10 +32,9 @@ public class Mining {
 	public static double CONFIDENCE = 0.75;
 	public static int startPoint = -1;
 	public static Set<MiningData> dataSet = new HashSet<MiningData>();
+	public static File file = null;
 	
-	private static Pattern pattern = Pattern.PATTERN_STRONG;
-	private static File file = null;
-	private static int fixedThread = 1;
+//	private static int fixedThread = 1;
 	
 	public static class MiningData {
 		int edgeLabel;
@@ -74,7 +71,7 @@ public class Mining {
 				try{
 					MIN_SUPPORT = Integer.parseInt(part);
 				} catch(NumberFormatException e) {
-					throw new ArgsException();
+					throw new ArgsException(0);
 				}
 			}
 			// Confidence
@@ -84,19 +81,7 @@ public class Mining {
 				try{
 					CONFIDENCE = Double.parseDouble(part);
 				} catch(NumberFormatException e) {
-					throw new ArgsException();
-				}
-			}
-			// pattern设置
-			if("-pattern".equals(part)) {
-				i++;
-				part = args[i];
-				if("strong".equals(part)) {
-					pattern = Pattern.PATTERN_STRONG;
-				} else if("week".equals(part)) {
-					pattern = Pattern.PATTERN_WEEK;
-				} else {
-					throw new ArgsException();
+					throw new ArgsException(1);
 				}
 			}
 			// 文件检查
@@ -105,75 +90,50 @@ public class Mining {
 				part = args[i];
 				file = new File(part);
 				if(!file.exists() || !file.isFile()) {
-					throw new ArgsException();
+					throw new ArgsException(2);
 				}
-			}
-			// 分布式控制
-			if("-spark".equals(part)) {
-				
 			}
 			// 多线程控制
-			if("-thread".equals(part)) {
-				i++;
-				part = args[i];
-				try{
-					fixedThread = Integer.parseInt(part);
-				} catch(NumberFormatException e) {
-					throw new ArgsException();
-				}
-			}
+//			if("-thread".equals(part)) {
+//				i++;
+//				part = args[i];
+//				try{
+//					fixedThread = Integer.parseInt(part);
+//				} catch(NumberFormatException e) {
+//					throw new ArgsException();
+//				}
+//			}
 			// 是否输出debug信息
 			if("-debug".equals(part)) {
 				Debugger.isDebug = true;
 			}
 		}
 		if(file == null) {
-			throw new ArgsException();
+			throw new ArgsException(3);
 		}
 	}
 	
-	public static File getFile() {
-		return file;
-	}
 	
 	public static void start() {
-//		ExecutorService executorService = Executors.newSingleThreadExecutor();
-		
-		
 //		for(int i = 0; i < maxVertexRank; i++) {
 //			for(int a = 0; a < maxEdgeRank; a++) {
 //				for(int j = 0; j < maxVertexRank; j++) {
-			int index = 0;
-			for(Iterator<MiningData> it = dataSet.iterator(); it.hasNext();) {	
-				MiningData md = it.next();
-			
-				Debugger.log(String.valueOf(index) + "\n");
-				index++;
-				
-				DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeLabel, md.vertexLabel);
-				final DFSCodeStack dfsCodeStack = new DFSCodeStack();
-				dfsCodeStack.push(code);
-				Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
-				
-//					executorService.execute(new Runnable() {
-
-//						@Override
-//						public void run() {
-				Debugger.startTask("subGraphMining");
-						new Mining().subGraphMining(dfsCodeStack, graphItems);
-//						}
-				Debugger.finishTask("subGraphMining");	
-//					});
-			}
-//			}
-//		}
+		int index = 0;
+		for(Iterator<MiningData> it = dataSet.iterator(); it.hasNext();) {	
+			MiningData md = it.next();
 		
-//		try {
-//			executorService.awaitTermination(1, TimeUnit.DAYS);
-//			executorService.shutdown();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+			Debugger.log(String.valueOf(index) + "\n");
+			index++;
+			
+			DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeLabel, md.vertexLabel);
+			final DFSCodeStack dfsCodeStack = new DFSCodeStack();
+			dfsCodeStack.push(code);
+			Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
+			
+			Debugger.startTask("subGraphMining");
+			new Mining().subGraphMining(dfsCodeStack, graphItems);
+			Debugger.finishTask("subGraphMining");	
+		}
 	}
 	
 	private void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
@@ -219,17 +179,13 @@ public class Mining {
 			}
 			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
 				DFSCode dfsCode = dit.next();
-				DFSCode tempCode = new DFSCode(dfsCode);
-				if(pattern == Pattern.PATTERN_WEEK) {
-					tempCode.y = -1;
-				}
-				if(supportChecker.containsKey(tempCode)) {
-					Set<Graph> temp = supportChecker.get(tempCode);
+				if(supportChecker.containsKey(dfsCode)) {
+					Set<Graph> temp = supportChecker.get(dfsCode);
 					temp.add(g);
 				} else {
 					Set<Graph> temp = new HashSet<Graph>();
 					temp.add(g);
-					supportChecker.put(tempCode, temp);
+					supportChecker.put(dfsCode, temp);
 				}
 			}
 		}

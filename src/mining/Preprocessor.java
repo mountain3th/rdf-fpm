@@ -3,7 +3,6 @@ package mining;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -87,7 +86,7 @@ public class Preprocessor {
 	}
 	
 	/**
-	 * 剪枝
+	 * 重新标记，用rank替换label
 	 */
 	public static void relabel() {
 		Debugger.startTask("relabel");
@@ -96,11 +95,6 @@ public class Preprocessor {
 		Collections.sort(vList, comparator);
 		for(int index = 0; index < vList.size(); index++) {
 			int label = vList.get(index).getKey();
-			int freq = vList.get(index).getValue();
-			
-//			if(freq >= Mining.MIN_SUPPORT) {
-//				TempResult.maxVertexRank++;
-//			}
 			TempResult.vertexRank2Label.put(index, label);
 			vertexLabel2Rank[label] = index;
 		}
@@ -109,11 +103,6 @@ public class Preprocessor {
 		Collections.sort(eList, comparator);
 		for(int index = 0; index < eList.size(); index++) {
 			int label = eList.get(index).getKey();
-			int freq = eList.get(index).getValue();
-			
-			if(freq >= Mining.MIN_SUPPORT) {
-				TempResult.maxEdgeRank++;
-			}
 			TempResult.edgeRank2Label.put(index, label);
 			edgeLabel2Rank[label] = index;
 		}
@@ -156,15 +145,6 @@ public class Preprocessor {
 					Mining.dataSet.add(new MiningData(edgeRank, ver2Rank));
 				}
 			}
-//			for(Iterator<Entry<Integer, Integer>> vit = g.vertex2Rank.entrySet().iterator(); vit.hasNext();) {
-//				Entry<Integer, Integer> entry = vit.next();
-//				int label = entry.getValue();
-//				int rank = vertexLabel2Rank[label];
-//				entry.setValue(rank);
-//				if(rank < TempResult.maxVertexRank) {
-//					hasNoCandidates = false;
-//				}
-//			}
 			
 			if(hasNoCandidates) {
 				it.remove();

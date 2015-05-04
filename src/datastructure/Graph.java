@@ -17,7 +17,7 @@ public class Graph {
 	public int subject;
 	
 	private Set<Edge> edges;
-	private DFSEdgeTree dfsEdgeTree;
+//	private DFSEdgeTree dfsEdgeTree;
 	private DFSCandidates dfsCandidates;
 	
 	public Map<Integer, Integer> vertex2Rank;

@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import datastructure.GraphSet;
+
 import mining.TempResult;
 
 
@@ -31,9 +33,11 @@ public class Predicate {
 	public static void generate() {
 		TempResult.cutIfHasNoConcept();
 		
+		TempResult.print();
+		
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("log/predicates.log")));
-			for(int i = 0; i < 5000000; i++) {
+			for(int i = 0; i < GraphSet.getGraphSet().size(); i++) {
 				List<Concept> concepts = TempResult.genConcept(i);
 				if(!concepts.isEmpty()) {
 					bw.write("s " + String.valueOf(i) + "\n");

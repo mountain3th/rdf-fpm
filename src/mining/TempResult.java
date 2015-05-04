@@ -17,14 +17,6 @@ import datastructure.Graph;
 public class TempResult {
 	public static Map<Integer, Integer> vertexRank2Label = new HashMap<Integer, Integer>();
 	public static Map<Integer, Integer> edgeRank2Label = new HashMap<Integer, Integer>();
-//	public static int maxVertexRank = 0;
-	public static int maxEdgeRank = 0;
-	
-//	public static List<DFSCodeStack> results = new ArrayList<DFSCodeStack>();
-//	
-//	public static void add(DFSCodeStack dfsCodeStack) {
-//		results.add(dfsCodeStack);
-//	}
 	
 	private static List<Node> roots = new ArrayList<Node>();
 	private static Node currentNode;
@@ -51,6 +43,8 @@ public class TempResult {
 			childs.add(n);
 			n.parent = this;
 		}
+		
+		
 	}
 	
 	public static void add(DFSCodeStack dfsCodeStack, Set<Graph> graphs) {
@@ -130,7 +124,7 @@ public class TempResult {
 			return;
 		}
 		for(int index = 0; index < childs.size(); index++) {
-			genConcept(n, subject, concepts, depth + 1);
+			genConcept(n.childs.get(index), subject, concepts, depth + 1);
 		}
 	}
 	
