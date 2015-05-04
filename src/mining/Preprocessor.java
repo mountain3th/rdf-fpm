@@ -26,10 +26,13 @@ public class Preprocessor {
 	private static Map<Integer, Integer> vertexLabel2Freq = new HashMap<Integer, Integer>();
 	private static Map<Integer, Integer> edgeLabel2Freq = new HashMap<Integer, Integer>();
 	private static Map<MiningData, Integer> md2Freq = new HashMap<MiningData, Integer>();
-	private static int[] vertexLabel2Rank = new int[5000000];
-	private static int[] edgeLabel2Rank = new int[1000];
+	private static int[] vertexLabel2Rank;
+	private static int[] edgeLabel2Rank;
 	
 	public static void loadFile(File file) throws Exception{
+		int maxVertexLabel = -1;
+		int maxEdgeLabel = -1;
+		
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line = null;
 		Graph graph = null;
@@ -50,17 +53,22 @@ public class Preprocessor {
 				int value = vertexLabel2Freq.containsKey(label) ? vertexLabel2Freq.get(label) + 1 : 1;
 				vertexLabel2Freq.put(label, value);
 				graph.putVertexRank(vertex, label);
+			
+				maxVertexLabel = maxVertexLabel > label ? maxVertexLabel : label;
 			} else if("e".equals(content[0])) {
 				int vertex1 = Integer.valueOf(content[1]);
 				int vertex2 = Integer.valueOf(content[2]);
 				if(!graph.vertex2Rank.containsKey(vertex1) || !graph.vertex2Rank.containsKey(vertex2)) {
-					throw new MiningException();
+					br.close();
+					throw new MiningException(0);
 				}
 				
 				int vertex2Label = graph.vertex2Rank.get(vertex2);
 				int label = Integer.valueOf(content[3]);
 				int value = edgeLabel2Freq.containsKey(label) ? edgeLabel2Freq.get(label) + 1 : 1;
 				edgeLabel2Freq.put(label, value);
+				
+				maxEdgeLabel = maxEdgeLabel > label ? maxEdgeLabel : label;
 				
 				MiningData md = new MiningData(label, vertex2Label);
 				int value2 = md2Freq.containsKey(md) ? md2Freq.get(md) + 1 : 1;
@@ -72,30 +80,33 @@ public class Preprocessor {
 		
 		br.close();
 		
+		vertexLabel2Rank = new int[maxVertexLabel];
+		edgeLabel2Rank = new int[maxEdgeLabel];
+		
 		Debugger.finishTask("loadFile");
 	}
 	
-	
+	/**
+	 * 剪枝
+	 */
 	public static void relabel() {
 		Debugger.startTask("relabel");
 		
 		List<Entry<Integer, Integer>> vList = new ArrayList<Entry<Integer, Integer>>(vertexLabel2Freq.entrySet());
-		
 		Collections.sort(vList, comparator);
 		for(int index = 0; index < vList.size(); index++) {
 			int label = vList.get(index).getKey();
 			int freq = vList.get(index).getValue();
 			
-			if(freq >= Mining.MIN_SUPPORT) {
-				TempResult.maxVertexRank++;
-			}
+//			if(freq >= Mining.MIN_SUPPORT) {
+//				TempResult.maxVertexRank++;
+//			}
 			TempResult.vertexRank2Label.put(index, label);
 			vertexLabel2Rank[label] = index;
 		}
 		
 		List<Entry<Integer, Integer>> eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
 		Collections.sort(eList, comparator);
-		
 		for(int index = 0; index < eList.size(); index++) {
 			int label = eList.get(index).getKey();
 			int freq = eList.get(index).getValue();
@@ -107,8 +118,8 @@ public class Preprocessor {
 			edgeLabel2Rank[label] = index;
 		}
 		
-		Mining.startPoint = vList.indexOf(new AbstractMap.SimpleEntry<Integer, Integer>(0,
-						vertexLabel2Freq.get(0)));
+		Mining.startPoint = vertexLabel2Rank[0];
+		
 		vertexLabel2Freq = null;
 		edgeLabel2Freq = null;
 		
@@ -161,6 +172,8 @@ public class Preprocessor {
 				g.init();
 			}
 		}
+		
+		md2Freq = null;
 		
 		Debugger.finishTask("rebuildGraphSet");
 	}

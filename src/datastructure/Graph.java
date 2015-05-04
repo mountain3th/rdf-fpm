@@ -109,7 +109,7 @@ public class Graph {
 		Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) throws MiningException {
 			DFSCode code = dfsCodeStack.peek();
 			if(!hasCandidates(code)) {
-				throw new MiningException(dfsCodeStack);
+				throw new MiningException();
 			}
 			Set<DFSCode> codes = new HashSet<DFSCode>();
 			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {

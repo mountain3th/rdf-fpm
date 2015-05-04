@@ -51,7 +51,7 @@ public class Launcher {
 			Preprocessor.rebuildGraphSet();
 			Debugger.finishTask("preprocess");
 			
-			Mining.start(TempResult.maxVertexRank, TempResult.maxEdgeRank);
+			Mining.start();
 			
 			Predicate.generate();
 
@@ -61,9 +61,6 @@ public class Launcher {
 		} catch(ArgsException e) {
 			
 		} catch(MiningException e) {
-			System.out.println("\ndebug: ");
-			
-			e.print();
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();

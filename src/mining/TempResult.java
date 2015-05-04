@@ -17,7 +17,7 @@ import datastructure.Graph;
 public class TempResult {
 	public static Map<Integer, Integer> vertexRank2Label = new HashMap<Integer, Integer>();
 	public static Map<Integer, Integer> edgeRank2Label = new HashMap<Integer, Integer>();
-	public static int maxVertexRank = 0;
+//	public static int maxVertexRank = 0;
 	public static int maxEdgeRank = 0;
 	
 //	public static List<DFSCodeStack> results = new ArrayList<DFSCodeStack>();

@@ -194,7 +194,7 @@ public class DFSEdgeTree {
 		List<Node> matchedNodes = new ArrayList<Node>();
 		
 		if(!dfsCodeStack.head().equals(p.code)) {
-			throw new MiningException(dfsCodeStack);
+			throw new MiningException();
 		}
 		
 		matchedNodes.add(root);
@@ -211,7 +211,7 @@ public class DFSEdgeTree {
 			}
 			if(i == nodes.size()) {
 				dfsCodeStack.print();
-				throw new MiningException(dfsCodeStack);
+				throw new MiningException();
 			}
 		}
 		

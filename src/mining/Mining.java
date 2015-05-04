@@ -136,7 +136,7 @@ public class Mining {
 		return file;
 	}
 	
-	public static void start(int maxVertexRank, int maxEdgeRank) {
+	public static void start() {
 //		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
 		
