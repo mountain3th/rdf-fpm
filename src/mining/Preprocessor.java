@@ -79,8 +79,8 @@ public class Preprocessor {
 		
 		br.close();
 		
-		vertexLabel2Rank = new int[maxVertexLabel];
-		edgeLabel2Rank = new int[maxEdgeLabel];
+		vertexLabel2Rank = new int[maxVertexLabel + 1];
+		edgeLabel2Rank = new int[maxEdgeLabel + 1];
 		
 		Debugger.finishTask("loadFile");
 	}
