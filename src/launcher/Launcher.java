@@ -1,9 +1,10 @@
 package launcher;
 
-import prediction.Predicate;
+import java.io.File;
 
 import mining.Mining;
 import mining.Preprocessor;
+import prediction.Predicate;
 import exception.ArgsException;
 import exception.MiningException;
 
@@ -19,7 +20,8 @@ public class Launcher {
 	
 			Debugger.startTask("preprocess");
 			
-			Preprocessor.loadFile(Mining.file);
+			Preprocessor.prepare(new File("0.tmp"));
+			Preprocessor.loadFile(Mining.tmpFile);
 			Preprocessor.relabel();
 			Preprocessor.rebuildGraphSet();
 			Debugger.finishTask("preprocess");

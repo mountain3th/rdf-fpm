@@ -32,7 +32,8 @@ public class Mining {
 	public static double CONFIDENCE = 0.75;
 	public static int startPoint = -1;
 	public static Set<MiningData> dataSet = new HashSet<MiningData>();
-	public static File file = null;
+	public static File inputFile = null;
+	public static File tmpFile = null;
 	
 //	private static int fixedThread = 1;
 	
@@ -84,13 +85,13 @@ public class Mining {
 					throw new ArgsException(1);
 				}
 			}
-			// 文件检查
-			if("-file".equals(part)) {
+			// 原始文件
+			if("-inputfile".equals(part)) {
 				i++;
 				part = args[i];
-				file = new File(part);
-				if(!file.exists() || !file.isFile()) {
-					throw new ArgsException(2);
+				inputFile = new File(part);
+				if(!inputFile.exists() || !inputFile.isFile()) {
+					throw new ArgsException(5);
 				}
 			}
 			// 多线程控制
@@ -108,8 +109,8 @@ public class Mining {
 				Debugger.isDebug = true;
 			}
 		}
-		if(file == null) {
-			throw new ArgsException(3);
+		if(inputFile == null) {
+			throw new ArgsException(4);
 		}
 	}
 	

@@ -21,9 +21,13 @@ public class ArgsException extends Exception {
 		case 1:
 			return "confidence值设置错误";
 		case 2:
-			return "原始文件不存在";
+			return "tmp文件不存在";
 		case 3:
-			return "未设置原始文件";
+			return "tmp文件格式错误";
+		case 4:
+			return "input文件不存在";
+		case 5:
+			return "未设置input文件";
 		default:
 			return "";
 		} 

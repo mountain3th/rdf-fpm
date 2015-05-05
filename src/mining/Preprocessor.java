@@ -19,6 +19,7 @@ import mining.Mining.MiningData;
 import datastructure.Graph;
 import datastructure.Graph.Edge;
 import datastructure.GraphSet;
+import exception.ArgsException;
 import exception.MiningException;
 
 public class Preprocessor {
@@ -27,6 +28,26 @@ public class Preprocessor {
 	private static Map<MiningData, Integer> md2Freq = new HashMap<MiningData, Integer>();
 	private static int[] vertexLabel2Rank;
 	private static int[] edgeLabel2Rank;
+	
+	
+	public static void prepare(File file) throws Exception {
+		if(!file.exists() || !file.isFile()) {
+			throw new ArgsException(2);
+		}
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String line = br.readLine();
+		String[] labels = line.split(" ");
+		for(int i = 0; i < labels.length; i++) {
+			try{
+				int l = Integer.parseInt(labels[i]);
+				TempResult.conceptLabels.add(l);
+			} catch(NumberFormatException e) {
+				br.close();
+				throw new ArgsException(4);
+			}
+		}
+		br.close();
+	}
 	
 	public static void loadFile(File file) throws Exception{
 		int maxVertexLabel = -1;

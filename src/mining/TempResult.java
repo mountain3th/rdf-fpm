@@ -17,6 +17,7 @@ import datastructure.Graph;
 public class TempResult {
 	public static Map<Integer, Integer> vertexRank2Label = new HashMap<Integer, Integer>();
 	public static Map<Integer, Integer> edgeRank2Label = new HashMap<Integer, Integer>();
+	public static List<Integer> conceptLabels = new ArrayList<Integer>();
 	
 	private static List<Node> roots = new ArrayList<Node>();
 	private static Node currentNode;
