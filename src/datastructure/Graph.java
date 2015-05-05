@@ -15,13 +15,11 @@ import exception.MiningException;
 public class Graph {
 	
 	public int subject;
+	public Map<Integer, Integer> vertex2Rank;
 	
 	private Set<Edge> edges;
-//	private DFSEdgeTree dfsEdgeTree;
 	private DFSCandidates dfsCandidates;
 	
-	public Map<Integer, Integer> vertex2Rank;
-
 	public static class Edge {
 
 		public int vertex1;
@@ -165,4 +163,6 @@ public class Graph {
 		// way 2
 		return dfsCandidates.getCandidates(dfsCodeStack);
 	}
+	
+//	private DFSEdgeTree dfsEdgeTree;
 }
