@@ -85,9 +85,7 @@ public class Preprocessor {
 		Debugger.finishTask("loadFile");
 	}
 	
-	/**
-	 * 重新标记，用rank替换label
-	 */
+
 	public static void relabel() {
 		Debugger.startTask("relabel");
 		
@@ -115,6 +113,7 @@ public class Preprocessor {
 		Debugger.finishTask("relabel");
 	}
 	
+
 	public static void rebuildGraphSet() {
 		Debugger.startTask("rebuildGraphSet", new OnTaskFinishedListener() {
 			@Override
