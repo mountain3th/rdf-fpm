@@ -97,7 +97,13 @@ public class TempResult {
 	}
 	
 	private static boolean hasConcept(Node n) {
-		return edgeRank2Label.get(n.code.a) == 633;
+		for(Iterator<Integer> it = conceptLabels.iterator(); it.hasNext();) {
+			int label = it.next();
+			if(edgeRank2Label.get(n.code.a) == label) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static List<Concept> genConcept(int subject) {

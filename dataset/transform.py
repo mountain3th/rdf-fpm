@@ -59,6 +59,12 @@ def find(file, string, lines):
 	return -1
 
 def main(lines_count, input_file, output_file):
+	name = output_file.split('.')[0]
+	subs_mapping_txt = name + subs_mapping_txt
+	objs_mapping_txt = name + objs_mapping_txt
+	predicate_mapping_txt = name + predicate_mapping_txt
+
+
 	subs_maps = open(subs_mapping_txt, 'w')
 	concept_types_labels = set()
 
