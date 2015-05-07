@@ -32,8 +32,7 @@ public class Preprocessor {
 	
 	public static void prepare() throws Exception {
 		System.out.println(Mining.inputFile.getPath());
-		System.out.println(Mining.inputFile.getPath().split(".").length);
-		File file = new File(Mining.inputFile.getPath().split(".")[0] + ".tmp");
+		File file = new File(Mining.inputFile.getPath().split("[.]")[0] + ".tmp");
 		if(!file.exists() || !file.isFile()) {
 			throw new ArgsException(2);
 		}
