@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $# != 5 ];then
+if [ $# != 4 ];then
 	echo "not all args set."
 	exit
 fi
