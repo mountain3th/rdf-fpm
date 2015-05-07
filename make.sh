@@ -1,4 +1,9 @@
-mkdir bin
+if ![ -d "bin"]; then
+	mkdir bin
+fi
+if ![ -d "log"]; then
+	mkdir log
+fi
 javac -d bin @src/sourcefiles
-mkdir log
-mkdir dataset
+if [ $? = 0 ]; then
+	echo "done."
