@@ -33,7 +33,6 @@ public class Mining {
 	public static int startPoint = -1;
 	public static Set<MiningData> dataSet = new HashSet<MiningData>();
 	public static File inputFile = null;
-	public static File tmpFile = null;
 	
 //	private static int fixedThread = 1;
 	
