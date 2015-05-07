@@ -30,7 +30,9 @@ public class Preprocessor {
 	private static int[] edgeLabel2Rank;
 	
 	
-	public static void prepare(File file) throws Exception {
+	public static void prepare() throws Exception {
+		File file = new File(Mining.inputFile.getPath().split(".")[0] + ".tmp");
+		System.out.println(file.getPath());
 		if(!file.exists() || !file.isFile()) {
 			throw new ArgsException(2);
 		}

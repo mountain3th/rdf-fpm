@@ -1,6 +1,10 @@
 /log
-/dataset
+/dataset1
 /bin
+*.pyc
+*.txt
+*.tmp
+*.lg
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

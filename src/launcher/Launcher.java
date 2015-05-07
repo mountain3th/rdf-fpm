@@ -20,7 +20,7 @@ public class Launcher {
 	
 			Debugger.startTask("preprocess");
 			
-			Preprocessor.prepare(new File(Mining.inputFile.getPath() + ".tmp"));
+			Preprocessor.prepare();
 			Preprocessor.loadFile(Mining.inputFile);
 			Preprocessor.relabel();
 			Preprocessor.rebuildGraphSet();
