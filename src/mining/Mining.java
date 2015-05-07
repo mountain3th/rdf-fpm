@@ -86,7 +86,7 @@ public class Mining {
 				}
 			}
 			// 原始文件
-			if("-inputfile".equals(part)) {
+			if("-file".equals(part)) {
 				i++;
 				part = args[i];
 				inputFile = new File(part);
