@@ -1,7 +1,7 @@
-if [ ! -d "bin"]; then
+if [ ! -d "/bin"]; then
 	mkdir bin
 fi
-if [ ! -d "log"]; then
+if [ ! -d "/log"]; then
 	mkdir log
 fi
 javac -d bin @src/sourcefiles
