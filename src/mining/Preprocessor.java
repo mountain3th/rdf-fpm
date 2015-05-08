@@ -36,11 +36,10 @@ public class Preprocessor {
 			throw new ArgsException(2);
 		}
 		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line = br.readLine();
-		String[] labels = line.split(" ");
-		for(int i = 0; i < labels.length; i++) {
+		String line = null;
+		while((line = br.readLine()) != null) {
 			try{
-				int l = Integer.parseInt(labels[i]);
+				int l = Integer.parseInt(line);
 				TempResult.conceptLabels.add(l);
 			} catch(NumberFormatException e) {
 				br.close();

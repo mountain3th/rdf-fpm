@@ -137,7 +137,7 @@ if __name__ == '__main__':
 			usage()
 			sys.exit(1)
 	if not os.path.exists(output_file):
-		name = output_file.split('.')[0]
+		name = output_file.split('.')[0] + "_"
 		subs_mapping_txt = name + subs_mapping_txt_suffix
 		objs_mapping_txt = name + objs_mapping_txt_suffix
 		predicate_mapping_txt = name + predicate_mapping_txt_suffix
