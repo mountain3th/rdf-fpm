@@ -60,9 +60,9 @@ def find(file, string, lines):
 
 def main(lines_count, input_file, output_file):
 	name = output_file.split('.')[0]
-	subs_mapping_txt = name + subs_mapping_txt
-	objs_mapping_txt = name + objs_mapping_txt
-	predicate_mapping_txt = name + predicate_mapping_txt
+	subs_mapping_txt = name + subs_mapping_txt_suffix
+	objs_mapping_txt = name + objs_mapping_txt_suffix
+	predicate_mapping_txt = name + predicate_mapping_txt_suffix
 
 
 	subs_maps = open(subs_mapping_txt, 'w')
