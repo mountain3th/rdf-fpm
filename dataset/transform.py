@@ -5,6 +5,10 @@ import sys, getopt
 import linecache
 import os.path
 
+predicate_mapping_txt = ''
+objs_mapping_txt = ''
+subs_mapping_txt = ''
+
 def add_node(vertices, index, label):
 	string = 'v %d %d\n' % (index, label)
 	vertices.append(string)	
@@ -59,12 +63,6 @@ def find(file, string, lines):
 	return -1
 
 def main(lines_count, input_file, output_file):
-	name = output_file.split('.')[0]
-	subs_mapping_txt = name + subs_mapping_txt_suffix
-	objs_mapping_txt = name + objs_mapping_txt_suffix
-	predicate_mapping_txt = name + predicate_mapping_txt_suffix
-
-
 	subs_maps = open(subs_mapping_txt, 'w')
 	concept_types_labels = set()
 
@@ -139,5 +137,10 @@ if __name__ == '__main__':
 			usage()
 			sys.exit(1)
 	if not os.path.exists(output_file):
+		name = output_file.split('.')[0]
+		subs_mapping_txt = name + subs_mapping_txt_suffix
+		objs_mapping_txt = name + objs_mapping_txt_suffix
+		predicate_mapping_txt = name + predicate_mapping_txt_suffix
+		
 		lines_count = count_lines(input_file)
 		main(lines_count, input_file, output_file)

@@ -1,8 +1,8 @@
 if [ ! -d "/bin"]; then
-	mkdir bin
+	mkdir /bin
 fi
 if [ ! -d "/log"]; then
-	mkdir log
+	mkdir /log
 fi
 javac -d bin @src/sourcefiles
 if [ $? = 0 ]; then
