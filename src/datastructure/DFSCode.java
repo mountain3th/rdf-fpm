@@ -2,7 +2,11 @@ package datastructure;
 
 import java.util.Map;
 
+import mining.Mining.Pattern;
+
 public class DFSCode {
+	public static Pattern pattern = Pattern.PATTERN_STRONG;
+	
 	public int ix;
 	public int iy;
 	public int x;
@@ -71,12 +75,21 @@ public class DFSCode {
 	@Override
 	public boolean equals(Object o) {
 		DFSCode code = (DFSCode) o;
+		if(pattern == Pattern.PATTERN_STRONG) {
+			return code.a == a && code.ix == ix && code.iy == iy && code.x == x && code.y == y;
+		} else {
+			return code.a == a && code.ix == ix && code.iy == iy && code.x == x;
+		}
+	}
+	
+	public boolean equalsTo(Object o) {
+		DFSCode code = (DFSCode) o;
 		return code.a == a && code.ix == ix && code.iy == iy && code.x == x && code.y == y;
 	}
 	
 	@Override
 	public int hashCode() {
-		return ix * 10000 + iy * 1000 + x * 100 + a * 10 + y;
+		return ix * 10000 + iy * 1000 + x * 100 + a * 10;
 	}
 	
 	@Override

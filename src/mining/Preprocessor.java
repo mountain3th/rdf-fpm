@@ -15,7 +15,8 @@ import java.util.Set;
 
 import launcher.Debugger;
 import launcher.Debugger.OnTaskFinishedListener;
-import mining.Mining.MiningData;
+import mining.Mining.StrongMiningData;
+import mining.Mining.WeekMiningData;
 import datastructure.Graph;
 import datastructure.Graph.Edge;
 import datastructure.GraphSet;
@@ -25,10 +26,10 @@ import exception.MiningException;
 public class Preprocessor {
 	private static Map<Integer, Integer> vertexLabel2Freq = new HashMap<Integer, Integer>();
 	private static Map<Integer, Integer> edgeLabel2Freq = new HashMap<Integer, Integer>();
-	private static Map<MiningData, Integer> md2Freq = new HashMap<MiningData, Integer>();
+	private static Map<StrongMiningData, Integer> md2Freq = new HashMap<StrongMiningData, Integer>();
 	private static int[] vertexLabel2Rank;
 	private static int[] edgeLabel2Rank;
-	
+	private static int wmaxEdgeLabel;
 	
 	public static void prepare() throws Exception {
 		File file = new File(Mining.inputFile.getPath().split("[.]")[0] + ".tmp");
@@ -50,8 +51,8 @@ public class Preprocessor {
 	}
 	
 	public static void loadFile(File file) throws Exception{
-		int maxVertexLabel = -1;
-		int maxEdgeLabel = -1;
+		int smaxVertexLabel = -1;
+		int smaxEdgeLabel = -1;
 		
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line = null;
@@ -74,7 +75,7 @@ public class Preprocessor {
 				vertexLabel2Freq.put(label, value);
 				graph.putVertexRank(vertex, label);
 			
-				maxVertexLabel = maxVertexLabel > label ? maxVertexLabel : label;
+				smaxVertexLabel = smaxVertexLabel > label ? smaxVertexLabel : label;
 			} else if("e".equals(content[0])) {
 				int vertex1 = Integer.valueOf(content[1]);
 				int vertex2 = Integer.valueOf(content[2]);
@@ -88,9 +89,9 @@ public class Preprocessor {
 				int value = edgeLabel2Freq.containsKey(label) ? edgeLabel2Freq.get(label) + 1 : 1;
 				edgeLabel2Freq.put(label, value);
 				
-				maxEdgeLabel = maxEdgeLabel > label ? maxEdgeLabel : label;
+				smaxEdgeLabel = smaxEdgeLabel > label ? smaxEdgeLabel : label;
 				
-				MiningData md = new MiningData(label, vertex2Label);
+				StrongMiningData md = new StrongMiningData(label, vertex2Label);
 				int value2 = md2Freq.containsKey(md) ? md2Freq.get(md) + 1 : 1;
 				md2Freq.put(md, value2);
 				
@@ -100,8 +101,8 @@ public class Preprocessor {
 		
 		br.close();
 		
-		vertexLabel2Rank = new int[maxVertexLabel + 1];
-		edgeLabel2Rank = new int[maxEdgeLabel + 1];
+		vertexLabel2Rank = new int[smaxVertexLabel + 1];
+		edgeLabel2Rank = new int[smaxEdgeLabel + 1];
 		
 		Debugger.finishTask("loadFile");
 	}
@@ -124,6 +125,11 @@ public class Preprocessor {
 			int label = eList.get(index).getKey();
 			TempResult.edgeRank2Label.put(index, label);
 			edgeLabel2Rank[label] = index;
+		
+			int value = eList.get(index).getValue();
+			if(value >= Mining.MIN_SUPPORT) {
+				wmaxEdgeLabel = index;
+			}
 		}
 		
 		Mining.startPoint = vertexLabel2Rank[0];
@@ -139,10 +145,11 @@ public class Preprocessor {
 		Debugger.startTask("rebuildGraphSet", new OnTaskFinishedListener() {
 			@Override
 			public void onTaskFinished() {
-				Debugger.log("共有: " + String.valueOf(Mining.dataSet.size()) + "\n");
+				Debugger.log("共有: " + String.valueOf(Mining.smDataSet.size()) + "\n");
 			}
 		});
 		
+		Mining.wmDataSet = new Mining.WeekMiningData[wmaxEdgeLabel];
 		Set<Graph> graphSet = GraphSet.getGraphSet();
 		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
 			Graph g = it.next();
@@ -152,7 +159,7 @@ public class Preprocessor {
 				Edge e = eit.next();
 				
 				int ver2Label = g.vertex2Rank.get(e.vertex2);
-				MiningData md = new MiningData(e.label, ver2Label);
+				StrongMiningData md = new StrongMiningData(e.label, ver2Label);
 				
 				int ver2Rank = vertexLabel2Rank[ver2Label];
 				int edgeRank = edgeLabel2Rank[e.label];
@@ -160,9 +167,19 @@ public class Preprocessor {
 				g.vertex2Rank.put(e.vertex2, ver2Rank);
 				e.label = edgeRank;
 				
+				// deal with strong pattern
 				if(md2Freq.get(md) >= Mining.MIN_SUPPORT) {
 					hasNoCandidates = false;
-					Mining.dataSet.add(new MiningData(edgeRank, ver2Rank));
+					Mining.smDataSet.add(new StrongMiningData(edgeRank, ver2Rank));
+				}
+				
+				// now the week
+				if(e.label <= wmaxEdgeLabel) {
+					if(Mining.wmDataSet[e.label] == null) {
+						Mining.wmDataSet[e.label] = new WeekMiningData(g);
+					} else {
+						Mining.wmDataSet[e.label].addGraph(g);
+					}
 				}
 			}
 			

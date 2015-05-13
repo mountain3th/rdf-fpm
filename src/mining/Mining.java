@@ -31,25 +31,25 @@ public class Mining {
 	public static int MIN_SUPPORT = 1;
 	public static double CONFIDENCE = 0.75;
 	public static int startPoint = -1;
-	public static Set<MiningData> dataSet = new HashSet<MiningData>();
 	public static File inputFile = null;
+	public static Set<StrongMiningData> smDataSet = new HashSet<StrongMiningData>();
+	public static WeekMiningData[] wmDataSet;
+//	public static Set<Mining>
 	
-//	private static int fixedThread = 1;
-	
-	public static class MiningData {
+	public static class StrongMiningData {
 		int edgeLabel;
 		int vertexLabel;
 		
-		MiningData(int er, int vr) {
+		StrongMiningData(int er, int vr) {
 			this.edgeLabel = er;
 			this.vertexLabel = vr;
 		}
 		
 		@Override
 		public boolean equals(Object o) {
-			if(o instanceof MiningData) {
-				return this.edgeLabel == ((MiningData) o).edgeLabel && 
-						this.vertexLabel == ((MiningData) o).vertexLabel;
+			if(o instanceof StrongMiningData) {
+				return this.edgeLabel == ((StrongMiningData) o).edgeLabel && 
+						this.vertexLabel == ((StrongMiningData) o).vertexLabel;
 			}
 			
 			return false;
@@ -58,6 +58,19 @@ public class Mining {
 		@Override
 		public int hashCode() {
 			return edgeLabel + vertexLabel;
+		}
+	}
+	
+	public static class WeekMiningData {
+		Set<Graph> graphs;
+		
+		WeekMiningData(Graph g) {
+			graphs = new HashSet<Graph>();
+			graphs.add(g);
+		}
+		
+		public void addGraph(Graph g) {
+			graphs.add(g);
 		}
 	}
 
@@ -93,16 +106,6 @@ public class Mining {
 					throw new ArgsException(5);
 				}
 			}
-			// 多线程控制
-//			if("-thread".equals(part)) {
-//				i++;
-//				part = args[i];
-//				try{
-//					fixedThread = Integer.parseInt(part);
-//				} catch(NumberFormatException e) {
-//					throw new ArgsException();
-//				}
-//			}
 			// 是否输出debug信息
 			if("-debug".equals(part)) {
 				Debugger.isDebug = true;
@@ -119,8 +122,8 @@ public class Mining {
 //			for(int a = 0; a < maxEdgeRank; a++) {
 //				for(int j = 0; j < maxVertexRank; j++) {
 		int index = 0;
-		for(Iterator<MiningData> it = dataSet.iterator(); it.hasNext();) {	
-			MiningData md = it.next();
+		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
+			StrongMiningData md = it.next();
 		
 			Debugger.log(String.valueOf(index) + "\n");
 			index++;
@@ -131,18 +134,30 @@ public class Mining {
 			Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
 			
 			Debugger.startTask("subGraphMining");
-			new Mining().subGraphMining(dfsCodeStack, graphItems);
+			new Mining().subGraphMining(Pattern.PATTERN_STRONG, dfsCodeStack, graphItems);
 			Debugger.finishTask("subGraphMining");	
+		}
+		
+		for(index = 0; index < wmDataSet.length; index++) {
+			WeekMiningData wmd = wmDataSet[index];
+			DFSCode code = new DFSCode(-1, -1, startPoint, index, -1);
+			final DFSCodeStack dfsCodeStack = new DFSCodeStack();
+			dfsCodeStack.push(code);
+			
+			Set<Graph> graphItems = new HashSet<Graph>(wmd.graphs);
+			new Mining().subGraphMining(Pattern.PATTERN_WEEK, dfsCodeStack, graphItems);
 		}
 	}
 	
-	private void subGraphMining(DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
-		Map<DFSCode, Set<Graph>> supportChecker = new HashMap<DFSCode, Set<Graph>>();
+	private void subGraphMining(Pattern pattern, DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
+//		Map<DFSCode, Set<Graph>> supportChecker = new HashMap<DFSCode, Set<Graph>>();
 		
 		// 1. 判断是否最小dfs
 //		if(!dfsCodeStack.isMin()) {
 //			return;
 //		}
+
+		SupportChecker supportChecker = new SupportChecker(pattern);
 		
 		Debugger.startTask("checkHasCandidates " + dfsCodeStack.peek());
 		// 2. 检查当前code是否有扩展的可能性
@@ -150,20 +165,25 @@ public class Mining {
 			int count = 0;
 			for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 				Graph g = it.next();
-				if(g.hasCandidates(dfsCodeStack.head())) {
+				if(g.hasCandidates(pattern, dfsCodeStack.head())) {
 					count++;
 				} else {
 					it.remove();
 				}
 			}
 			if(count >= Mining.MIN_SUPPORT) {
-				TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems);
+				// 当前扩展边是概念则不继续扩展
+				if(TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems)) {
+					return;
+				}
 			} else {
 				Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 				return;
 			}
 		} else {
-			TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems);
+			if(TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems)) {
+				return;
+			}
 		}
 		Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 		
@@ -173,37 +193,93 @@ public class Mining {
 		// 3. 扩展并获得候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();
-			Set<DFSCode> codes = g.getCandidates(dfsCodeStack);
+			Set<DFSCode> codes = g.getCandidates(pattern, dfsCodeStack);
 			if(null == codes || codes.isEmpty()) {
 				continue;
 			}
 			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
 				DFSCode dfsCode = dit.next();
-				if(supportChecker.containsKey(dfsCode)) {
-					Set<Graph> temp = supportChecker.get(dfsCode);
-					temp.add(g);
-				} else {
-					Set<Graph> temp = new HashSet<Graph>();
-					temp.add(g);
-					supportChecker.put(dfsCode, temp);
-				}
+				supportChecker.add(dfsCode, g);
 			}
 		}
 		Debugger.finishTask("getCandidates " + dfsCodeStack.peek());
 		
 		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
-		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.entrySet().iterator(); it.hasNext();) {
+		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.getWeekIterator(); it.hasNext();) {
 			Entry<DFSCode, Set<Graph>> entry = it.next();
 			int size = entry.getValue().size();
 			double confidence = (double) size / (double) graphItems.size();
-			if(size >= Mining.MIN_SUPPORT) {
-				continue;
-			} else if(confidence >= Mining.CONFIDENCE) {
-				dfsCodeStack.push(entry.getKey());
-				subGraphMining(dfsCodeStack, entry.getValue());
+			if(confidence >= Mining.CONFIDENCE) {
+				DFSCode code = entry.getKey();
+				Set<Graph> graphs = entry.getValue();
+				
+				dfsCodeStack.push(new DFSCode(code.ix, code.iy, code.x, code.a, -1));
+				subGraphMining(pattern, dfsCodeStack, graphs);
 				dfsCodeStack.pop();
+				pop(graphs);
 			}
 		}
 		
+		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.getStrongIterator(); it.hasNext();) {
+			Entry<DFSCode, Set<Graph>> entry = it.next();
+			
+			int size = entry.getValue().size();
+			double confidence = (double) size / (double) graphItems.size();
+			if(confidence >= Mining.CONFIDENCE) {
+				dfsCodeStack.push(entry.getKey());
+				subGraphMining(pattern, dfsCodeStack, entry.getValue());
+				dfsCodeStack.pop();
+				pop(entry.getValue());
+			}
+		}
+		
+	}
+	
+	private void pop(Set<Graph> graphs) {
+		for(Iterator<Graph> it = graphs.iterator(); it.hasNext();) {
+			Graph g = it.next();
+			g.pop();
+		}
+	}
+	
+	private static class SupportChecker {
+		Map<DFSCode, Set<Graph>> strongChecker;
+		Map<DFSCode, Set<Graph>> weekChecker;
+		
+		Pattern pattern;
+		
+		SupportChecker(Pattern pattern) {
+			strongChecker = new HashMap<DFSCode, Set<Graph>>();
+			weekChecker = new HashMap<DFSCode, Set<Graph>>();
+			this.pattern = pattern;
+			DFSCode.pattern = pattern;
+		}
+		
+		Iterator<Entry<DFSCode, Set<Graph>>> getStrongIterator() {
+			return strongChecker.entrySet().iterator();
+		}
+		
+		Iterator<Entry<DFSCode, Set<Graph>>> getWeekIterator() {
+			return weekChecker.entrySet().iterator();
+		}
+		
+		void add(DFSCode code, Graph g) {
+			if(pattern == Pattern.PATTERN_STRONG || TempResult.hasConcept(code.a)) {
+				check(strongChecker, code, g);
+			} else {
+				check(weekChecker, code, g);
+			}
+		}
+		
+		void check(Map<DFSCode, Set<Graph>> checker, DFSCode code, Graph g) {
+			if(checker.containsKey(code)) {
+				Set<Graph> temp = checker.get(code);
+				temp.add(g);
+			} else {
+				Set<Graph> temp = new HashSet<Graph>();
+				temp.add(g);
+				checker.put(code, temp);
+			}
+		}
 	}
 }

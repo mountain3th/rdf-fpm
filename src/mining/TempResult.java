@@ -48,7 +48,7 @@ public class TempResult {
 		
 	}
 	
-	public static void add(DFSCodeStack dfsCodeStack, Set<Graph> graphs) {
+	public static boolean add(DFSCodeStack dfsCodeStack, Set<Graph> graphs) {
 		int size = dfsCodeStack.size();
 		while(size <= depth) {
 			currentNode = currentNode.parent;
@@ -69,6 +69,8 @@ public class TempResult {
 		}
 		currentNode = n;
 		depth++;
+		
+		return hasConcept(n.code.a);
 	}
 	
 	public static void cutIfHasNoConcept() {
@@ -83,7 +85,7 @@ public class TempResult {
 	private static boolean cut(Node n) {
 		List<Node> childs = n.childs;
 		if(childs == null) {
-			return hasConcept(n);
+			return hasConcept(n.code.a);
 		}
 		boolean hasConcept = false;
 		for(int index = 0; index < childs.size(); index++) {
@@ -96,10 +98,10 @@ public class TempResult {
 		return hasConcept;
 	}
 	
-	private static boolean hasConcept(Node n) {
+	public static boolean hasConcept(int a) {
 		for(Iterator<Integer> it = conceptLabels.iterator(); it.hasNext();) {
 			int label = it.next();
-			if(edgeRank2Label.get(n.code.a) == label) {
+			if(edgeRank2Label.get(a) == label) {
 				return true;
 			}
 		}
@@ -118,7 +120,7 @@ public class TempResult {
 	}
 	
 	private static void genConcept(Node n, int subject, List<Concept> concepts, int depth) {
-		if(hasConcept(n)) {
+		if(hasConcept(n.code.a)) {
 			if(n.subjects.contains(subject)) {
 				concepts.add(new Concept(n.code.y, 1.0, depth));
 			} else {

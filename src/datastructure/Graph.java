@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import mining.TempResult;
+import mining.Mining.Pattern;
 import exception.MiningException;
 
 public class Graph {
@@ -72,10 +74,12 @@ public class Graph {
 	
 	private class DFSCandidates {
 
+		List<Integer> indexes;
 		List<DFSCode> dfsCodes;
 		int keepIndex = -1;
 		
 		DFSCandidates() {
+			indexes = new ArrayList<Integer>();
 			dfsCodes = new ArrayList<DFSCode>();
 		}
 		
@@ -89,6 +93,10 @@ public class Graph {
 
 				@Override
 				public int compare(DFSCode e1, DFSCode e2) {
+					if(TempResult.hasConcept(e1.a)) {
+						return -1;
+					}
+					
 					return e1.a < e2.a ? -1 : (e1.a == e2.a ? (e1.y < e2.y ? -1 : (e1.y == e2.y ? 0 : 1)) : 1);
 				}
 				
@@ -99,19 +107,52 @@ public class Graph {
 			return dfsCodes.indexOf(code);
 		}
 		
-		boolean hasCandidates(DFSCode code) {
-			keepIndex = indexOf(code);
-			return keepIndex != -1;
+		
+		boolean hasCandidates(Pattern pattern, DFSCode code) {
+			if(pattern == Pattern.PATTERN_STRONG) {
+				return indexOf(code) != -1;
+			} else {
+				int i;
+				for(i = keepIndex + 1; i < dfsCodes.size(); i++) {
+					if(code.equalsTo(dfsCodes.get(i))) {
+						break;
+					}
+				}
+				return i != dfsCodes.size();
+			}
 		}
 		
-		Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) throws MiningException {
-			DFSCode code = dfsCodeStack.peek();
-			if(!hasCandidates(code)) {
-				throw new MiningException();
+		
+		void push(Pattern pattern, DFSCode code) {
+			if(pattern == Pattern.PATTERN_STRONG) {
+				keepIndex = indexOf(code);
+			} else {
+				for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
+					if(code.equalsTo(dfsCodes.get(i))) {
+						keepIndex = i; 
+						break;
+					}
+				}
 			}
+			indexes.add(keepIndex);
+		}
+		
+		void pop() {
+			int last = indexes.size() - 1;
+			indexes.remove(last);
+		}
+		
+		Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) throws MiningException {
+			DFSCode code = dfsCodeStack.peek();
+			push(pattern, code);
+			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
+			
+			// 消除由于出现同一个code导致的stackoverflow错误，即无限循环
 			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
-				if(code.equals(dfsCodes.get(i))) {
+				if(pattern == Pattern.PATTERN_WEEK && code.equalsTo(dfsCodes.get(i))) {
+					keepIndex = i;
+				} else if (code.equals(dfsCodes.get(i))) {
 					keepIndex = i;
 				}
 			}
@@ -147,21 +188,25 @@ public class Graph {
 		dfsCandidates.init();
 	}
 	
-	public boolean hasCandidates(DFSCode code) {
+	public boolean hasCandidates(Pattern pattern, DFSCode code) {
 		// way 1
 //		dfsEdgeTree = new DFSEdgeTree(this);
 //		return dfsEdgeTree.hasCandidates(code);
 	
 		// way 2
-		return dfsCandidates.hasCandidates(code);
+		return dfsCandidates.hasCandidates(pattern, code);
 	}
 	
-	public Set<DFSCode> getCandidates(DFSCodeStack dfsCodeStack) {
+	public Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) {
 		// way 1
 //		return dfsEdgeTree.getCandidates(dfsCodeStack);
 	
 		// way 2
-		return dfsCandidates.getCandidates(dfsCodeStack);
+		return dfsCandidates.getCandidates(pattern, dfsCodeStack);
+	}
+	
+	public void pop() {
+		dfsCandidates.pop();
 	}
 	
 //	private DFSEdgeTree dfsEdgeTree;
