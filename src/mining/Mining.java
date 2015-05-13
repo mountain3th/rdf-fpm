@@ -204,35 +204,51 @@ public class Mining {
 		}
 		Debugger.finishTask("getCandidates " + dfsCodeStack.peek());
 		
-		// 4. 剪枝小于MIN_SUPPORT的code，递归调用subGraphMining
-		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.getWeekIterator(); it.hasNext();) {
-			Entry<DFSCode, Set<Graph>> entry = it.next();
-			int size = entry.getValue().size();
-			double confidence = (double) size / (double) graphItems.size();
-			if(confidence >= Mining.CONFIDENCE) {
-				DFSCode code = entry.getKey();
-				Set<Graph> graphs = entry.getValue();
+		// 4. 继续扩展，递归调用
+		if(pattern == Pattern.PATTERN_WEEK) {
+			for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.getWeekIterator(); it.hasNext();) {
+				Entry<DFSCode, Set<Graph>> entry = it.next();
+				int size = entry.getValue().size();
+				double confidence = (double) size / (double) graphItems.size();
+				if(confidence >= Mining.CONFIDENCE) {
+					DFSCode code = entry.getKey();
+					Set<Graph> graphs = entry.getValue();
+					
+					dfsCodeStack.push(new DFSCode(code.ix, code.iy, code.x, code.a, -1));
+					subGraphMining(pattern, dfsCodeStack, graphs);
+					dfsCodeStack.pop();
+					pop(graphs);
+				}
+			}
+		} else {
+			for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.getStrongIterator(); it.hasNext();) {
+				Entry<DFSCode, Set<Graph>> entry = it.next();
 				
-				dfsCodeStack.push(new DFSCode(code.ix, code.iy, code.x, code.a, -1));
-				subGraphMining(pattern, dfsCodeStack, graphs);
-				dfsCodeStack.pop();
-				pop(graphs);
+				int size = entry.getValue().size();
+				double confidence = (double) size / (double) graphItems.size();
+				if(confidence >= Mining.CONFIDENCE) {
+					dfsCodeStack.push(entry.getKey());
+					subGraphMining(pattern, dfsCodeStack, entry.getValue());
+					dfsCodeStack.pop();
+					pop(entry.getValue());
+				}
 			}
 		}
 		
-		for(Iterator<Entry<DFSCode, Set<Graph>>> it = supportChecker.getStrongIterator(); it.hasNext();) {
-			Entry<DFSCode, Set<Graph>> entry = it.next();
+		// 5. 检查是否已经有type生成
+		for(Iterator<Entry<Integer, Set<Graph>>> it = supportChecker.getConceptIterator(); it.hasNext();) {
+			Entry<Integer, Set<Graph>> entry = it.next();
 			
+			int y = entry.getKey();
 			int size = entry.getValue().size();
 			double confidence = (double) size / (double) graphItems.size();
 			if(confidence >= Mining.CONFIDENCE) {
-				dfsCodeStack.push(entry.getKey());
+				// 待修改???
+				dfsCodeStack.push(new DFSCode(-1, -1, startPoint, 0, y));
 				subGraphMining(pattern, dfsCodeStack, entry.getValue());
 				dfsCodeStack.pop();
-				pop(entry.getValue());
 			}
 		}
-		
 	}
 	
 	private void pop(Set<Graph> graphs) {
@@ -245,14 +261,15 @@ public class Mining {
 	private static class SupportChecker {
 		Map<DFSCode, Set<Graph>> strongChecker;
 		Map<DFSCode, Set<Graph>> weekChecker;
+		Map<Integer, Set<Graph>> conceptChecker;
 		
 		Pattern pattern;
 		
 		SupportChecker(Pattern pattern) {
 			strongChecker = new HashMap<DFSCode, Set<Graph>>();
 			weekChecker = new HashMap<DFSCode, Set<Graph>>();
+			conceptChecker = new HashMap<Integer, Set<Graph>>();
 			this.pattern = pattern;
-			DFSCode.pattern = pattern;
 		}
 		
 		Iterator<Entry<DFSCode, Set<Graph>>> getStrongIterator() {
@@ -263,11 +280,28 @@ public class Mining {
 			return weekChecker.entrySet().iterator();
 		}
 		
+		Iterator<Entry<Integer, Set<Graph>>> getConceptIterator() {
+			return conceptChecker.entrySet().iterator();
+		}
+		
 		void add(DFSCode code, Graph g) {
-			if(pattern == Pattern.PATTERN_STRONG || TempResult.hasConcept(code.a)) {
+			if(pattern == Pattern.PATTERN_STRONG) {
 				check(strongChecker, code, g);
+			} else if(TempResult.hasConcept(code.a)){
+				check(code.y, g);
 			} else {
 				check(weekChecker, code, g);
+			}
+		}
+		
+		void check(int y, Graph g) {
+			if(conceptChecker.containsKey(y)) {
+				Set<Graph> temp = conceptChecker.get(y);
+				temp.add(g);
+			} else {
+				Set<Graph> temp = new HashSet<Graph>();
+				temp.add(g);
+				conceptChecker.put(y, temp);
 			}
 		}
 		
