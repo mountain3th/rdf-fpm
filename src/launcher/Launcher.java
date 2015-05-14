@@ -14,6 +14,8 @@ public class Launcher {
 		try {
 			Mining.init(args);
 
+			System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+			
 			Debugger.startTask("main");
 			
 			Debugger.start();
