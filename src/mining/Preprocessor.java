@@ -149,7 +149,7 @@ public class Preprocessor {
 			}
 		});
 		
-		Mining.wmDataSet = new Mining.WeekMiningData[wmaxEdgeLabel];
+		Mining.wmDataSet = new Mining.WeekMiningData[wmaxEdgeLabel+1];
 		Set<Graph> graphSet = GraphSet.getGraphSet();
 		for(Iterator<Graph> it = graphSet.iterator(); it.hasNext();) {
 			Graph g = it.next();
