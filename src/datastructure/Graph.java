@@ -93,7 +93,9 @@ public class Graph {
 
 				@Override
 				public int compare(DFSCode e1, DFSCode e2) {
-					if(TempResult.hasConcept(e1.a)) {
+					if(TempResult.hasConcept(e1.a) && TempResult.hasConcept(e2.a)) {
+						return 0;
+					} else if(TempResult.hasConcept(e1.a)) {
 						return -1;
 					}
 					
