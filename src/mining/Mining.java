@@ -244,7 +244,8 @@ public class Mining {
 			double confidence = (double) size / (double) graphItems.size();
 			if(confidence >= Mining.CONFIDENCE) {
 				// 待修改???
-				dfsCodeStack.push(new DFSCode(-1, -1, startPoint, 0, y));
+				int a = TempResult.conceptLabels.get(0);
+				dfsCodeStack.push(new DFSCode(-1, -1, startPoint, a, y));
 				subGraphMining(pattern, dfsCodeStack, entry.getValue());
 				dfsCodeStack.pop();
 			}
