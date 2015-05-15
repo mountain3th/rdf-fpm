@@ -77,6 +77,7 @@ public class Graph {
 
 		List<Integer> indexes;
 		List<DFSCode> dfsCodes;
+		DFSCode[] fastDfsCodes;
 		int keepIndex = -1;
 		
 		DFSCandidates() {
@@ -104,6 +105,8 @@ public class Graph {
 				}
 				
 			});
+			
+			fastDfsCodes = (DFSCode[]) dfsCodes.toArray();
 		}
 		
 		int indexOf(DFSCode code) {
@@ -116,8 +119,8 @@ public class Graph {
 				return indexOf(code) != -1;
 			} else {
 				int i;
-				for(i = keepIndex + 1; i < dfsCodes.size(); i++) {
-					if(code.equalsTo(dfsCodes.get(i))) {
+				for(i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+					if(code.equalsTo(fastDfsCodes[i])) {
 						break;
 					}
 				}
@@ -130,8 +133,8 @@ public class Graph {
 			if(pattern == Pattern.PATTERN_STRONG) {
 				keepIndex = indexOf(code);
 			} else {
-				for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
-					if(code.equalsTo(dfsCodes.get(i))) {
+				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+					if(code.equalsTo(fastDfsCodes[i])) {
 						keepIndex = i; 
 						break;
 					}
@@ -149,14 +152,12 @@ public class Graph {
 		
 		Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) throws MiningException {
 			DFSCode code = dfsCodeStack.peek();
-//			push(pattern, code);
+			push(pattern, code);
 			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
-			
-			Debugger.log("..." + dfsCodes.size() + "\n");
-//			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
-//				codes.add(dfsCodes.get(i));
-//			}
+			for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+				codes.add(fastDfsCodes[i]);
+			}
 			
 			return codes;
 		}
