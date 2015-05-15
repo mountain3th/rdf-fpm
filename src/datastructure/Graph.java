@@ -152,17 +152,9 @@ public class Graph {
 			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
 			
-			// 消除由于出现同一个code导致的stackoverflow错误，即无限循环
-//			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
-//				if(pattern == Pattern.PATTERN_WEEK && code.equalsTo(dfsCodes.get(i))) {
-//					keepIndex = i;
-//				} else if (code.equals(dfsCodes.get(i))) {
-//					keepIndex = i;
-//				}
-//			}
-//			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
-//				codes.add(dfsCodes.get(i));
-//			}
+			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
+				codes.add(dfsCodes.get(i));
+			}
 			
 			return codes;
 		}
