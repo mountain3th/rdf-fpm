@@ -122,8 +122,9 @@ public class Mining {
 //			for(int a = 0; a < maxEdgeRank; a++) {
 //				for(int j = 0; j < maxVertexRank; j++) {
 		int index = 0;
-		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
-			StrongMiningData md = it.next();
+//		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
+//			StrongMiningData md = it.next();
+			StrongMiningData md = new StrongMiningData(13, 1);
 		
 			Debugger.log(String.valueOf(index) + "\n");
 			index++;
@@ -136,17 +137,17 @@ public class Mining {
 			Debugger.startTask("subGraphMining");
 			new Mining().subGraphMining(Pattern.PATTERN_STRONG, dfsCodeStack, graphItems);
 			Debugger.finishTask("subGraphMining");	
-		}
+//		}
 		
-		for(index = 0; index < wmDataSet.length; index++) {
-			WeekMiningData wmd = wmDataSet[index];
-			DFSCode code = new DFSCode(-1, -1, startPoint, index, -1);
-			final DFSCodeStack dfsCodeStack = new DFSCodeStack();
-			dfsCodeStack.push(code);
-			
-			Set<Graph> graphItems = new HashSet<Graph>(wmd.graphs);
-			new Mining().subGraphMining(Pattern.PATTERN_WEEK, dfsCodeStack, graphItems);
-		}
+//		for(index = 0; index < wmDataSet.length; index++) {
+//			WeekMiningData wmd = wmDataSet[index];
+//			DFSCode code = new DFSCode(-1, -1, startPoint, index, -1);
+//			final DFSCodeStack dfsCodeStack = new DFSCodeStack();
+//			dfsCodeStack.push(code);
+//			
+//			Set<Graph> graphItems = new HashSet<Graph>(wmd.graphs);
+//			new Mining().subGraphMining(Pattern.PATTERN_WEEK, dfsCodeStack, graphItems);
+//		}
 	}
 	
 	private void subGraphMining(Pattern pattern, DFSCodeStack dfsCodeStack, Set<Graph> graphItems) {
@@ -172,8 +173,10 @@ public class Mining {
 				}
 			}
 			if(count >= Mining.MIN_SUPPORT) {
+				Debugger.log(String.valueOf(count) + "\n");
 				// 当前扩展边是概念则不继续扩展
 				if(TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems)) {
+					Debugger.log("concept\n");
 					return;
 				}
 			} else {
@@ -191,10 +194,8 @@ public class Mining {
 				
 		Debugger.startTask("getCandidates " + dfsCodeStack.peek());
 		// 3. 扩展并获得候选集
-		int index = 0;
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();
-			Debugger.log(String.valueOf(index++) + "\n");
 			Set<DFSCode> codes = g.getCandidates(pattern, dfsCodeStack);
 			if(null == codes || codes.isEmpty()) {
 				continue;
