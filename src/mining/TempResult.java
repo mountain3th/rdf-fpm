@@ -48,7 +48,7 @@ public class TempResult {
 		
 	}
 	
-	public static boolean add(DFSCodeStack dfsCodeStack, Set<Graph> graphs) {
+	public static void add(DFSCodeStack dfsCodeStack, Set<Graph> graphs) {
 		int size = dfsCodeStack.size();
 		while(size <= depth) {
 			currentNode = currentNode.parent;
@@ -70,7 +70,6 @@ public class TempResult {
 		currentNode = n;
 		depth++;
 		
-		return hasConcept(n.code.a);
 	}
 	
 	public static void cutIfHasNoConcept() {

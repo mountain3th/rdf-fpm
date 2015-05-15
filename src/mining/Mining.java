@@ -163,6 +163,10 @@ public class Mining {
 		Debugger.startTask("checkHasCandidates " + dfsCodeStack.peek());
 		// 2. 检查当前code是否有扩展的可能性
 		if(dfsCodeStack.getStack().size() == 1) {
+			if(TempResult.hasConcept(dfsCodeStack.peek().a)) {
+				return;
+			}
+			
 			int count = 0;
 			for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 				Graph g = it.next();
@@ -173,20 +177,13 @@ public class Mining {
 				}
 			}
 			if(count >= Mining.MIN_SUPPORT) {
-				Debugger.log(String.valueOf(count) + "\n");
-				// 当前扩展边是概念则不继续扩展
-				if(TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems)) {
-					Debugger.log("concept\n");
-					return;
-				}
+				TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems);
 			} else {
 				Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 				return;
 			}
 		} else {
-			if(TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems)) {
-				return;
-			}
+			TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems);
 		}
 		Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 		
@@ -249,7 +246,9 @@ public class Mining {
 				// 待修改???
 				int a = TempResult.conceptLabels.get(0);
 				dfsCodeStack.push(new DFSCode(-1, -1, startPoint, a, y));
-				subGraphMining(pattern, dfsCodeStack, entry.getValue());
+
+				TempResult.add(dfsCodeStack, entry.getValue());
+				
 				dfsCodeStack.pop();
 			}
 		}
