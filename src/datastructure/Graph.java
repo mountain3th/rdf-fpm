@@ -142,11 +142,13 @@ public class Graph {
 		void pop() {
 			int last = indexes.size() - 1;
 			indexes.remove(last);
+			last = indexes.size() - 1;
+			keepIndex = indexes.get(last);
 		}
 		
 		Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) throws MiningException {
 			DFSCode code = dfsCodeStack.peek();
-			push(pattern, code);
+//			push(pattern, code);
 			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
 			
