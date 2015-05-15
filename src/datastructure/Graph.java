@@ -1,6 +1,7 @@
 package datastructure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -106,7 +107,7 @@ public class Graph {
 				
 			});
 			
-			fastDfsCodes = (DFSCode[]) dfsCodes.toArray();
+			fastDfsCodes = dfsCodes.toArray(new DFSCode[dfsCodes.size()]);
 		}
 		
 		int indexOf(DFSCode code) {
