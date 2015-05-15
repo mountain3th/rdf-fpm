@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import launcher.Debugger;
 import mining.TempResult;
 import mining.Mining.Pattern;
 import exception.MiningException;
@@ -152,9 +153,10 @@ public class Graph {
 			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
 			
-			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
-				codes.add(dfsCodes.get(i));
-			}
+			Debugger.log("..." + dfsCodes.size() + "\n");
+//			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
+//				codes.add(dfsCodes.get(i));
+//			}
 			
 			return codes;
 		}
