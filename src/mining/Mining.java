@@ -191,8 +191,10 @@ public class Mining {
 				
 		Debugger.startTask("getCandidates " + dfsCodeStack.peek());
 		// 3. 扩展并获得候选集
+		int index = 0;
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();
+			Debugger.log(String.valueOf(index++));
 			Set<DFSCode> codes = g.getCandidates(pattern, dfsCodeStack);
 			if(null == codes || codes.isEmpty()) {
 				continue;
