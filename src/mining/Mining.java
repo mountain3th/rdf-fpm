@@ -222,7 +222,6 @@ public class Mining {
 					dfsCodeStack.push(entry.getKey());
 					subGraphMining(pattern, dfsCodeStack, entry.getValue());
 					dfsCodeStack.pop();
-					pop(entry.getValue());
 				}
 			}
 		} else {
@@ -237,7 +236,6 @@ public class Mining {
 					dfsCodeStack.push(new DFSCode(-1, -1, startPoint, a, -1));
 					subGraphMining(pattern, dfsCodeStack, graphs);
 					dfsCodeStack.pop();
-					pop(graphs);
 				}
 			}
 		}
@@ -259,6 +257,9 @@ public class Mining {
 				dfsCodeStack.pop();
 			}
 		}
+		
+		// 6. 重新回到上一个位置
+		pop(graphItems);
 	}
 	
 	private void pop(Set<Graph> graphs) {
