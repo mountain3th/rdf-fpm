@@ -133,6 +133,12 @@ public class Graph {
 		void push(Pattern pattern, DFSCode code) {
 			if(pattern == Pattern.PATTERN_STRONG) {
 				keepIndex = indexOf(code);
+				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+					if(code.equals(fastDfsCodes[i])) {
+						keepIndex = i; 
+						break;
+					}
+				}
 			} else {
 				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
 					if(code.equalsTo(fastDfsCodes[i])) {
