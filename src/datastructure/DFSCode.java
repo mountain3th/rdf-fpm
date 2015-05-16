@@ -5,7 +5,6 @@ import java.util.Map;
 import mining.Mining.Pattern;
 
 public class DFSCode {
-	public static Pattern pattern = Pattern.PATTERN_STRONG;
 	
 	public int ix;
 	public int iy;
@@ -75,11 +74,7 @@ public class DFSCode {
 	@Override
 	public boolean equals(Object o) {
 		DFSCode code = (DFSCode) o;
-		if(pattern == Pattern.PATTERN_STRONG) {
 			return code.a == a && code.ix == ix && code.iy == iy && code.x == x && code.y == y;
-		} else {
-			return code.a == a && code.ix == ix && code.iy == iy && code.x == x;
-		}
 	}
 	
 	public boolean equalsTo(Object o) {
@@ -119,5 +114,30 @@ public class DFSCode {
 		sb.append(" ");
 		sb.append(vertexRank2Label.get(y));
 		return sb.toString();
+	}
+	
+	public SimDFSCode toSimDFSCode() {
+		return new SimDFSCode(this.a, this.y);
+	}
+	
+	public static class SimDFSCode {
+		public int a;
+		public int y;
+
+		public SimDFSCode(int a, int y) {
+			this.a = a;
+			this.y = y;
+		}
+		
+		@Override
+		public int hashCode() {
+			return 100 * a + 10 * y;
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			SimDFSCode sdc = (SimDFSCode) o;
+			return sdc.a == a && sdc.y == y;
+		}
 	}
 }
