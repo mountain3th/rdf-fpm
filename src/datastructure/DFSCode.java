@@ -74,7 +74,7 @@ public class DFSCode {
 	@Override
 	public boolean equals(Object o) {
 		DFSCode code = (DFSCode) o;
-			return code.a == a && code.ix == ix && code.iy == iy && code.x == x && code.y == y;
+		return code.a == a && code.ix == ix && code.iy == iy && code.x == x && code.y == y;
 	}
 	
 	public boolean equalsTo(Object o) {

@@ -166,9 +166,9 @@ public class Mining {
 
 		SupportChecker supportChecker = new SupportChecker(pattern);
 		
-		Debugger.startTask("checkHasCandidates " + dfsCodeStack.peek());
 		// 2. 检查当前code是否有扩展的可能性
 		if(dfsCodeStack.getStack().size() == 1) {
+			Debugger.startTask("checkHasCandidates " + dfsCodeStack.peek());
 			if(TempResult.hasConcept(dfsCodeStack.peek().a)) {
 				Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 				return;
@@ -192,7 +192,6 @@ public class Mining {
 		} else {
 			TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems);
 		}
-		Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 		
 		Debugger.saveResult(dfsCodeStack);
 				
