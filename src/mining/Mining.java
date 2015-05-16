@@ -127,7 +127,7 @@ public class Mining {
 		Debugger.startTask("strongMining");
 //		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
 //			StrongMiningData md = it.next();
-			StrongMiningData md = new StrongMiningData(20, 6);
+			StrongMiningData md = new StrongMiningData(7, 14);
 		
 			Debugger.log(String.valueOf(index) + "\n");
 			index++;
