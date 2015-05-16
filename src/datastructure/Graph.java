@@ -166,7 +166,7 @@ public class Graph {
 			int last = indexes.size() - 1;
 			indexes.remove(last);
 			last = indexes.size() - 1;
-			keepIndex = indexes.get(last);
+			keepIndex = (last >= 0) ? indexes.get(last) : -1;
 		}
 		
 		Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) {
