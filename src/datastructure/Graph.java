@@ -130,23 +130,31 @@ public class Graph {
 		}
 		
 		
-		void push(Pattern pattern, DFSCode code) {
+		void push(Pattern pattern, DFSCode code) throws MiningException {
+			boolean flag = false;
 			if(pattern == Pattern.PATTERN_STRONG) {
 //				keepIndex = indexOf(code);
 				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
 					if(code.equals(fastDfsCodes[i])) {
 						keepIndex = i; 
+						flag = true;
 						break;
 					}
 				}
 			} else {
 				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
 					if(code.equalsTo(fastDfsCodes[i])) {
-						keepIndex = i; 
+						keepIndex = i;
+						flag = true;
 						break;
 					}
 				}
 			}
+			
+			if(!flag) {
+				throw new MiningException();
+			}
+			
 			indexes.add(keepIndex);
 		}
 		
@@ -157,7 +165,7 @@ public class Graph {
 			keepIndex = indexes.get(last);
 		}
 		
-		Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) throws MiningException {
+		Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) {
 			DFSCode code = dfsCodeStack.peek();
 			push(pattern, code);
 			

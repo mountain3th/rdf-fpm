@@ -20,7 +20,7 @@ public class MiningException extends RuntimeException {
 		case 0:
 			return "无法找到与此边匹配的顶点";
 		default:
-			return "";
+			return "在该图中无法找到此边";
 		}
 	}
 }
