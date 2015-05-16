@@ -203,10 +203,10 @@ public class Mining {
 			if(null == codes || codes.isEmpty()) {
 				continue;
 			}
-			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
-				DFSCode dfsCode = dit.next();
-				supportChecker.add(dfsCode, g);
-			}
+//			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
+//				DFSCode dfsCode = dit.next();
+//				supportChecker.add(dfsCode, g);
+//			}
 		}
 		Debugger.finishTask("getCandidates " + dfsCodeStack.peek());
 		
