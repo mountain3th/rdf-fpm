@@ -89,7 +89,7 @@ public class DFSCode {
 	
 	@Override
 	public int hashCode() {
-		return ix * 10000 + iy * 1000 + x * 100 + a * 10;
+		return ix * 10000 + iy * 1000 + x * 100 + a * 10 + y;
 	}
 	
 	@Override
