@@ -183,10 +183,11 @@ public class Mining {
 					it.remove();
 				}
 			}
+			Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
+
 			if(count >= Mining.MIN_SUPPORT) {
 				TempResult.add(new DFSCodeStack(dfsCodeStack), graphItems);
 			} else {
-				Debugger.finishTask("checkHasCandidates " + dfsCodeStack.peek());
 				return;
 			}
 		} else {
