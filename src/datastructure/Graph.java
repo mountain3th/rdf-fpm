@@ -152,8 +152,9 @@ public class Graph {
 			}
 			
 			if(!flag) {
+				System.out.println(keepIndex + "\n");
 				for(int i = 0; i < fastDfsCodes.length; i++) {
-					System.out.print(fastDfsCodes[i] + "\n");
+					System.out.print(fastDfsCodes[i] + " " +String.valueOf(code.equals(fastDfsCodes[i])) + "\n" );
 				}
 				throw new MiningException();
 			}
