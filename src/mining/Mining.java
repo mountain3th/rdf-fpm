@@ -125,34 +125,34 @@ public class Mining {
 		int index = 0;
 		
 		Debugger.startTask("strongMining");
-		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
-			StrongMiningData md = it.next();
-//			StrongMiningData md = new StrongMiningData(7, 14);
-		
-			Debugger.log(String.valueOf(index) + "\n");
-			index++;
-			
-			DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeLabel, md.vertexLabel);
-			final DFSCodeStack dfsCodeStack = new DFSCodeStack();
-			dfsCodeStack.push(code);
-			Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
-			
-			Debugger.startTask("subGraphMining");
-			new Mining().subGraphMining(Pattern.PATTERN_STRONG, dfsCodeStack, graphItems);
-			Debugger.finishTask("subGraphMining");	
-		}
+//		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
+//			StrongMiningData md = it.next();
+////			StrongMiningData md = new StrongMiningData(7, 14);
+//		
+//			Debugger.log(String.valueOf(index) + "\n");
+//			index++;
+//			
+//			DFSCode code = new DFSCode(-1, -1, startPoint, md.edgeLabel, md.vertexLabel);
+//			final DFSCodeStack dfsCodeStack = new DFSCodeStack();
+//			dfsCodeStack.push(code);
+//			Set<Graph> graphItems = new HashSet<Graph>(GraphSet.getGraphSet());
+//			
+//			Debugger.startTask("subGraphMining");
+//			new Mining().subGraphMining(Pattern.PATTERN_STRONG, dfsCodeStack, graphItems);
+//			Debugger.finishTask("subGraphMining");	
+//		}
 		Debugger.finishTask("strongMining");
 		
 		Debugger.startTask("weekMining");
-//		for(index = 0; index < wmDataSet.length; index++) {
-//			WeekMiningData wmd = wmDataSet[index];
-//			DFSCode code = new DFSCode(-1, -1, startPoint, index, -1);
-//			final DFSCodeStack dfsCodeStack = new DFSCodeStack();
-//			dfsCodeStack.push(code);
-//			
-//			Set<Graph> graphItems = new HashSet<Graph>(wmd.graphs);
-//			new Mining().subGraphMining(Pattern.PATTERN_WEEK, dfsCodeStack, graphItems);
-//		}
+		for(index = 0; index < wmDataSet.length; index++) {
+			WeekMiningData wmd = wmDataSet[index];
+			DFSCode code = new DFSCode(-1, -1, startPoint, index, -1);
+			final DFSCodeStack dfsCodeStack = new DFSCodeStack();
+			dfsCodeStack.push(code);
+			
+			Set<Graph> graphItems = new HashSet<Graph>(wmd.graphs);
+			new Mining().subGraphMining(Pattern.PATTERN_WEEK, dfsCodeStack, graphItems);
+		}
 		Debugger.finishTask("weekMining");
 	}
 	

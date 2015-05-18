@@ -121,9 +121,9 @@ public class TempResult {
 	private static void genConcept(Node n, int subject, List<Concept> concepts, int depth) {
 		if(hasConcept(n.code.a)) {
 			if(n.subjects.contains(subject)) {
-				concepts.add(new Concept(n.code.y, 1.0, depth));
+				concepts.add(new Concept(vertexRank2Label.get(n.code.y), 1.0, depth));
 			} else {
-				concepts.add(new Concept(n.code.y, n.confidence, depth));
+				concepts.add(new Concept(vertexRank2Label.get(n.code.y), n.confidence, depth));
 			}
 		}
 		
