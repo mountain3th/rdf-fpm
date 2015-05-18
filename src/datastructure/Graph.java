@@ -78,7 +78,7 @@ public class Graph {
 
 		List<Integer> indexes;
 		List<DFSCode> dfsCodes;
-		DFSCode[] fastDfsCodes;
+//		DFSCode[] fastDfsCodes;
 		int keepIndex = -1;
 		
 		DFSCandidates() {
@@ -107,7 +107,7 @@ public class Graph {
 				
 			});
 			
-			fastDfsCodes = dfsCodes.toArray(new DFSCode[dfsCodes.size()]);
+//			fastDfsCodes = dfsCodes.toArray(new DFSCode[dfsCodes.size()]);
 		}
 		
 		int indexOf(DFSCode code) {
@@ -117,18 +117,20 @@ public class Graph {
 		
 		boolean hasCandidates(Pattern pattern, DFSCode code) {
 			if(pattern == Pattern.PATTERN_STRONG) {
-				Debugger.log("##\n\n");
-				for(int i = 0; i < fastDfsCodes.length; i++) {
-					Debugger.log(fastDfsCodes[i] + "\n" );
-				}
 				return indexOf(code) != -1;
 			} else {
 				int i;
-				for(i = keepIndex + 1; i < fastDfsCodes.length; i++) {
-					if(code.equalsTo(fastDfsCodes[i])) {
+//				for(i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+//					if(code.equalsTo(fastDfsCodes[i])) {
+//						break;
+//					}
+//				}
+				for(i = keepIndex + 1; i < dfsCodes.size(); i++) {
+					if(code.equalsTo(dfsCodes.get(i))) {
 						break;
 					}
 				}
+				
 				return i != dfsCodes.size();
 			}
 		}
@@ -139,28 +141,32 @@ public class Graph {
 			if(pattern == Pattern.PATTERN_STRONG) {
 //				keepIndex = indexOf(code);
 				Debugger.log("before: " + keepIndex + "\n");
-				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
-					if(code.equals(fastDfsCodes[i])) {
+//				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+//					if(code.equals(fastDfsCodes[i])) {
+//						keepIndex = i; 
+//						flag = true;
+//						break;
+//					}
+//				}
+				for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
+					if(code.equals(dfsCodes.get(i))) {
 						keepIndex = i; 
 						flag = true;
 						break;
 					}
 				}
 			} else {
-				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
-					if(code.equalsTo(fastDfsCodes[i])) {
-						keepIndex = i;
-						flag = true;
-						break;
-					}
-				}
+//				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+//					if(code.equalsTo(fastDfsCodes[i])) {
+//						keepIndex = i;
+//						flag = true;
+//						break;
+//					}
+//				}
 			}
 			
 			if(!flag) {
 				System.out.println(keepIndex + "\n");
-				for(int i = 0; i < fastDfsCodes.length; i++) {
-					System.out.print(fastDfsCodes[i] + " " +String.valueOf(code.equals(fastDfsCodes[i])) + "\n" );
-				}
 				throw new MiningException();
 			}
 			
@@ -180,8 +186,11 @@ public class Graph {
 			Debugger.log("after: " + keepIndex + "\n");
 			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
-			for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
-				codes.add(fastDfsCodes[i]);
+//			for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+//				codes.add(fastDfsCodes[i]);
+//			}
+			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
+				codes.add(dfsCodes.get(i));
 			}
 			
 			return codes;
