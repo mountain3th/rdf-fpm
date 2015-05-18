@@ -125,9 +125,9 @@ public class Mining {
 		int index = 0;
 		
 		Debugger.startTask("strongMining");
-		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
-			StrongMiningData md = it.next();
-//			StrongMiningData md = new StrongMiningData(7, 14);
+//		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
+//			StrongMiningData md = it.next();
+			StrongMiningData md = new StrongMiningData(7, 14);
 		
 			Debugger.log(String.valueOf(index) + "\n");
 			index++;
@@ -140,7 +140,7 @@ public class Mining {
 			Debugger.startTask("subGraphMining");
 			new Mining().subGraphMining(Pattern.PATTERN_STRONG, dfsCodeStack, graphItems);
 			Debugger.finishTask("subGraphMining");	
-		}
+//		}
 		Debugger.finishTask("strongMining");
 		
 		Debugger.startTask("weekMining");
@@ -165,6 +165,8 @@ public class Mining {
 //		}
 
 		SupportChecker supportChecker = new SupportChecker(pattern);
+		
+		Debugger.log("$$\n\n");
 		
 		// 2. 检查当前code是否有扩展的可能性
 		if(dfsCodeStack.getStack().size() == 1) {
@@ -204,8 +206,11 @@ public class Mining {
 			if(null == codes || codes.isEmpty()) {
 				continue;
 			}
+			Debugger.log("\n");
 			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
 				DFSCode dfsCode = dit.next();
+				Debugger.log(dfsCode.toString());
+				Debugger.log("\n");
 				supportChecker.add(dfsCode, g);
 			}
 		}
