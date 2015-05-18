@@ -78,7 +78,7 @@ public class Graph {
 
 		List<Integer> indexes;
 		List<DFSCode> dfsCodes;
-//		DFSCode[] fastDfsCodes;
+		DFSCode[] fastDfsCodes;
 		int keepIndex = -1;
 		
 		DFSCandidates() {
@@ -107,7 +107,7 @@ public class Graph {
 				
 			});
 			
-//			fastDfsCodes = dfsCodes.toArray(new DFSCode[dfsCodes.size()]);
+			fastDfsCodes = dfsCodes.toArray(new DFSCode[dfsCodes.size()]);
 		}
 		
 		int indexOf(DFSCode code) {
@@ -120,13 +120,8 @@ public class Graph {
 				return indexOf(code) != -1;
 			} else {
 				int i;
-//				for(i = keepIndex + 1; i < fastDfsCodes.length; i++) {
-//					if(code.equalsTo(fastDfsCodes[i])) {
-//						break;
-//					}
-//				}
-				for(i = keepIndex + 1; i < dfsCodes.size(); i++) {
-					if(code.equalsTo(dfsCodes.get(i))) {
+				for(i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+					if(code.equalsTo(fastDfsCodes[i])) {
 						break;
 					}
 				}
@@ -140,29 +135,23 @@ public class Graph {
 			boolean flag = false;
 			if(pattern == Pattern.PATTERN_STRONG) {
 //				keepIndex = indexOf(code);
-				Debugger.log("before: " + keepIndex + "\n");
-//				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
-//					if(code.equals(fastDfsCodes[i])) {
-//						keepIndex = i; 
-//						flag = true;
-//						break;
-//					}
-//				}
-				for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
-					if(code.equals(dfsCodes.get(i))) {
+				Debugger.log("before: ");
+				log();
+				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+					if(code.equals(fastDfsCodes[i])) {
 						keepIndex = i; 
 						flag = true;
 						break;
 					}
 				}
 			} else {
-//				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
-//					if(code.equalsTo(fastDfsCodes[i])) {
-//						keepIndex = i;
-//						flag = true;
-//						break;
-//					}
-//				}
+				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+					if(code.equalsTo(fastDfsCodes[i])) {
+						keepIndex = i;
+						flag = true;
+						break;
+					}
+				}
 			}
 			
 			if(!flag) {
@@ -183,17 +172,23 @@ public class Graph {
 		Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) {
 			DFSCode code = dfsCodeStack.peek();
 			push(pattern, code);
-			Debugger.log("after: " + keepIndex + "\n");
+			Debugger.log("after: ");
+			log();
 			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
-//			for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
-//				codes.add(fastDfsCodes[i]);
-//			}
-			for(int i = keepIndex + 1; i < dfsCodes.size(); i++) {
-				codes.add(dfsCodes.get(i));
+			for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
+				codes.add(fastDfsCodes[i]);
 			}
 			
 			return codes;
+		}
+		
+		void log() {
+			Debugger.log("\n");
+			for(int i = 0; i < indexes.size(); i++) {
+				Debugger.log(indexes.get(i) + " ");
+			}
+			Debugger.log("\n");
 		}
 	}
 	
