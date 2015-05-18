@@ -77,6 +77,7 @@ public class Graph {
 	private class DFSCandidates {
 
 		List<Integer> indexes;
+		Set<DFSCode> codesSet;
 		List<DFSCode> dfsCodes;
 //		DFSCode[] fastDfsCodes;
 		int keepIndex = -1;
@@ -87,16 +88,13 @@ public class Graph {
 		}
 		
 		void init() {
-			Debugger.log("\n#\n");
 			for(Iterator<Edge> it = edges.iterator(); it.hasNext();) {
 				Edge e = it.next();
 				DFSCode code = new DFSCode(-1, -1, vertex2Rank.get(e.vertex1), e.label, vertex2Rank.get(e.vertex2));
-				dfsCodes.add(code);
-				if(e.label == 20) {
-					Debugger.log("Edge: " + e + " -> " + code + "\n");
-				}
+				codesSet.add(code);
 			}
 			
+			dfsCodes = new ArrayList<DFSCode>(codesSet);
 			Collections.sort(dfsCodes, new Comparator<DFSCode>() {
 
 				@Override

@@ -29,8 +29,6 @@ public class Launcher {
 			Preprocessor.rebuildGraphSet();
 			Debugger.finishTask("preprocess");
 			
-			System.out.println(TempResult.edgeRank2Label.get(20));
-			
 			Mining.start();
 			
 			Predicate.generate();
