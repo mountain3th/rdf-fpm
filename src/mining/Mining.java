@@ -206,7 +206,6 @@ public class Mining {
 			if(null == codes || codes.isEmpty()) {
 				continue;
 			}
-			Debugger.log("\n");
 			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
 				DFSCode dfsCode = dit.next();
 				Debugger.log(dfsCode.toString());

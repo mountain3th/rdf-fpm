@@ -134,6 +134,7 @@ public class Graph {
 			boolean flag = false;
 			if(pattern == Pattern.PATTERN_STRONG) {
 //				keepIndex = indexOf(code);
+				Debugger.log("before: " + keepIndex + "\n");
 				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
 					if(code.equals(fastDfsCodes[i])) {
 						keepIndex = i; 
@@ -172,6 +173,7 @@ public class Graph {
 		Set<DFSCode> getCandidates(Pattern pattern, DFSCodeStack dfsCodeStack) {
 			DFSCode code = dfsCodeStack.peek();
 			push(pattern, code);
+			Debugger.log("after: " + keepIndex + "\n");
 			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
 			for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
