@@ -174,6 +174,7 @@ public class Graph {
 			push(pattern, code);
 			Debugger.log("after: ");
 			log();
+			Debugger.log("" + fastDfsCodes.length + "\n");
 			
 			Set<DFSCode> codes = new HashSet<DFSCode>();
 			for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
