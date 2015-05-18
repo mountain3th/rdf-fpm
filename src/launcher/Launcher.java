@@ -29,7 +29,7 @@ public class Launcher {
 			Preprocessor.rebuildGraphSet();
 			Debugger.finishTask("preprocess");
 			
-			System.out.println(TempResult.vertexRank2Label.get(20));
+			System.out.println(TempResult.edgeRank2Label.get(20));
 			
 			Mining.start();
 			
