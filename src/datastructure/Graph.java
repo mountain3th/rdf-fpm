@@ -117,6 +117,10 @@ public class Graph {
 		
 		boolean hasCandidates(Pattern pattern, DFSCode code) {
 			if(pattern == Pattern.PATTERN_STRONG) {
+				Debugger.log("##\n\n");
+				for(int i = 0; i < fastDfsCodes.length; i++) {
+					Debugger.log(fastDfsCodes[i] + "\n" );
+				}
 				return indexOf(code) != -1;
 			} else {
 				int i;

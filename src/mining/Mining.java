@@ -166,8 +166,6 @@ public class Mining {
 
 		SupportChecker supportChecker = new SupportChecker(pattern);
 		
-		Debugger.log("$$\n\n");
-		
 		// 2. 检查当前code是否有扩展的可能性
 		if(dfsCodeStack.getStack().size() == 1) {
 			Debugger.startTask("checkHasCandidates " + dfsCodeStack.peek());
@@ -199,6 +197,8 @@ public class Mining {
 		Debugger.saveResult(dfsCodeStack);
 				
 		Debugger.startTask("getCandidates " + dfsCodeStack.peek());
+		
+		Debugger.log("$$\n\n");
 		// 3. 扩展并获得候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();
