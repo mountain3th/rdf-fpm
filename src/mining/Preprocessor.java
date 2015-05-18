@@ -177,9 +177,10 @@ public class Preprocessor {
 				if(e.label <= wmaxEdgeLabel) {
 					if(Mining.wmDataSet[e.label] == null) {
 						Mining.wmDataSet[e.label] = new WeekMiningData(g);
-					} else {
-						Mining.wmDataSet[e.label].addGraph(g);
-					}
+					} 
+
+					Mining.wmDataSet[e.label].addGraph(g);
+					hasNoCandidates = false;
 				}
 			}
 			
