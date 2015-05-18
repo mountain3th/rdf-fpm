@@ -84,7 +84,7 @@ public class Graph {
 		
 		DFSCandidates() {
 			indexes = new ArrayList<Integer>();
-			dfsCodes = new ArrayList<DFSCode>();
+			codesSet = new HashSet<DFSCode>();
 		}
 		
 		void init() {
