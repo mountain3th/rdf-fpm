@@ -125,9 +125,9 @@ public class Mining {
 		int index = 0;
 		
 		Debugger.startTask("strongMining");
-//		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
-//			StrongMiningData md = it.next();
-			StrongMiningData md = new StrongMiningData(7, 14);
+		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
+			StrongMiningData md = it.next();
+//			StrongMiningData md = new StrongMiningData(7, 14);
 		
 			Debugger.log(String.valueOf(index) + "\n");
 			index++;
@@ -140,7 +140,7 @@ public class Mining {
 			Debugger.startTask("subGraphMining");
 			new Mining().subGraphMining(Pattern.PATTERN_STRONG, dfsCodeStack, graphItems);
 			Debugger.finishTask("subGraphMining");	
-//		}
+		}
 		Debugger.finishTask("strongMining");
 		
 		Debugger.startTask("weekMining");
