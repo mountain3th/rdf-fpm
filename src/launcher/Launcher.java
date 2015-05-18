@@ -4,6 +4,7 @@ import java.io.File;
 
 import mining.Mining;
 import mining.Preprocessor;
+import mining.TempResult;
 import prediction.Predicate;
 import exception.ArgsException;
 import exception.MiningException;
@@ -27,6 +28,8 @@ public class Launcher {
 			Preprocessor.relabel();
 			Preprocessor.rebuildGraphSet();
 			Debugger.finishTask("preprocess");
+			
+			System.out.println(TempResult.vertexRank2Label.get(20));
 			
 			Mining.start();
 			
