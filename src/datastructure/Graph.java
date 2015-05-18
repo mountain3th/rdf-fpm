@@ -87,9 +87,14 @@ public class Graph {
 		}
 		
 		void init() {
+			Debugger.log("\n#\n");
 			for(Iterator<Edge> it = edges.iterator(); it.hasNext();) {
 				Edge e = it.next();
-				dfsCodes.add(new DFSCode(-1, -1, vertex2Rank.get(e.vertex1), e.label, vertex2Rank.get(e.vertex2)));
+				DFSCode code = new DFSCode(-1, -1, vertex2Rank.get(e.vertex1), e.label, vertex2Rank.get(e.vertex2));
+				dfsCodes.add(code);
+				if(e.label == 20) {
+					Debugger.log("Edge: " + e + " -> " + code + "\n");
+				}
 			}
 			
 			Collections.sort(dfsCodes, new Comparator<DFSCode>() {
@@ -97,8 +102,6 @@ public class Graph {
 				@Override
 				public int compare(DFSCode e1, DFSCode e2) {
 					if(TempResult.hasConcept(e1.a)) {
-						return -1;
-					} else if(TempResult.hasConcept(e2.a)) {
 						return 1;
 					}
 					
@@ -106,6 +109,7 @@ public class Graph {
 				}
 				
 			});
+			
 			
 //			fastDfsCodes = dfsCodes.toArray(new DFSCode[dfsCodes.size()]);
 		}
@@ -140,7 +144,6 @@ public class Graph {
 			boolean flag = false;
 			if(pattern == Pattern.PATTERN_STRONG) {
 //				keepIndex = indexOf(code);
-				log();
 //				for(int i = keepIndex + 1; i < fastDfsCodes.length; i++) {
 //					if(code.equals(fastDfsCodes[i])) {
 //						keepIndex = i; 
