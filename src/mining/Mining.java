@@ -198,7 +198,6 @@ public class Mining {
 				
 		Debugger.startTask("getCandidates " + dfsCodeStack.peek());
 		
-		Debugger.log("$$\n\n");
 		// 3. 扩展并获得候选集
 		for(Iterator<Graph> it = graphItems.iterator(); it.hasNext();) {
 			Graph g = it.next();
@@ -208,8 +207,6 @@ public class Mining {
 			}
 			for(Iterator<DFSCode> dit = codes.iterator(); dit.hasNext();) {
 				DFSCode dfsCode = dit.next();
-				Debugger.log(dfsCode.toString());
-				Debugger.log("\n");
 				supportChecker.add(dfsCode, g);
 			}
 		}

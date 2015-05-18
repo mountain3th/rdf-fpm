@@ -203,14 +203,6 @@ public class Graph {
 			return codes;
 		}
 		
-		void log() {
-			Debugger.log("\n");
-			Debugger.log("" + dfsCodes.size() + "\n");
-			for(int i = 0; i < dfsCodes.size(); i++) {
-				Debugger.log(dfsCodes.get(i).toString());
-				Debugger.log("\n");
-			}
-		}
 	}
 	
 	public Graph(int subject) {
