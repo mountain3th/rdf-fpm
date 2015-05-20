@@ -4,6 +4,7 @@ from conf import *
 import sys, getopt
 import linecache
 import os.path
+import time
 
 predicate_mapping_txt = ''
 objs_mapping_txt = ''
@@ -106,7 +107,7 @@ def preprocess_types(input_file):
 						sub_now = sub
 						del types_list[:]
 					types_list.append(find(types_mapping_txt, obj, types_mapping_count))
-	sort(entities_type_txt)
+		sort(entities_type_txt)
 
 def sort(file):
 	lines = open(file).readlines()
@@ -135,6 +136,7 @@ def find2(file, string, lines):
 		ln = (i + j) / 2
 		line = linecache.getline(file, ln).split()
 		labels = line[1][-1]
+		print line
 		ret = cmp(string, line[0])
 		if ret == 0:
 			return labels
@@ -214,7 +216,6 @@ def gen_types(mapping_file, output_file):
 			object_now = strings[2]
 
 			pre = predicates.index(predicate) + 1
-			sub = find2(entities_type_txt, subject_now, types_file_lines)
 			obj = find2(entities_type_txt, object_now, types_file_lines)
 			if sub < 0: 
 				open('error.log', 'a').write(subject_now + '\n')
@@ -222,10 +223,12 @@ def gen_types(mapping_file, output_file):
 				open('error.log', 'a').write(object_now + '\n')
 			if cmp(subject, subject_now) != 0:
 				if vertices:
+					time.sleep(3)
 					graph_count += 1
-					combine(output_file, vertices, edges, graph_count)
+					combine2(output_file, vertices, edges, graph_count)
 					index = 0	 
 					print graph_count, str(round(float(count) / float(lines_count) * 100, 2)) + '%'
+				sub = find2(entities_type_txt, subject_now, types_file_lines)
 				add_node2(vertices, 0, sub)
 				subject = subject_now
 			
