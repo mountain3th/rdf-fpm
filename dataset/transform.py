@@ -67,8 +67,8 @@ def combine2(output_file, vertices, edges, graph_count):
 			graph.write(v)
 		for e in edges:
 			graph.write(e)
-		del vertices[:]
-		del edges[:]
+	del vertices[:]
+	del edges[:]
 
 	graph.close()
 
