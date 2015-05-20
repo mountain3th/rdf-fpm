@@ -105,7 +105,7 @@ def preprocess_types(input_file):
 						print lines_count, str(round(float(lines_count) / float(count) * 100, 2)) + '%'
 					sub_now = sub
 					del types_list[:]
-					types_list.append(find(types_mapping_txt, obj, index))
+				types_list.append(find(types_mapping_txt, obj, index))
 
 
 def find(file, string, lines):
