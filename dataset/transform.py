@@ -182,7 +182,7 @@ def gen(lines_count, input_file, output_file):
 		for label in concept_types_labels:
 			tmp_file.write(str(label) + '\n')
 
-def gen_types(instances_file, mapping_file, output_file):
+def gen_types(lines_count, instances_file, mapping_file, output_file):
 	
 	preprocess_types(instances_file)
 	types_file_lines = count_lines(entities_type_txt)
@@ -246,15 +246,18 @@ if __name__ == '__main__':
 		elif op == '-h':
 			usage()
 			sys.exit(1)
-	if not os.path.exists(output_file):
-		name = output_file.split('.')[0] + "_"
-		subs_mapping_txt = name + subs_mapping_txt_suffix
-		objs_mapping_txt = name + objs_mapping_txt_suffix
-		predicate_mapping_txt = name + predicate_mapping_txt_suffix
-		entities_type_txt = name + entities_type_txt_suffix
-		types_mapping_txt = name + types_mapping_txt_suffix
-		type_output_txt = name + type_output_txt_suffix
+	
+	name = output_file.split('.')[0] + "_"
+	subs_mapping_txt = name + subs_mapping_txt_suffix
+	objs_mapping_txt = name + objs_mapping_txt_suffix
+	predicate_mapping_txt = name + predicate_mapping_txt_suffix
+	entities_type_txt = name + entities_type_txt_suffix
+	types_mapping_txt = name + types_mapping_txt_suffix
+	type_output_txt = name + type_output_txt_suffix
 		
+	if not os.path.exists(output_file):
 		lines_count = count_lines(input_file)
-		# gen(lines_count, input_file, output_file)
-		gen_types('instance_types_en.ttl', input_file, type_output_txt)
+		gen(lines_count, input_file, output_file)
+	if not os.path.exists(type_output_txt):
+		lines_count = count_lines(input_file)
+		gen_types(lines_count, 'instance_types_en.ttl', input_file, type_output_txt)
