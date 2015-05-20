@@ -208,7 +208,7 @@ def gen_types(mapping_file, output_file):
 	edges = []
 	with open(mapping_file) as mapping:
 		graph_count = -1
-		index = -1
+		index = 0
 		subject = ''
 		for count, line in enumerate(mapping):
 			strings = line.split()
