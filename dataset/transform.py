@@ -102,7 +102,7 @@ def preprocess_types(input_file):
 						types.write(string)
 					sub_now = sub
 					del types_list[:]
-					types_list.append(find(types_mapping, obj, index))
+					types_list.append(find(types_mapping_txt, obj, index))
 
 
 def find(file, string, lines):
