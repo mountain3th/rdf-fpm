@@ -62,12 +62,13 @@ def add_edge2(edges, sub, obj, label):
 def combine2(output_file, vertices, edges, graph_count):
 	graph = open(output_file, 'a')
 	graph.write('\nt # %d\n' % graph_count)
-	for v in vertices:
-		graph.write(v)
-	for e in edges:
-		graph.write(e)
-	del vertices[:]
-	del edges[:]
+	if vertices and edge:
+		for v in vertices:
+			graph.write(v)
+		for e in edges:
+			graph.write(e)
+		del vertices[:]
+		del edges[:]
 
 	graph.close()
 
@@ -166,25 +167,26 @@ def gen(lines_count, input_file, output_file):
 			subject_now = strings[0]
 			predicate = strings[1]
 
-			pre = predicates.index(predicate) + 1
-			obj = find(objs_mapping_txt, strings[2], objs_mapping_lines)
-			if obj < 0:
-				open('error.log', 'a').write(strings[2] + '\n')
-				return
+			if subject_now.startswith('<') and subject_now.endswith('>'):
+				pre = predicates.index(predicate) + 1
+				obj = find(objs_mapping_txt, strings[2], objs_mapping_lines)
+				if obj < 0:
+					open('error.log', 'a').write(strings[2] + '\n')
+					return
 
-			if cmp(subject, subject_now) != 0:
-				if vertices :
-					graph_count += 1
-					combine(output_file, vertices, edges, graph_count)
-					index = 0	 
-					print graph_count, str(round(float(count) / float(lines_count) * 100, 2)) + '%'
-				add_node(vertices, 0, 0)
-				subject = subject_now
-				subs_maps.write(subject + '\n')
-			
-			index += 1
-			add_node(vertices, index, obj)
-			add_edge(edges, 0, index, pre)
+				if cmp(subject, subject_now) != 0:
+					if vertices :
+						graph_count += 1
+						combine(output_file, vertices, edges, graph_count)
+						index = 0	 
+						print graph_count, str(round(float(count) / float(lines_count) * 100, 2)) + '%'
+					add_node(vertices, 0, 0)
+					subject = subject_now
+					subs_maps.write(subject + '\n')
+				
+				index += 1
+				add_node(vertices, index, obj)
+				add_edge(edges, 0, index, pre)
 
 	tmp_file_txt = output_file.split('.')[0] + ".tmp"
 	for i in predicates:
@@ -214,28 +216,30 @@ def gen_types(mapping_file, output_file):
 			predicate = strings[1]
 			object_now = strings[2]
 
-			if cmp(subject, subject_now) != 0:
-				if vertices:
-					time.sleep(3)
-					graph_count += 1
-					combine2(output_file, vertices, edges, graph_count)
-					index = 0	 
-					print graph_count, str(round(float(count) / float(lines_count) * 100, 2)) + '%'
-				sub = find2(entities_type_txt, subject_now, types_file_lines)
-				if sub < 0: 
-					open('error.log', 'a').write(subject_now + '\n')
-				add_node2(vertices, 0, sub)
-				subject = subject_now
-	
-			pre = predicates.index(predicate) + 1
-			if object_now.startswith('<') and object_now.endswith('>'):
-				obj = find2(entities_type_txt, object_now, types_file_lines)			
-				if obj < 0:
-					open('error.log', 'a').write(object_now + '\n')
+			if subject_now.startswith('<') and subject_now.endswith('>'):
+				if cmp(subject, subject_now) != 0:
+					if vertices:
+						graph_count += 1
+						print graph_count, str(round(float(count) / float(lines_count) * 100, 2)) + '%'
+						combine2(output_file, vertices, edges, graph_count)
+						index = 0	 
+						
+					sub = find2(entities_type_txt, subject_now, types_file_lines)
+					if sub < 0: 
+						open('error.log', 'a').write(subject_now + '\n')
+					add_node2(vertices, 0, sub)
+					subject = subject_now
+		
+				pre = predicates.index(predicate) + 1
+				if object_now.startswith('<') and object_now.endswith('>'):
+					obj = find2(entities_type_txt, object_now, types_file_lines)			
+					if obj < 0:
+						open('error.log', 'a').write(object_now + '\n')
+						continue
 
-				index += 1
-				add_node2(vertices, index, obj)
-				add_edge2(edges, 0, index, pre)
+					index += 1
+					add_node2(vertices, index, obj)
+					add_edge2(edges, 0, index, pre)
 			
 def count_lines(input_file):
 	count = 0
