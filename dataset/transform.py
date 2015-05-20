@@ -136,7 +136,7 @@ def find2(file, string, lines):
 		ln = (i + j) / 2
 		line = linecache.getline(file, ln).split()
 		labels = line[1][-1]
-		print line
+		print ln, line
 		ret = cmp(string, line[0])
 		if ret == 0:
 			return labels
