@@ -62,7 +62,7 @@ def add_edge2(edges, sub, obj, label):
 def combine2(output_file, vertices, edges, graph_count):
 	graph = open(output_file, 'a')
 	graph.write('\nt # %d\n' % graph_count)
-	if vertices and edge:
+	if vertices and edges:
 		for v in vertices:
 			graph.write(v)
 		for e in edges:
