@@ -8,6 +8,8 @@ import os.path
 predicate_mapping_txt = ''
 objs_mapping_txt = ''
 subs_mapping_txt = ''
+entities_type_txt = ''
+types_mapping_txt = ''
 
 def add_node(vertices, index, label):
 	string = 'v %d %d\n' % (index, label)
@@ -48,6 +50,60 @@ def preprocess(input_file):
 		for i in objs_list:
 			objs_mapping.write(i + '\n')
 
+def add_node2(vertices, index, labels):
+	string = 'v %d %s\n' % (index, labels)
+	vertices.append(string)	
+
+def add_edge2(edges, sub, obj, label):
+	string = 'e %d %d %d\n' % (sub, obj, label)
+	edges.append(string)
+
+def combine2(output_file, vertices, edges, graph_count):
+	graph = open(output_file, 'a')
+	graph.write('\nt # %d\n' % graph_count)
+	for v in vertices:
+		graph.write(v)
+	for e in edges:
+		graph.write(e)
+	del vertices[:]
+	del edges[:]
+
+	graph.close()
+
+
+def preprocess_types(input_file):
+	objs = set()
+
+	with open(input_file) as instances:
+		for line in instances:
+			string = line.split()
+			objs.add(string[2])
+	objs_list = list(objs)
+	objs_list.sort()
+
+	index = 0
+	with open(types_mapping_txt, 'w') as types_mapping:
+		for index, item in enumerate(objs_list):
+			types_mapping.write(index + '\n')
+
+	with open(entities_type_txt, 'w') as types:
+		with open(input_file) as instances:
+			sub_now = ''
+			types_list = list()
+			for line in instances:
+				strings = line.split()
+				sub = strings[0]
+				obj = strings[2]
+				if cmp(sub_now, sub) != 0:
+					if not sub_now.strip():
+						labels = (str(i) for i in types_list).join(',')
+						string = '%s %s\n' % (sub_now, labels)
+						types.write(string)
+					sub_now = sub
+					del types_list[:]
+					types_list.add(find(types_mapping, obj, index))
+
+
 def find(file, string, lines):
 	i, j = 1, lines
 	while i <= j:
@@ -62,7 +118,22 @@ def find(file, string, lines):
 			i = ln + 1
 	return -1
 
-def main(lines_count, input_file, output_file):
+def find2(file, string, lines):
+	i, j = 1, lines
+	while i <= j:
+		ln = (i + j) / 2
+		line = linecache.getline(file, ln).split()
+		labels = line[1][-1]
+		ret = cmp(string, line[0])
+		if ret == 0:
+			return labels
+		elif ret < 0:
+			j = ln - 1
+		else:
+			i = ln + 1
+	return -1
+
+def gen(lines_count, input_file, output_file):
 	subs_maps = open(subs_mapping_txt, 'w')
 	concept_types_labels = set()
 
@@ -84,9 +155,6 @@ def main(lines_count, input_file, output_file):
 			predicate = strings[1]
 
 			pre = predicates.index(predicate) + 1
-			if 'type' in predicate:
-				concept_types_labels.add(pre)
-
 			obj = find(objs_mapping_txt, strings[2], objs_mapping_lines)
 			if obj < 0:
 				open('error.log', 'a').write(strings[2] + '\n')
@@ -107,10 +175,52 @@ def main(lines_count, input_file, output_file):
 			add_edge(edges, 0, index, pre)
 
 	tmp_file_txt = output_file.split('.')[0] + ".tmp"
-	print tmp_file_txt
+	for i in predicates:
+		if i in ['<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>', 'http://dbpedia.org/ontology/type']:
+			concept_types_labels.add(i + 1)
 	with open(tmp_file_txt, 'w') as tmp_file:
 		for label in concept_types_labels:
 			tmp_file.write(str(label) + '\n')
+
+def gen_types(instances_file, mapping_file, output_file):
+	
+	preprocess_types(instances_file)
+	types_file_lines = count_lines(entities_type_txt)
+
+	predicates = open(predicate_mapping_txt).readlines()
+	predicates = [p[:-1] for p in predicates]
+
+	vertices = []
+	edges = []
+	with open(mapping_file) as mapping:
+		graph_count = -1
+		index = -1
+		subject = ''
+		for count, line in enumerate(mapping):
+			strings = line.split()
+			subject_now = strings[0]
+			predicate = strings[1]
+			object_now = strings[2]
+
+			pre = predicates.index(predicate) + 1
+			sub = find2(entities_type_txt, subject_now, types_file_lines)
+			obj = find2(entities_type_txt, object_now, types_file_lines)
+			if sub < 0: 
+				open('error.log', 'a').write(subject_now + '\n')
+			if obj < 0:
+				open('error.log', 'a').write(object_now + '\n')
+			if cmp(subject, subject_now) != 0:
+				if vertices:
+					graph_count += 1
+					combine(output_file, vertices, edges, graph_count)
+					index = 0	 
+					print graph_count, str(round(float(count) / float(lines_count) * 100, 2)) + '%'
+				add_node2(vertices, 0, sub)
+				subject = subject_now
+			
+			index += 1
+			add_node2(vertices, index, obj)
+			add_edge2(edges, 0, index, pre)
 			
 def count_lines(input_file):
 	count = 0
@@ -141,6 +251,10 @@ if __name__ == '__main__':
 		subs_mapping_txt = name + subs_mapping_txt_suffix
 		objs_mapping_txt = name + objs_mapping_txt_suffix
 		predicate_mapping_txt = name + predicate_mapping_txt_suffix
+		entities_type_txt = name + entities_type_txt_suffix
+		types_mapping_txt = name + types_mapping_txt_suffix
+		type_output_txt = name + type_output_txt_suffix
 		
 		lines_count = count_lines(input_file)
-		main(lines_count, input_file, output_file)
+		# gen(lines_count, input_file, output_file)
+		gen_types('instance_types_en.ttl', input_file, type_output_txt)
