@@ -111,11 +111,9 @@ def preprocess_types(input_file):
 def sort(file):
 	lines = open(file).readlines()
 	lines.sort()
-	with open('test', 'w') as types:
+	with open(file, 'w') as types:
 		for line in lines:
 			types.write(line)
-
-
 
 def find(file, string, lines):
 	i, j = 1, lines
