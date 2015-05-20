@@ -97,7 +97,7 @@ def preprocess_types(input_file):
 				obj = strings[2]
 				if cmp(sub_now, sub) != 0:
 					if not sub_now.strip():
-						labels = (str(i) for i in types_list).join(',')
+						labels = ','.join(str(i) for i in types_list)
 						string = '%s %s\n' % (sub_now, labels)
 						types.write(string)
 					sub_now = sub
