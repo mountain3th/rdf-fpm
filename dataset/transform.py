@@ -135,8 +135,7 @@ def find2(file, string, lines):
 	while i <= j:
 		ln = (i + j) / 2
 		line = linecache.getline(file, ln).split()
-		labels = line[1][-1]
-		print ln, string, line
+		labels = line[1]
 		ret = cmp(string, line[0])
 		if ret == 0:
 			return labels
@@ -215,13 +214,6 @@ def gen_types(mapping_file, output_file):
 			predicate = strings[1]
 			object_now = strings[2]
 
-			print subject_now, object_now
-
-			pre = predicates.index(predicate) + 1
-			obj = find2(entities_type_txt, object_now, types_file_lines)
-			
-			if obj < 0:
-				open('error.log', 'a').write(object_now + '\n')
 			if cmp(subject, subject_now) != 0:
 				if vertices:
 					time.sleep(3)
@@ -234,10 +226,16 @@ def gen_types(mapping_file, output_file):
 					open('error.log', 'a').write(subject_now + '\n')
 				add_node2(vertices, 0, sub)
 				subject = subject_now
-			
-			index += 1
-			add_node2(vertices, index, obj)
-			add_edge2(edges, 0, index, pre)
+	
+			pre = predicates.index(predicate) + 1
+			if object_now.startswith('<') and object_now.endswith('>'):
+				obj = find2(entities_type_txt, object_now, types_file_lines)			
+				if obj < 0:
+					open('error.log', 'a').write(object_now + '\n')
+
+				index += 1
+				add_node2(vertices, index, obj)
+				add_edge2(edges, 0, index, pre)
 			
 def count_lines(input_file):
 	count = 0
