@@ -74,8 +74,10 @@ def combine2(output_file, vertices, edges, graph_count):
 def preprocess_types(input_file):
 	objs = set()
 
+	count = 0
 	with open(input_file) as instances:
 		for line in instances:
+			count += 1
 			string = line.split()
 			objs.add(string[2])
 	objs_list = list(objs)
@@ -91,7 +93,7 @@ def preprocess_types(input_file):
 		with open(input_file) as instances:
 			sub_now = ''
 			types_list = list()
-			for line in instances:
+			for index, line in enumerate(instances):
 				strings = line.split()
 				sub = strings[0]
 				obj = strings[2]
@@ -100,6 +102,8 @@ def preprocess_types(input_file):
 						labels = ','.join(str(i) for i in types_list)
 						string = '%s %s\n' % (sub_now, labels)
 						types.write(string)
+						print string
+						print index, str(round(float(index) / float(count) * 100, 2)) + '%'
 					sub_now = sub
 					del types_list[:]
 					types_list.append(find(types_mapping_txt, obj, index))
