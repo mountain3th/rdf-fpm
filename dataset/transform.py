@@ -136,7 +136,7 @@ def find2(file, string, lines):
 		ln = (i + j) / 2
 		line = linecache.getline(file, ln).split()
 		labels = line[1][-1]
-		print ln, line
+		print ln, string, line
 		ret = cmp(string, line[0])
 		if ret == 0:
 			return labels
@@ -199,8 +199,6 @@ def gen_types(mapping_file, output_file):
 
 	types_file_lines = count_lines(entities_type_txt)
 	lines_count = count_lines(mapping_file)
-
-	print types_file_lines
 
 	predicates = open(predicate_mapping_txt).readlines()
 	predicates = [p[:-1] for p in predicates]
