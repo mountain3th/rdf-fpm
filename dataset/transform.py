@@ -72,40 +72,49 @@ def combine2(output_file, vertices, edges, graph_count):
 
 
 def preprocess_types(input_file):
-	objs = set()
-
-	count = 0
-	with open(input_file) as instances:
-		for line in instances:
-			count += 1
-			string = line.split()
-			objs.add(string[2])
-	objs_list = list(objs)
-	objs_list.sort()
-
-	index = 0
-	with open(types_mapping_txt, 'w') as types_mapping:
-		for item in objs_list:
-			index += 1
-			types_mapping.write(item + '\n')
-
-	with open(entities_type_txt, 'w') as types:
+	if not os.path.exists(types_mapping_txt):
+		objs = set()
 		with open(input_file) as instances:
-			sub_now = ''
-			types_list = list()
-			for lines_count, line in enumerate(instances):
-				strings = line.split()
-				sub = strings[0]
-				obj = strings[2]
-				if cmp(sub_now, sub) != 0:
-					if sub_now.strip():
-						labels = ','.join(str(i) for i in types_list)
-						string = '%s %s\n' % (sub_now, labels)
-						types.write(string)
-						print lines_count, str(round(float(lines_count) / float(count) * 100, 2)) + '%'
-					sub_now = sub
-					del types_list[:]
-				types_list.append(find(types_mapping_txt, obj, index))
+			for line in instances:
+				string = line.split()
+				objs.add(string[2])
+		objs_list = list(objs)
+		objs_list.sort()
+
+		with open(types_mapping_txt, 'w') as types_mapping:
+			for item in objs_list:
+				types_mapping.write(item + '\n')
+
+	if not os.path.exists(entities_type_txt):
+		types_mapping_count = count_lines(types_mapping_txt)
+		count = count_lines(input_file)
+
+		with open(entities_type_txt, 'w') as types:
+			with open(input_file) as instances:
+				sub_now = ''
+				types_list = list()
+				for lines_count, line in enumerate(instances):
+					strings = line.split()
+					sub = strings[0]
+					obj = strings[2]
+					if cmp(sub_now, sub) != 0:
+						if sub_now.strip():
+							labels = ','.join(str(i) for i in types_list)
+							string = '%s %s\n' % (sub_now, labels)
+							types.write(string)
+							print lines_count, str(round(float(lines_count) / float(count) * 100, 2)) + '%'
+						sub_now = sub
+						del types_list[:]
+					types_list.append(find(types_mapping_txt, obj, types_mapping_count))
+	sort(entities_type_txt)
+
+def sort(file):
+	lines = file.readlines()
+	lines.sort()
+	with open('test', 'w') as types:
+		for line in lines:
+			types.write(line)
+
 
 
 def find(file, string, lines):
@@ -186,10 +195,10 @@ def gen(lines_count, input_file, output_file):
 		for label in concept_types_labels:
 			tmp_file.write(str(label) + '\n')
 
-def gen_types(lines_count, instances_file, mapping_file, output_file):
-	
-	preprocess_types(instances_file)
+def gen_types(mapping_file, output_file):
+
 	types_file_lines = count_lines(entities_type_txt)
+	lines_count = count_lines(mapping_file)
 
 	predicates = open(predicate_mapping_txt).readlines()
 	predicates = [p[:-1] for p in predicates]
@@ -263,5 +272,5 @@ if __name__ == '__main__':
 		lines_count = count_lines(input_file)
 		gen(lines_count, input_file, output_file)
 	if not os.path.exists(type_output_txt):
-		lines_count = count_lines(input_file)
-		gen_types(lines_count, 'instance_types_en.ttl', input_file, type_output_txt)
+		preprocess_types('instance_types_en.ttl')
+		gen_types(input_file, type_output_txt)
