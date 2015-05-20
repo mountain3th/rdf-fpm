@@ -109,7 +109,7 @@ def preprocess_types(input_file):
 	sort(entities_type_txt)
 
 def sort(file):
-	lines = file.readlines()
+	lines = open(file).readlines()
 	lines.sort()
 	with open('test', 'w') as types:
 		for line in lines:
