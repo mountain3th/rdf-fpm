@@ -215,10 +215,11 @@ def gen_types(mapping_file, output_file):
 			predicate = strings[1]
 			object_now = strings[2]
 
+			print subject_now, object_now
+
 			pre = predicates.index(predicate) + 1
 			obj = find2(entities_type_txt, object_now, types_file_lines)
-			if sub < 0: 
-				open('error.log', 'a').write(subject_now + '\n')
+			
 			if obj < 0:
 				open('error.log', 'a').write(object_now + '\n')
 			if cmp(subject, subject_now) != 0:
@@ -229,6 +230,8 @@ def gen_types(mapping_file, output_file):
 					index = 0	 
 					print graph_count, str(round(float(count) / float(lines_count) * 100, 2)) + '%'
 				sub = find2(entities_type_txt, subject_now, types_file_lines)
+				if sub < 0: 
+					open('error.log', 'a').write(subject_now + '\n')
 				add_node2(vertices, 0, sub)
 				subject = subject_now
 			
