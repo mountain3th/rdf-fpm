@@ -83,8 +83,9 @@ def preprocess_types(input_file):
 
 	index = 0
 	with open(types_mapping_txt, 'w') as types_mapping:
-		for index, item in enumerate(objs_list):
-			types_mapping.write(index + '\n')
+		for item in objs_list:
+			index += 1
+			types_mapping.write(item + '\n')
 
 	with open(entities_type_txt, 'w') as types:
 		with open(input_file) as instances:
