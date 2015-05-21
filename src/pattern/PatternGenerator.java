@@ -208,7 +208,7 @@ public class PatternGenerator {
 	private void mining(int type, PatternEdgeStack stack, Set<TypeGraph> graphItems) {
 		Map<PatternEdge, Set<TypeGraph>> supportChecker = new HashMap<PatternEdge, Set<TypeGraph>>();
 		
-		Debugger.startTask("mining");
+//		Debugger.startTask("mining");
 		PatternEdge pe = stack.peek();
 		for(Iterator<TypeGraph> it = graphItems.iterator(); it.hasNext();) {
 			TypeGraph tg = it.next();
@@ -238,7 +238,7 @@ public class PatternGenerator {
 		
 		pop(graphItems);
 		
-		Debugger.finishTask("mining");
+//		Debugger.finishTask("mining");
 	}
 	
 	public static void generate() throws IOException {
@@ -252,7 +252,9 @@ public class PatternGenerator {
 			Entry<Integer, Set<TypeGraph>> entry = it.next();
 			System.out.println(entry.getKey() + " " + entry.getValue().size());
 			if(entry.getValue().size() > Mining.MIN_SUPPORT) {
+				Debugger.startTask("mininig");
 				patternG.mining(entry.getKey(), new PatternEdgeStack(), entry.getValue());
+				Debugger.finishTask("mining");
 			}
 		}
 	}
