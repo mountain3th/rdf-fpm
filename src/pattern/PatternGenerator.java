@@ -24,7 +24,7 @@ public class PatternGenerator {
 	Map<Integer, Set<TypeGraph>> patternTypes = new HashMap<Integer, Set<TypeGraph>>();
 	
 	private static class Result {
-		static Map<Integer, List<PatternEdgeStack>> results;
+		static Map<Integer, List<PatternEdgeStack>> results = new HashMap<Integer, List<PatternEdgeStack>>();
 		
 		static void add(int type, PatternEdgeStack stack) {
 			if(!results.containsKey(type)) {
