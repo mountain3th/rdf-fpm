@@ -4,7 +4,7 @@ if [ $# != 6 ];then
 	exit
 fi
 cd dataset
-python transform.py -mi $1 -mo $2 -ti $3 -to $4
+python transform.py -i $1 -o $2 -t $3 -p $4
 if [ $? -eq 0 ];then
 	echo "prepapre dataset ok."
 	cd ..
