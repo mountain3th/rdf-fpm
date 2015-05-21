@@ -5,6 +5,7 @@ src/datastructure/Graph.java
 src/datastructure/GraphSet.java
 src/exception/ArgsException.java
 src/exception/MiningException.java
+src/exception/DebuggerException.java
 src/launcher/Debugger.java
 src/launcher/Launcher.java
 src/mining/Mining.java
