@@ -87,7 +87,7 @@ public class PatternGenerator {
 	
 	private static class TypeGraph {
 		int subType;
-		List<TypeEdge> predicates;
+		List<TypeEdge> predicates = new ArrayList<TypeEdge>();
 		
 		int keepIndex = -1;
 		List<Integer> indexes = new ArrayList<Integer>();
