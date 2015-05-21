@@ -66,6 +66,10 @@ public class PatternGenerator {
 			peStack.push(pe);
 		}
 		
+		void pop() {
+			peStack.pop();
+		}
+		
 		PatternEdge peek() {
 			return peStack.empty() ? null : peStack.peek();
 		}
@@ -254,6 +258,7 @@ public class PatternGenerator {
 				stack.push(entry.getKey());
 				Result.add(type, stack);
 				mining(type, stack, entry.getValue());
+				stack.pop();
 			}
 		}
 		
