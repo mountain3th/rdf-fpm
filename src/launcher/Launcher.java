@@ -18,9 +18,9 @@ public class Launcher {
 
 			System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 			
-//			Debugger.startTask("main");
+			Debugger.startTask("main");
 //			
-//			Debugger.start();
+			Debugger.start();
 //	
 //			Debugger.startTask("preprocess");
 //			
@@ -34,7 +34,7 @@ public class Launcher {
 //			
 //			Predicate.generate();
 //
-//			Debugger.finishTask("main");
+			Debugger.finishTask("main");
 			
 			Debugger.startTask("patternGenerate");
 			
