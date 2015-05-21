@@ -1,13 +1,9 @@
 package launcher;
 
-import java.io.File;
-
 import mining.Mining;
-import mining.Preprocessor;
-import mining.TempResult;
 import pattern.PatternGenerator;
-import prediction.Predicate;
 import exception.ArgsException;
+import exception.DebuggerException;
 import exception.MiningException;
 
 public class Launcher {
@@ -19,7 +15,6 @@ public class Launcher {
 			System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 			
 			Debugger.startTask("main");
-//			
 			Debugger.start();
 //	
 //			Debugger.startTask("preprocess");
@@ -34,20 +29,23 @@ public class Launcher {
 //			
 //			Predicate.generate();
 //
-			Debugger.finishTask("main");
 			
 			Debugger.startTask("patternGenerate");
 			
 			PatternGenerator.generate();
 			
 			Debugger.finishTask("patternGenerate");
+	
+			Debugger.finishTask("main");
 			Debugger.stop();
 			
 		} catch(ArgsException e) {
 			e.printStackTrace();
 		} catch(MiningException e) {
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (DebuggerException e) {
+			e.printStackTrace();
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -10,6 +10,7 @@ import java.util.Stack;
 import mining.TempResult;
 import datastructure.DFSCode;
 import datastructure.DFSCodeStack;
+import exception.DebuggerException;
 
 public class Debugger implements Runnable {
 	
@@ -87,38 +88,44 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void startTask(String theme, OnTaskFinishedListener listener) {
-		if(isDebug) {
-			Task task = new Task(theme, 0, listener);
-			if(taskStack.isEmpty()) {
-				taskStack.push(task);
-			} else {
-				Task tempTask = taskStack.peek();
-				task.priority = tempTask.priority + 1;
-				taskStack.push(task);
-			}
-			System.out.println(task.toString(false));
-			task.start();
+		if(!isDebug) {
+			return;
 		}
+		Task task = new Task(theme, 0, listener);
+		if(taskStack.isEmpty()) {
+			taskStack.push(task);
+		} else {
+			Task tempTask = taskStack.peek();
+			task.priority = tempTask.priority + 1;
+			taskStack.push(task);
+		}
+		System.out.println(task.toString(false));
+		task.start();
 	}
 	
 	public static void startTask(String theme) {
+		if(!isDebug) {
+			return;
+		}
+		
 		startTask(theme, null);
 	}
 	
-	public static void finishTask(String theme) {
+	public static void finishTask(String theme) throws DebuggerException {
 		if(isDebug) {
-			synchronized(taskStack) {
-				if(taskStack.peek().theme.equals(theme)) {
-					taskStack.notify();
-					try {
-						taskStack.wait();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} else {
-					System.exit(1);
+			return;
+		}	
+		synchronized(taskStack) {
+			if(taskStack.peek().theme.equals(theme)) {
+				taskStack.notify();
+				try {
+					taskStack.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+			} else {
+				throw new DebuggerException(0);
 			}
 		}
 	}
@@ -134,6 +141,7 @@ public class Debugger implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		new Thread(new Debugger()).start();
 	}
 	
@@ -154,6 +162,10 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void log(String str) {
+		if(!isDebug) {
+			return;
+		}
+		
 		try {
 			bw.write(str);
 			bw.flush();
@@ -163,6 +175,10 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void saveResult(DFSCodeStack dfsCodeStack) {
+		if(!isDebug) {
+			return;
+		}
+		
 		try{
 			for(Iterator<DFSCode> it = dfsCodeStack.getStack().iterator(); it.hasNext();) {
 				DFSCode code = it.next();
@@ -176,6 +192,10 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void stop() {
+		if(!isDebug) {
+			return;
+		}
+		
 		try {
 			bw.close();
 			bs.close();
