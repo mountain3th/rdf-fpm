@@ -137,6 +137,10 @@ public class PatternGenerator {
 		}
 		
 		void pop() {
+			if(indexes.isEmpty()) {
+				return;
+			}
+			
 			int last = indexes.size() - 1;
 			indexes.remove(last);
 			last = indexes.size() - 1;
@@ -191,7 +195,6 @@ public class PatternGenerator {
 			}
 		}
 
-		System.out.println("finished");
 		br.close();
 	}
 	
@@ -248,7 +251,9 @@ public class PatternGenerator {
 		for(Iterator<Entry<Integer, Set<TypeGraph>>> it = patternG.patternTypes.entrySet().iterator(); it.hasNext();) {
 			Entry<Integer, Set<TypeGraph>> entry = it.next();
 			System.out.println(entry.getKey() + " " + entry.getValue().size());
-			patternG.mining(entry.getKey(), new PatternEdgeStack(), entry.getValue());
+			if(entry.getValue().size() > Mining.MIN_SUPPORT) {
+				patternG.mining(entry.getKey(), new PatternEdgeStack(), entry.getValue());
+			}
 		}
 	}
 	
