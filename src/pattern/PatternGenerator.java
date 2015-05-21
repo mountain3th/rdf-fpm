@@ -150,6 +150,7 @@ public class PatternGenerator {
 		String line = null;
 		TypeGraph tGraph = null;
 		while((line = br.readLine()) != null) {
+			System.out.println(line);
 			String[] content = line.split("\\s+");
 			
 			if("t".equals(content[0])) {
