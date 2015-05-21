@@ -112,7 +112,6 @@ public class Debugger implements Runnable {
 			return;
 		}	
 		synchronized(taskStack) {
-			System.out.println("check " + taskStack.peek().theme);
 			if(taskStack.peek().theme.equals(theme)) {
 				taskStack.notify();
 				try {

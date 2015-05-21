@@ -252,7 +252,7 @@ public class PatternGenerator {
 			Entry<Integer, Set<TypeGraph>> entry = it.next();
 			System.out.println(entry.getKey() + " " + entry.getValue().size());
 			if(entry.getValue().size() > Mining.MIN_SUPPORT) {
-				Debugger.startTask("mininig");
+				Debugger.startTask("mining");
 				patternG.mining(entry.getKey(), new PatternEdgeStack(), entry.getValue());
 				Debugger.finishTask("mining");
 			}
