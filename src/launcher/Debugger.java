@@ -108,7 +108,7 @@ public class Debugger implements Runnable {
 	}
 	
 	public static void finishTask(String theme) throws DebuggerException {
-		if(isDebug) {
+		if(!isDebug) {
 			return;
 		}	
 		synchronized(taskStack) {
