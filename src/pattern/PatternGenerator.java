@@ -21,7 +21,7 @@ import mining.Mining;
 
 public class PatternGenerator {
 	
-	Map<Integer, Set<TypeGraph>> patternTypes;
+	Map<Integer, Set<TypeGraph>> patternTypes = new HashMap<Integer, Set<TypeGraph>>();
 	
 	private static class Result {
 		static Map<Integer, List<PatternEdgeStack>> results;
@@ -35,14 +35,15 @@ public class PatternGenerator {
 	}
 	
 	private static class PatternEdgeStack {
-		Stack<PatternEdge> peStack;
+		Stack<PatternEdge> peStack = new Stack<PatternEdge>();
 		
 		PatternEdgeStack(PatternEdgeStack stack) {
-			
+			for(int i = 0; i < stack.peStack.size(); i++) {
+				peStack.push(stack.peStack.get(i));
+			}
 		}
 		
 		PatternEdgeStack() {
-			peStack = new Stack<PatternEdge>();
 		}
 		
 		void push(PatternEdge pe) {
@@ -203,6 +204,7 @@ public class PatternGenerator {
 	private void mining(int type, PatternEdgeStack stack, Set<TypeGraph> graphItems) {
 		Map<PatternEdge, Set<TypeGraph>> supportChecker = new HashMap<PatternEdge, Set<TypeGraph>>();
 		
+		Debugger.startTask("mining");
 		PatternEdge pe = stack.peek();
 		for(Iterator<TypeGraph> it = graphItems.iterator(); it.hasNext();) {
 			TypeGraph tg = it.next();
@@ -231,6 +233,8 @@ public class PatternGenerator {
 		}
 		
 		pop(graphItems);
+		
+		Debugger.finishTask("mining");
 	}
 	
 	public static void generate() throws IOException {
