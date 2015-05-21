@@ -146,8 +146,6 @@ public class PatternGenerator {
 	private void loadFile(File file) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		
-		Debugger.startTask("loadFile");
-		
 		String line = null;
 		TypeGraph tGraph = null;
 		while((line = br.readLine()) != null) {
