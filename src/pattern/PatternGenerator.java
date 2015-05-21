@@ -151,12 +151,11 @@ public class PatternGenerator {
 		TypeGraph tGraph = null;
 		while((line = br.readLine()) != null) {
 			String[] content = line.split("\\s+");
-			System.out.println(line);
 			
 			if("t".equals(content[0])) {
-//				if(tGraph != null) {
-//					tGraph.init();
-//				}
+				if(tGraph != null) {
+					tGraph.init();
+				}
 				tGraph = new TypeGraph();
 			} else if("v".equals(content[0])) {
 				int vertex = Integer.valueOf(content[1]);
@@ -248,6 +247,7 @@ public class PatternGenerator {
 		
 		for(Iterator<Entry<Integer, Set<TypeGraph>>> it = patternG.patternTypes.entrySet().iterator(); it.hasNext();) {
 			Entry<Integer, Set<TypeGraph>> entry = it.next();
+			System.out.println(entry.getKey() + " " + entry.getValue().size());
 			patternG.mining(entry.getKey(), new PatternEdgeStack(), entry.getValue());
 		}
 	}
