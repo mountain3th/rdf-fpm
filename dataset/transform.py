@@ -256,7 +256,7 @@ def usage():
 	print '       -to\ttype outputfile name'
 
 if __name__ == '__main__':
-	opts, args = getopt.getopt(sys.argv[1:], "hi:o:")
+	opts, args = getopt.getopt(sys.argv[1:], "hmi:mo:ti:to:")
 	mapping_input_file = ""
 	mapping_output_file = ""
 	type_input_file = ""
