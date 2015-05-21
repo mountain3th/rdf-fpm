@@ -250,33 +250,40 @@ def count_lines(input_file):
 
 def usage():
 	print 'Usage: python transform.py [options]'
-	print '       -i\tinputfile(must be rdf triple file)'
-	print '       -o\toutputfile'
+	print '       -mi\tmapping inputfile(must be rdf triple file)'
+	print '       -mo\tmapping outputfile name'
+	print '       -ti\ttype inputfile'
+	print '       -to\ttype outputfile name'
 
 if __name__ == '__main__':
 	opts, args = getopt.getopt(sys.argv[1:], "hi:o:")
-	input_file = ""
-	output_file = ""
+	mapping_input_file = ""
+	mapping_output_file = ""
+	type_input_file = ""
+	type_output_file = ""
 	for op, value in opts:
-		if op == '-i':
-			input_file = value
-		elif op == '-o':
-			output_file = value
+		if op == '-mi':
+			mapping_input_file = value
+		elif op == '-mo':
+			mapping_output_file = value
+		elif op == '-ti':
+			type_input_file = value
+		elif op == '-to':
+			type_output_file = value
 		elif op == '-h':
 			usage()
 			sys.exit(1)
 	
-	name = output_file.split('.')[0] + "_"
+	name = mapping_output_file.split('.')[0] + "_"
 	subs_mapping_txt = name + subs_mapping_txt_suffix
 	objs_mapping_txt = name + objs_mapping_txt_suffix
 	predicate_mapping_txt = name + predicate_mapping_txt_suffix
 	entities_type_txt = name + entities_type_txt_suffix
 	types_mapping_txt = name + types_mapping_txt_suffix
-	type_output_txt = name + type_output_txt_suffix
 		
-	if not os.path.exists(output_file):
-		lines_count = count_lines(input_file)
-		gen(lines_count, input_file, output_file)
-	if not os.path.exists(type_output_txt):
-		preprocess_types('instance_types_en.ttl')
-		gen_types(input_file, type_output_txt)
+	if not os.path.exists(mapping_output_file):
+		lines_count = count_lines(mapping_input_file)
+		gen(lines_count, mapping_input_file, mapping_output_file)
+	if not os.path.exists(type_output_file):
+		preprocess_types(type_input_file)
+		gen_types(mapping_input_file, type_output_file)

@@ -33,6 +33,7 @@ public class Mining {
 	public static double CONFIDENCE = 0.75;
 	public static int startPoint = -1;
 	public static File inputFile = null;
+	public static File typeFile = null;
 	public static Set<StrongMiningData> smDataSet = new HashSet<StrongMiningData>();
 	public static WeekMiningData[] wmDataSet;
 //	public static Set<Mining>
@@ -99,7 +100,7 @@ public class Mining {
 				}
 			}
 			// 原始文件
-			if("-file".equals(part)) {
+			if("-ifile".equals(part)) {
 				i++;
 				part = args[i];
 				inputFile = new File(part);
@@ -107,6 +108,15 @@ public class Mining {
 					throw new ArgsException(5);
 				}
 			}
+			if("-tfile".equals(part)) {
+				i++;
+				part = args[i];
+				typeFile = new File(part);
+				if(!typeFile.exists() || !typeFile.isFile()) {
+					throw new ArgsException(6);
+				}
+			}
+			
 			// 是否输出debug信息
 			if("-debug".equals(part)) {
 				Debugger.isDebug = true;
@@ -114,6 +124,9 @@ public class Mining {
 		}
 		if(inputFile == null) {
 			throw new ArgsException(4);
+		}
+		if(typeFile == null) {
+			throw new ArgsException(7);
 		}
 	}
 	

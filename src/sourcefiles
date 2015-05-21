@@ -11,3 +11,4 @@ src/mining/Mining.java
 src/mining/Preprocessor.java
 src/mining/TempResult.java
 src/prediction/Predicate.java
+src/pattern/Pattern.java

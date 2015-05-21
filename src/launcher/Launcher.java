@@ -5,6 +5,7 @@ import java.io.File;
 import mining.Mining;
 import mining.Preprocessor;
 import mining.TempResult;
+import pattern.PatternGenerator;
 import prediction.Predicate;
 import exception.ArgsException;
 import exception.MiningException;
@@ -34,6 +35,12 @@ public class Launcher {
 			Predicate.generate();
 
 			Debugger.finishTask("main");
+			
+			Debugger.startTask("patternGenerate");
+			
+			PatternGenerator.generate();
+			
+			Debugger.finishTask("patternGenerate");
 			Debugger.stop();
 			
 		} catch(ArgsException e) {

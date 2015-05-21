@@ -28,6 +28,10 @@ public class ArgsException extends Exception {
 			return "input文件不存在";
 		case 5:
 			return "未设置input文件";
+		case 6:
+			return "type文件不存在";
+		case 7:
+			return "未设置type文件";
 		default:
 			return "";
 		} 
