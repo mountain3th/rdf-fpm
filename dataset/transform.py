@@ -250,25 +250,25 @@ def count_lines(input_file):
 
 def usage():
 	print 'Usage: python transform.py [options]'
-	print '       -mi\tmapping inputfile(must be rdf triple file)'
-	print '       -mo\tmapping outputfile name'
-	print '       -ti\ttype inputfile'
-	print '       -to\ttype outputfile name'
+	print '       -i\tmapping inputfile(must be rdf triple file)'
+	print '       -o\tmapping outputfile name'
+	print '       -t\ttype inputfile'
+	print '       -p\ttype outputfile name'
 
 if __name__ == '__main__':
-	opts, args = getopt.getopt(sys.argv[1:], "hmi:mo:ti:to:")
+	opts, args = getopt.getopt(sys.argv[1:], "hi:o:t:p:")
 	mapping_input_file = ""
 	mapping_output_file = ""
 	type_input_file = ""
 	type_output_file = ""
 	for op, value in opts:
-		if op == '-mi':
+		if op == '-i':
 			mapping_input_file = value
-		elif op == '-mo':
+		elif op == '-o':
 			mapping_output_file = value
-		elif op == '-ti':
+		elif op == '-t':
 			type_input_file = value
-		elif op == '-to':
+		elif op == '-p':
 			type_output_file = value
 		elif op == '-h':
 			usage()
