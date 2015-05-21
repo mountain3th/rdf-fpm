@@ -32,6 +32,22 @@ public class PatternGenerator {
 			}
 			results.get(type).add(new PatternEdgeStack(stack));
 		}
+		
+		static void print() {
+			for(Iterator<Entry<Integer, List<PatternEdgeStack>>> it = results.entrySet().iterator(); it.hasNext();) {
+				Entry<Integer, List<PatternEdgeStack>> entry = it.next();
+				int type = entry.getKey();
+				List<PatternEdgeStack> peStacks = entry.getValue();
+				Debugger.log(type + ": \n");
+				for(Iterator<PatternEdgeStack> pit = peStacks.iterator(); pit.hasNext();) {
+					PatternEdgeStack peStack = pit.next();
+					for(int i = 0; i < peStack.peStack.size(); i++) {
+						Debugger.log(peStack.peStack.get(i) + " -> ");
+					}
+					Debugger.log("\n");
+				}
+			}
+		}
 	}
 	
 	private static class PatternEdgeStack {
@@ -73,6 +89,11 @@ public class PatternGenerator {
 		public boolean equals(Object o) {
 			PatternEdge pe = (PatternEdge) o;
 			return pe.predicate == predicate && pe.objType == objType;
+		}
+		
+		@Override
+		public String toString() {
+			return predicate + " " + objType;
 		}
 	}
 	
@@ -250,13 +271,14 @@ public class PatternGenerator {
 		
 		for(Iterator<Entry<Integer, Set<TypeGraph>>> it = patternG.patternTypes.entrySet().iterator(); it.hasNext();) {
 			Entry<Integer, Set<TypeGraph>> entry = it.next();
-			System.out.println(entry.getKey() + " " + entry.getValue().size());
 			if(entry.getValue().size() > Mining.MIN_SUPPORT) {
-				Debugger.startTask("mining");
+				Debugger.startTask("mining " + entry.getKey());
 				patternG.mining(entry.getKey(), new PatternEdgeStack(), entry.getValue());
-				Debugger.finishTask("mining");
+				Debugger.finishTask("mining " + entry.getKey());
 			}
 		}
+		
+		Result.print();
 	}
 	
 }
