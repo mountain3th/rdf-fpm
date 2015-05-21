@@ -18,23 +18,23 @@ public class Launcher {
 
 			System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 			
-			Debugger.startTask("main");
-			
-			Debugger.start();
-	
-			Debugger.startTask("preprocess");
-			
-			Preprocessor.prepare();
-			Preprocessor.loadFile(Mining.inputFile);
-			Preprocessor.relabel();
-			Preprocessor.rebuildGraphSet();
-			Debugger.finishTask("preprocess");
-			
-			Mining.start();
-			
-			Predicate.generate();
-
-			Debugger.finishTask("main");
+//			Debugger.startTask("main");
+//			
+//			Debugger.start();
+//	
+//			Debugger.startTask("preprocess");
+//			
+//			Preprocessor.prepare();
+//			Preprocessor.loadFile(Mining.inputFile);
+//			Preprocessor.relabel();
+//			Preprocessor.rebuildGraphSet();
+//			Debugger.finishTask("preprocess");
+//			
+//			Mining.start();
+//			
+//			Predicate.generate();
+//
+//			Debugger.finishTask("main");
 			
 			Debugger.startTask("patternGenerate");
 			
