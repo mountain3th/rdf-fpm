@@ -1,7 +1,8 @@
 package launcher;
 
 import mining.Mining;
-import pattern.PatternGenerator;
+import mining.Preprocessor;
+import prediction.Predicate;
 import exception.ArgsException;
 import exception.DebuggerException;
 import exception.MiningException;
@@ -16,23 +17,23 @@ public class Launcher {
 			
 			Debugger.startTask("main");
 			Debugger.start();
-//	
-//			Debugger.startTask("preprocess");
-//			
-//			Preprocessor.prepare();
-//			Preprocessor.loadFile(Mining.inputFile);
-//			Preprocessor.relabel();
-//			Preprocessor.rebuildGraphSet();
-//			Debugger.finishTask("preprocess");
-//			
-//			Mining.start();
-//			
-//			Predicate.generate();
+	
+			Debugger.startTask("preprocess");
+			
+			Preprocessor.prepare();
+			Preprocessor.loadFile(Mining.inputFile);
+			Preprocessor.relabel();
+			Preprocessor.rebuildGraphSet();
+			Debugger.finishTask("preprocess");
+			
+			Mining.start();
+			
+			Predicate.generate();
 //
 			
 			Debugger.startTask("patternGenerate");
 			
-			PatternGenerator.generate();
+//			PatternGenerator.generate();
 			
 			Debugger.finishTask("patternGenerate");
 	
