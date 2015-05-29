@@ -26,7 +26,7 @@ public class Predicate {
 		
 		@Override
 		public String toString() {
-			return "" + object + "," + confidence + "\n";
+			return "" + object + "," + confidence + "," + depth + "\n";
 		}
 	}
 	
