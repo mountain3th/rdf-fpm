@@ -36,7 +36,7 @@ public class Predicate {
 		TempResult.print();
 		
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("log/predicates.log")));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("result/predicates.log")));
 			for(int i = 0; i < GraphSet.getGraphSet().size(); i++) {
 				List<Concept> concepts = TempResult.genConcept(i);
 				if(!concepts.isEmpty()) {
