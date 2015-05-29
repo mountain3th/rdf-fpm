@@ -266,6 +266,7 @@ public class Mining {
 				int y = sdc.y;
 				dfsCodeStack.push(new DFSCode(-1, -1, startPoint, a, y));
 
+				Debugger.saveResult(dfsCodeStack);
 				TempResult.add(dfsCodeStack, entry.getValue());
 				
 				dfsCodeStack.pop();
