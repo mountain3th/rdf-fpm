@@ -314,10 +314,10 @@ public class Mining {
 		}
 		
 		void add(DFSCode code, Graph g) {
-			if(pattern == Pattern.PATTERN_STRONG) {
-				check(code, g);
-			} else if(TempResult.hasConcept(code.a)){
+			if(TempResult.hasConcept(code.a)){
 				check(code.toSimDFSCode(), g);
+			} else if(pattern == Pattern.PATTERN_STRONG) {
+				check(code, g);
 			} else {
 				check(code.a, g);
 			}
