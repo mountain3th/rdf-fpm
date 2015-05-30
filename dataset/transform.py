@@ -147,6 +147,7 @@ def find2(file, string, lines):
 	return -1
 
 def gen(lines_count, input_file, output_file):
+	line2map = open('lines_mapping.txt', 'w')
 	subs_maps = open(subs_mapping_txt, 'w')
 	concept_types_labels = set()
 
@@ -156,8 +157,17 @@ def gen(lines_count, input_file, output_file):
 	predicates = open(predicate_mapping_txt).readlines()
 	predicates = [p[:-1] for p in predicates]
 
+	tmp_file_txt = output_file.split('.')[0] + ".tmp"
+	for count,item in enumerate(predicates):
+		if item in ['<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>', '<http://dbpedia.org/ontology/type>']:
+			concept_types_labels.add(count + 1)
+	with open(tmp_file_txt, 'w') as tmp_file:
+		for label in concept_types_labels:
+			tmp_file.write(str(label) + '\n')
+
 	vertices = []
 	edges = []
+	lines = []
 	with open(input_file) as mapping:
 		graph_count = -1
 		index = -1
@@ -178,6 +188,10 @@ def gen(lines_count, input_file, output_file):
 					if vertices :
 						graph_count += 1
 						combine(output_file, vertices, edges, graph_count)
+						line2map.write('\nt # %d\n' % graph_count)
+						for item in lines:
+							line2map.write(item)
+						del lines[:]
 						index = 0	 
 						print graph_count, str(round(float(count) / float(lines_count) * 100, 2)) + '%'
 					add_node(vertices, 0, 0)
@@ -187,14 +201,7 @@ def gen(lines_count, input_file, output_file):
 				index += 1
 				add_node(vertices, index, obj)
 				add_edge(edges, 0, index, pre)
-
-	tmp_file_txt = output_file.split('.')[0] + ".tmp"
-	for i in predicates:
-		if i in ['<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>', 'http://dbpedia.org/ontology/type']:
-			concept_types_labels.add(i + 1)
-	with open(tmp_file_txt, 'w') as tmp_file:
-		for label in concept_types_labels:
-			tmp_file.write(str(label) + '\n')
+				lines.append(line)
 
 def gen_types(mapping_file, output_file):
 
