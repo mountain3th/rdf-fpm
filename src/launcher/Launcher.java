@@ -32,11 +32,11 @@ public class Launcher {
 			Predicate.generate();
 //
 			
-			Debugger.startTask("patternGenerate");
+//			Debugger.startTask("patternGenerate");
 			
-			PatternGenerator.generate();
+//			PatternGenerator.generate();
 			
-			Debugger.finishTask("patternGenerate");
+//			Debugger.finishTask("patternGenerate");
 	
 			Debugger.finishTask("main");
 			Debugger.stop();
