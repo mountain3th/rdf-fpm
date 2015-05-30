@@ -1,8 +1,10 @@
 package pattern;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,20 +35,27 @@ public class PatternGenerator {
 			results.get(type).add(new PatternEdgeStack(stack));
 		}
 		
-		static void print() {
+		static void print() throws IOException {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("result/patterns.log")));
+			int counts = 0;
+			int concept_counts = 0;
 			for(Iterator<Entry<Integer, List<PatternEdgeStack>>> it = results.entrySet().iterator(); it.hasNext();) {
+				concept_counts += 1;
 				Entry<Integer, List<PatternEdgeStack>> entry = it.next();
 				int type = entry.getKey();
 				List<PatternEdgeStack> peStacks = entry.getValue();
-				Debugger.log(type + ": \n");
+				bw.write(type + ": \n");
 				for(Iterator<PatternEdgeStack> pit = peStacks.iterator(); pit.hasNext();) {
+					counts += 1;
 					PatternEdgeStack peStack = pit.next();
 					for(int i = 0; i < peStack.peStack.size(); i++) {
-						Debugger.log(peStack.peStack.get(i) + " -> ");
+						bw.write(peStack.peStack.get(i) + " -> ");
 					}
-					Debugger.log("\n");
+					bw.write("\n");
 				}
 			}
+			bw.write("共有" + counts + ",概念模式有" + concept_counts + "\n");
+			bw.close();
 		}
 	}
 	
