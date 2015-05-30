@@ -139,7 +139,7 @@ public class Mining {
 				for(int j = 0; j < maxVertexRank; j++) {
 		int index = 0;
 		
-		Debugger.startTask("strongMining");
+//		Debugger.startTask("strongMining");
 //		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
 //			StrongMiningData md = it.next();
 			StrongMiningData md = new StrongMiningData(a, j);
@@ -156,7 +156,7 @@ public class Mining {
 			new Mining().subGraphMining(Pattern.PATTERN_STRONG, dfsCodeStack, graphItems);
 			Debugger.finishTask("subGraphMining");	
 		}
-		Debugger.finishTask("strongMining");
+//		Debugger.finishTask("strongMining");
 			}
 //		Debugger.startTask("weekMining");
 //		for(index = 0; index < wmDataSet.length; index++) {
