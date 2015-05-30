@@ -2,6 +2,7 @@ package launcher;
 
 import mining.Mining;
 import mining.Preprocessor;
+import pattern.PatternGenerator;
 import prediction.Predicate;
 import exception.ArgsException;
 import exception.DebuggerException;
@@ -33,7 +34,7 @@ public class Launcher {
 			
 			Debugger.startTask("patternGenerate");
 			
-//			PatternGenerator.generate();
+			PatternGenerator.generate();
 			
 			Debugger.finishTask("patternGenerate");
 	
