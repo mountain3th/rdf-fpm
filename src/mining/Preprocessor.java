@@ -117,6 +117,9 @@ public class Preprocessor {
 			int label = vList.get(index).getKey();
 			TempResult.vertexRank2Label.put(index, label);
 			vertexLabel2Rank[label] = index;
+			if(vList.get(index).getValue() >= Mining.MIN_SUPPORT) {
+				Mining.maxVertexRank = index;
+			}
 		}
 		
 		List<Entry<Integer, Integer>> eList = new ArrayList<Entry<Integer, Integer>>(edgeLabel2Freq.entrySet());
@@ -129,6 +132,7 @@ public class Preprocessor {
 			int value = eList.get(index).getValue();
 			if(value >= Mining.MIN_SUPPORT) {
 				wmaxEdgeLabel = index;
+				Mining.maxEdgeRank = index;
 			}
 		}
 		

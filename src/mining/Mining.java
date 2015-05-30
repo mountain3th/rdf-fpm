@@ -38,6 +38,9 @@ public class Mining {
 	public static WeekMiningData[] wmDataSet;
 //	public static Set<Mining>
 	
+	public static int maxVertexRank = -1;
+	public static int maxEdgeRank = -1;
+	
 	public static class StrongMiningData {
 		int edgeLabel;
 		int vertexLabel;
@@ -132,15 +135,14 @@ public class Mining {
 	
 	
 	public static void start() {
-//		for(int i = 0; i < maxVertexRank; i++) {
-//			for(int a = 0; a < maxEdgeRank; a++) {
-//				for(int j = 0; j < maxVertexRank; j++) {
+			for(int a = 0; a < maxEdgeRank; a++) {
+				for(int j = 0; j < maxVertexRank; j++) {
 		int index = 0;
 		
 		Debugger.startTask("strongMining");
-		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
-			StrongMiningData md = it.next();
-//			StrongMiningData md = new StrongMiningData(7, 14);
+//		for(Iterator<StrongMiningData> it = smDataSet.iterator(); it.hasNext();) {	
+//			StrongMiningData md = it.next();
+			StrongMiningData md = new StrongMiningData(a, j);
 		
 			Debugger.log(String.valueOf(index) + "\n");
 			index++;
@@ -155,7 +157,7 @@ public class Mining {
 			Debugger.finishTask("subGraphMining");	
 		}
 		Debugger.finishTask("strongMining");
-		
+			}
 //		Debugger.startTask("weekMining");
 //		for(index = 0; index < wmDataSet.length; index++) {
 //			WeekMiningData wmd = wmDataSet[index];
