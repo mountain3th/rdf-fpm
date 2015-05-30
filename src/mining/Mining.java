@@ -234,7 +234,6 @@ public class Mining {
 				double confidence = (double) size / (double) graphItems.size();
 				if(confidence >= Mining.CONFIDENCE) {
 					dfsCodeStack.push(entry.getKey());
-					System.out.println("##" + entry.getKey());
 					
 					subGraphMining(pattern, dfsCodeStack, entry.getValue());
 					dfsCodeStack.pop();
@@ -268,7 +267,6 @@ public class Mining {
 				int y = sdc.y;
 				dfsCodeStack.push(new DFSCode(-1, -1, startPoint, a, y));
 
-				System.out.println("$$" + new DFSCode(-1, -1, startPoint, a, y));
 				Debugger.saveResult(dfsCodeStack);
 				TempResult.add(dfsCodeStack, entry.getValue());
 				
