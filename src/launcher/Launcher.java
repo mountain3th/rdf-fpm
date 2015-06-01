@@ -19,24 +19,24 @@ public class Launcher {
 			Debugger.startTask("main");
 			Debugger.start();
 	
-			Debugger.startTask("preprocess");
-			
-			Preprocessor.prepare();
-			Preprocessor.loadFile(Mining.inputFile);
-			Preprocessor.relabel();
-			Preprocessor.rebuildGraphSet();
-			Debugger.finishTask("preprocess");
-			
-			Mining.start();
-			
-			Predicate.generate();
+//			Debugger.startTask("preprocess");
+//			
+//			Preprocessor.prepare();
+//			Preprocessor.loadFile(Mining.inputFile);
+//			Preprocessor.relabel();
+//			Preprocessor.rebuildGraphSet();
+//			Debugger.finishTask("preprocess");
+//			
+//			Mining.start();
+//			
+//			Predicate.generate();
 //
 			
-//			Debugger.startTask("patternGenerate");
+			Debugger.startTask("patternGenerate");
 			
-//			PatternGenerator.generate();
+			PatternGenerator.generate();
 			
-//			Debugger.finishTask("patternGenerate");
+			Debugger.finishTask("patternGenerate");
 	
 			Debugger.finishTask("main");
 			Debugger.stop();
