@@ -28,11 +28,11 @@ public class PatternGenerator {
 	private static class Result {
 		static Map<Integer, List<PatternEdgeStack>> results = new HashMap<Integer, List<PatternEdgeStack>>();
 		
-		static void add(int type, PatternEdgeStack stack) {
+		static void add(int type, PatternEdgeStack stack, Set<TypeGraph> graphs) {
 			if(!results.containsKey(type)) {
 				results.put(type, new ArrayList<PatternEdgeStack>());
 			}
-			results.get(type).add(new PatternEdgeStack(stack));
+			results.get(type).add(new PatternEdgeStack(stack, graphs));
 		}
 		
 		static void print() throws IOException {
@@ -51,7 +51,12 @@ public class PatternGenerator {
 					for(int i = 0; i < peStack.peStack.size(); i++) {
 						bw.write(peStack.peStack.get(i) + " -> ");
 					}
-					bw.write("\n");
+					bw.write("(");
+					for(Iterator<TypeGraph> tit = peStack.graphs.iterator(); tit.hasNext();) {
+						TypeGraph tg = tit.next();
+						bw.write(tg.subject + ",");
+					}
+					bw.write(")\n");
 				}
 			}
 			bw.write("共有" + counts + ",概念模式有" + concept_counts + "\n");
@@ -60,12 +65,18 @@ public class PatternGenerator {
 	}
 	
 	private static class PatternEdgeStack {
+		Set<TypeGraph> graphs;
 		Stack<PatternEdge> peStack = new Stack<PatternEdge>();
 		
 		PatternEdgeStack(PatternEdgeStack stack) {
 			for(int i = 0; i < stack.peStack.size(); i++) {
 				peStack.push(stack.peStack.get(i));
 			}
+		}
+		
+		PatternEdgeStack(PatternEdgeStack stack, Set<TypeGraph> graphs) {
+			this(stack);
+			this.graphs = new HashSet<TypeGraph>(graphs);
 		}
 		
 		PatternEdgeStack() {
@@ -121,12 +132,16 @@ public class PatternGenerator {
 	}
 	
 	private static class TypeGraph {
-		int subType;
+		int subject;
 		List<TypeEdge> predicates = new ArrayList<TypeEdge>();
 		
 		int keepIndex = -1;
 		List<Integer> indexes = new ArrayList<Integer>();
 	
+		TypeGraph(int s) {
+			this.subject = s;
+		}
+		
 		void addVertex(int vertex, List<Integer> types) {
 			predicates.add(new TypeEdge(vertex, types));
 		}
@@ -194,7 +209,8 @@ public class PatternGenerator {
 				if(tGraph != null) {
 					tGraph.init();
 				}
-				tGraph = new TypeGraph();
+				int subject = Integer.valueOf(content[2]);
+				tGraph = new TypeGraph(subject);
 			} else if("v".equals(content[0])) {
 				int vertex = Integer.valueOf(content[1]);
 				String[] labels = content[2].split(",");
@@ -265,7 +281,7 @@ public class PatternGenerator {
 			int size = entry.getValue().size();
 			if(size >= Mining.MIN_SUPPORT) {
 				stack.push(entry.getKey());
-				Result.add(type, stack);
+				Result.add(type, stack, entry.getValue());
 				mining(type, stack, entry.getValue());
 				stack.pop();
 			}
@@ -285,7 +301,7 @@ public class PatternGenerator {
 		
 		for(Iterator<Entry<Integer, Set<TypeGraph>>> it = patternG.patternTypes.entrySet().iterator(); it.hasNext();) {
 			Entry<Integer, Set<TypeGraph>> entry = it.next();
-			if(entry.getValue().size() > Mining.MIN_SUPPORT) {
+			if(entry.getValue().size() >= Mining.MIN_SUPPORT) {
 				Debugger.startTask("mining " + entry.getKey());
 				patternG.mining(entry.getKey(), new PatternEdgeStack(), entry.getValue());
 				Debugger.finishTask("mining " + entry.getKey());
